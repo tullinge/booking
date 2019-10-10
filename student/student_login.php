@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Booking</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="student.css">
   </head>
   <body>
     <main>

@@ -20,7 +20,7 @@ def letter_check(x):
         else:
             pass
 
-@app.route('/students_login', methods = ['GET','POST'])
+@app.route('/student_login', methods = ['GET','POST'])
 def students_login():
     error = None
     return render_template('student_login.html', error=error)

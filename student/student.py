@@ -22,13 +22,12 @@ def character_check(x):
 
 @app.route('/student_login', methods = ['GET','POST'])
 def students_login():
-    error = None
-    if request.method == 'POST':
-        if request.form['usercode'].upper != 'BEAR':
-            error = 'invalid'
+    return render_template('student_login.html')
+    if request.method == 'GET':
+        if request.form['usercode'].upper() != 'BEAR':
+            pass
         else:
             return redirect(url_for('student_signup'))
-    return render_template('student_login.html', error=error)
 
 
 @app.route('/student_singup')

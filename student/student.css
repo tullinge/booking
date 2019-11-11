@@ -4,3 +4,8 @@
   font-size: 2vw;
   font-family: sans-serif;
 }
+
+body {
+    background-image: url(../bilder/imagebooking.jpg);
+    background-size: 100%;
+}

@@ -33,9 +33,9 @@ def students_login():
 
 
 
-@app.route('/student_singup')
+@app.route('/student_signup')
 def student_signup():
-    return render_template('student_singup.html')
+    return render_template('student_signup.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

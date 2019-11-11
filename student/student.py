@@ -22,25 +22,20 @@ def character_check(x):
 
 @app.route('/student_login', methods = ['GET','POST'])
 def students_login():
-    return render_template('student_login.html')
     if request.method == 'GET':
-        if request.form['usercode'].upper() != 'BEAR':
-            pass
+        return render_template('student_login.html')
+    else:
+        username =  request.form['usercode'].upper()
+        if username == 'BEAR':
+            return render_template('student_signup.html')
         else:
-            return redirect(url_for('student_signup'))
+            pass
+
 
 
 @app.route('/student_singup')
 def student_signup():
     return render_template('student_singup.html')
-#    if request.method == 'post':
-#        usercodePY = str(request.form['usercode'])
-#        if len(usercodePY) == 4:
-#            for n in usercodePY:
-#               letter = usercodePY[n]
-#               letter = letter.upper()
-#               character_check(letter)
-
 
 if __name__ == '__main__':
     app.run(debug=True)

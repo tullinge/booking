@@ -16,6 +16,7 @@
         - Firstname
         - Lastname
         - Activity
+        - Class
     - Confirmation
 
 ## Admin
@@ -26,5 +27,20 @@
     - Createcodes
 + Lists
     - Output lists
+        - Class
+        - Activity
++ Activitys
+        - Add
+            - Name
+            - Platser
+            - Extra val
+                - Extra val extra
+        - Remove
+        - Edit
+            - Platser
+            - Name
+            - Extra val
+                - Extra val extra
+        
     
     

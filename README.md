@@ -10,18 +10,19 @@
 
 ## Student
 + Signin
-    - input code tex:AB12
+    - input code
 + Signup
     - Input
         - Firstname
         - Lastname
         - Activity
         - Class
+        - Send
     - Confirmation
 
 ## Admin
 + Signin
-    - input code tex:AB12
+    - input code
 + Codes
     - Amount of codes
     - Createcodes
@@ -32,15 +33,21 @@
 + Activitys
         - Add
             - Name
-            - Platser
-            - Extra val
-                - Extra val extra
+            - Spots
+            - Add on
+                -Add on choise
         - Remove
         - Edit
-            - Platser
             - Name
-            - Extra val
-                - Extra val extra
-        
+            - Spots
+            - Add on
+                -Add on choise
++ Admin
+    - Add
+        - Firstname
+        - Code
+    - Remove
+    - Edit
+        - Code
     
     

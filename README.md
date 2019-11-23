@@ -12,6 +12,8 @@
 + Signin
     - input code
 + Signup
+    - Info
+        - Activity
     - Input
         - Firstname
         - Lastname
@@ -36,12 +38,14 @@
             - Spots
             - Add on
                 -Add on choise
+            - More info
         - Remove
         - Edit
             - Name
             - Spots
             - Add on
                 -Add on choise
+            - More info
 + Admin
     - Add
         - Firstname

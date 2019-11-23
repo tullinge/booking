@@ -1,15 +1,13 @@
 from flask import Flask, redirect, url_for, request, render_template, template_rendered
 from flask_mysqldb import MySQL
+from db_config.py import db_config
 import time
 
 app = Flask(__name__, template_folder='.')
-
-app.config['MYSQL_HOST'] = 'mysql683.loopia.se'
-app.config['MYSQL_USER'] = 'Booking@s261825'
-app.config['MYSQL_PASSWORD'] = 'Booking2019'
-app.config['MYSQL_DB'] = 'swe3d_com' 
  
-mysql = MySQL(app)
+db_config()
+
+mysql = MySQL(app)+
 
 character_list  = ['A', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'X', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 

@@ -1,30 +1,27 @@
-import uuid
-import collections
+import random as r 
 
-code_list = []
-code_list_v2 = []
+temporary_code_list = []
+finnished_code_list = ['BEAR', 'MINK', 'SEAL', 'KOKO', 'GRIS', 'HARE', 'JOEY']
 
-def randomcode(codelenght=10):
-    random = str(uuid.uuid4())
-    random = random.upper()
-    return random[0:codelenght]
+def main():
+    x = int(input('Hur många koder vill du ha?\n'))
+    for i in range(x):
+        temporary_code_list.append(generate_uuid())
+    for code in temporary_code_list:
+        if not code in finnished_code_list:
+            finnished_code_list.append(code)
+    file = open('finnished_codes.txt', 'w')
+    file.write(str(finnished_code_list))
+    print(finnished_code_list)
 
-x = int(input('Hur många koder vill du ha?\n'))
+def generate_uuid():
+    random_string = ''
+    random_str_seq = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    uuid_format = [4]
+    for n in uuid_format:
+        for i in range(0, n):
+            random_string += str(random_str_seq[r.randint(0, len(random_str_seq) - 1)])
+    return random_string
 
-for i in range(x):
-    code_list.append(randomcode(7))
-
-for code in code_list:
-    if not code in code_list_v2:
-        code_list_v2.append(code)
-
-print(code_list_v2)
-
-def your_code():
-    for element in range(len(code_list_v2)):
-        print('                                       Här är din kod: ', code_list_v2[element], '\n\n\n\n')
-
-print(your_code)
-
-file = open('code.txt', 'w')
-file.write(str(code_list_v2))
+if __name__ == '__main__':
+    main()

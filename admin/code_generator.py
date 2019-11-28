@@ -5,14 +5,17 @@ finnished_code_list = ['BEAR', 'MINK', 'SEAL', 'KOKO', 'GRIS', 'HARE', 'JOEY']
 
 def main():
     x = int(input('Hur många koder vill du ha?\n'))
-    for i in range(x):
-        temporary_code_list.append(generate_uuid())
-    for code in temporary_code_list:
-        if not code in finnished_code_list:
-            finnished_code_list.append(code)
-    file = open('finnished_codes.txt', 'w')
-    file.write(str(finnished_code_list))
-    print(finnished_code_list)
+    if x < 36**4:
+        for i in range(x - 7):
+            temporary_code_list.append(generate_uuid())
+        for code in temporary_code_list:
+            if not code in finnished_code_list:
+                finnished_code_list.append(code)
+        file = open('finnished_codes.txt', 'w')
+        file.write(str(finnished_code_list))
+        print(finnished_code_list)
+    else:
+        print('404 error')
 
 def generate_uuid():
     random_string = ''

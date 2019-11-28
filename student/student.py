@@ -1,11 +1,14 @@
 from flask import Flask, redirect, url_for, request, render_template, template_rendered
 from flask_mysqldb import MySQL
-from db_config.py import db_config
+from dconfig import DB_Server, DB_Name, DB_Username, DB_Password
 import time
 
 app = Flask(__name__, template_folder='.')
  
-db_config()
+app.config['MYSQL_HOST'] = DB_Server
+app.config['MYSQL_USER'] = DB_Username
+app.config['MYSQL_PASSWORD'] = DB_Password
+app.config['MYSQL_DB'] = DB_Name
 
 mysql = MySQL(app)+
 

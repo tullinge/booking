@@ -1,4 +1,4 @@
-import random as r 
+import random as r
 
 temporary_code_list = []
 finnished_code_list = ['BEAR', 'MINK', 'SEAL', 'KOKO', 'GRIS', 'HARE', 'JOEY']

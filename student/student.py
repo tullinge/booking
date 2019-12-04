@@ -1,43 +1,45 @@
-from flask import Flask, redirect, url_for, request, render_template, template_rendered
-from flask_mysqldb import MySQL
-from dconfig import DB_Server, DB_Name, DB_Username, DB_Password
+import string
 import time
 
-app = Flask(__name__, template_folder='.')
- 
-app.config['MYSQL_HOST'] = DB_Server
-app.config['MYSQL_USER'] = DB_Username
-app.config['MYSQL_PASSWORD'] = DB_Password
-app.config['MYSQL_DB'] = DB_Name
+from dconfig import DB_Name, DB_Password, DB_Server, DB_Username
+from flask import Flask, redirect, render_template, request, template_rendered, url_for
+from flask_mysqldb import MySQL
 
-mysql = MySQL(app)+
+app = Flask(__name__, template_folder=".")
 
-character_list  = ['A', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'X', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+app.config["MYSQL_HOST"] = DB_Server
+app.config["MYSQL_USER"] = DB_Username
+app.config["MYSQL_PASSWORD"] = DB_Password
+app.config["MYSQL_DB"] = DB_Name
 
-def character_check(x):
-    for L in character_list:
-        if x != L:
-            pass
-        else:
-            pass
+mysql = MySQL(app)
 
-@app.route('/student_login', methods = ['GET','POST'])
+allowed_characters = string.printable + ["å", "ä", "ö", "Å", "Ä", "Ö"]
+
+
+def contains_illegal_characters(variable):
+    if any(x not in allowed_characters for x in variable):
+        return True
+
+    return False
+
+
+@app.route("/student_login", methods=["GET", "POST"])
 def students_login():
-    if request.method == 'GET':
-        return render_template('student_login.html')
+    if request.method == "GET":
+        return render_template("student_login.html")
     else:
-        username =  request.form['usercode'].upper()
-        if username == 'BEAR':
-            return render_template('student_signup.html')
+        username = request.form["usercode"].upper()
+        if username == "BEAR":
+            return render_template("student_signup.html")
         else:
             pass
 
 
-
-@app.route('/student_signup')
+@app.route("/student_signup")
 def student_signup():
-    return render_template('student_signup.html')
+    return render_template("student_signup.html")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)
-

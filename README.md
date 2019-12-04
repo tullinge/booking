@@ -1,4 +1,5 @@
 # Booking
+
 ## How to start the program
 + prep
     - Download Flask
@@ -53,5 +54,3 @@
     - Remove
     - Edit
         - Code
-    
-    

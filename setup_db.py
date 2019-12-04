@@ -1,13 +1,13 @@
 import pymysql
-from student import dconfig
+import db_config
 
 
 def _create_conn():
     return pymysql.connect(
-        host=dconfig.DB_Server,
-        user=dconfig.DB_Username,
-        password=dconfig.DB_Password,
-        db=dconfig.DB_Name,
+        host=db_config.DB_Server,
+        user=db_config.DB_Username,
+        password=db_config.DB_Password,
+        db=db_config.DB_Name,
     )
 
 
@@ -41,7 +41,17 @@ def drop_user_table():
     finally:
         conn.close()
 
+def get_all_users():
+    conn = _create_conn()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM  users", ())
+            res = cursor.fetchall()
+        return res
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
-    drop_user_table()
-    create_user_table()
+    print(get_all_users())
+    #drop_user_table()
+    #create_user_table()

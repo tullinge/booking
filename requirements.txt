@@ -1,2 +1,4 @@
 flask
 pymysql
+Flask-Session
+Flask-SQLAlchemy

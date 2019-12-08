@@ -13,9 +13,34 @@ def create_conn():
 
 def create_user_table():
     conn = create_conn()
-    create_sql_activitys = """CREATE TABLE activitys (ID int(3) NOT NULL,Name varchar(50) NOT NULL,Spaces varchar(3) NOT NULL);"""
-    create_sql_admins = """CREATE TABLE admins (ID int(2) NOT NULL,Name varchar(50) NOT NULL,Code varchar(16) NOT NULL);"""
-    create_sql_students = """CREATE TABLE students (ID int(6) NOT NULL AUTO_INCREMENT,Code varchar(4) NOT NULL,LastName varchar(50) DEFAULT NULL,FirstName varchar(50) DEFAULT NULL,Class varchar(10) DEFAULT NULL,activity varchar(100) DEFAULT NULL,PRIMARY KEY (ID),UNIQUE KEY Code (Code));"""
+    create_sql_activitys = """
+    CREATE TABLE activitys (
+        id int(6) NOT NULL AUTO_INCREMENT,
+        name varchar(50) NOT NULL,
+        spaces varchar(3) NOT NULL,
+        PRIMARY KEY (id)
+    );
+    """
+    create_sql_admins = """
+        CREATE TABLE admins (
+            id int(6) NOT NULL AUTO_INCREMENT,
+            name varchar(50) NOT NULL,
+            code varchar(16) NOT NULL,
+            PRIMARY KEY (id)
+        );
+    """
+
+    create_sql_students = """
+        CREATE TABLE students (
+            id int(6) NOT NULL AUTO_INCREMENT,
+            code varchar(4) NOT NULL UNIQUE,
+            last_name varchar(50) DEFAULT NULL,
+            first_name varchar(50) DEFAULT NULL,
+            class varchar(10) DEFAULT NULL,
+            activity varchar(100) DEFAULT NULL,
+            PRIMARY KEY (id)
+        );
+    """
     try:
         with conn.cursor() as cursor:
             cursor.execute(create_sql_activitys, ())
@@ -25,26 +50,43 @@ def create_user_table():
     finally:
         conn.close()
 
-def alter_user_table():
-    conn = create_conn()
-    alter_sql_activitys = """ALTER TABLE `activitys` ADD PRIMARY KEY (`ID`);"""
-    alter_sql_admins = """ALTER TABLE `admins` ADD PRIMARY KEY (`ID`);"""
-    alter_sql_students = """ALTER TABLE `students` ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `Code` (`Code`);"""
-
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute(alter_sql_activitys, ())
-            cursor.execute(alter_sql_admins, ())
-            cursor.execute(alter_sql_students, ())
-        conn.commit()
-    finally:
-        conn.close()
-
 def insert_user_table():
     conn = create_conn()
-    insert_sql_activitys ="""INSERT INTO `activitys` (`Name`, `Spaces`) VALUES('Test', '2');"""
-    insert_sql_admins ="""INSERT INTO `admins` (`Name`, `Code`) VALUES('Dev', '2357'),('Christofer', 'Hest'),('Joakim', 'Jock'),('Rebecka', 'Rebe'),('Susanna', 'SUSA'),('Ak', 'AKAK');"""
-    insert_sql_students ="""INSERT INTO `students` (`Code`, `LastName`, `FirstName`, `Class`, `activity`) VALUES ("BEAR", "Berzins", "Fredrik", "TE18", NULL);"""
+    insert_sql_activitys ="""
+        INSERT INTO `activitys` 
+            (`id`, `name`, `spaces`) 
+            VALUES
+                (1, "Test", "2")
+        ;
+    """
+
+    insert_sql_admins ="""
+        INSERT INTO `admins` 
+            (`id`, `name`, `code`) 
+            VALUES
+                (1, "Dev", "2357"),
+                (2, "Christofer", "Hest"),
+                (3, "Joakim", "Jock"),
+                (4, "Rebecka", "Rebe"),
+                (5, "Susanna", "SUSA"),
+                (6, "Ak", "AKAK")
+        ;
+    """
+
+    insert_sql_students ="""
+        INSERT INTO `students` 
+            (`id`, `code`, `last_name`, `first_name`, `class`) 
+            VALUES 
+                (1, "BEAR", "Berzins", "Fredrik", "TE18"),
+                (2, "MINK", "Blom", "Oskar", "TE18"),
+                (3, "SEAL", "Hedlund", "Marcus", "TE18"),
+                (4, "KOKO", "Abu Shamleh", "Nora", "TE18"),
+                (5, "GRIS", "Terp", "Jonas", "TE18"),
+                (6, "HARE", "Kalström", "Linnea", "TE18"),
+                (7, "JOEY", "Brandin", "Isabel", "TE18"),
+                (8, "AB12", NULL, NULL, NULL)
+        ;
+    """
 
     try:
         with conn.cursor() as cursor:
@@ -60,16 +102,17 @@ def get_all_users():
     try:
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM  activitys", ())
+            res_activitys = cursor.fetchall()
             cursor.execute("SELECT * FROM  admins", ())
+            res_admins = cursor.fetchall()
             cursor.execute("SELECT * FROM  students", ())
-            res = cursor.fetchall()
-        return res
+            res_students = cursor.fetchall()
+        return res_activitys ,res_admins ,res_students
     finally:
         conn.close()
 
 if __name__ == "__main__":
-    create_user_table()
-    alter_user_table()
-    insert_user_table()
+    #create_user_table()
+    #insert_user_table()
     print(get_all_users())
     #drop_user_table()

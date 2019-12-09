@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 from flask import Blueprint, render_template, request, redirect
 
 # blueprint init

@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 import pymysql
 from db_config import DB_Name, DB_Password, DB_Server, DB_Username
 

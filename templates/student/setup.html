@@ -2,4 +2,45 @@
 {% block title %} - Konfigurera användare{% endblock %}
 {% block body %}
     <h1>Konfigurera användare</h1>
+
+    {% if fail %}
+    <div class="alert alert-danger" role="alert">
+        <p>{{ fail }}</p>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        <p>{{ success }}</p>
+    </div>
+    {% endif %}
+
+    <form action="/setup", method="post">
+        <div class="form-group">
+            <label for="first_name">Förnamn</label>
+            <input class="form-control" name="first_name" type="text" placeholder="Förnamn">
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Efternamn</label>
+            <input class="form-control" name="last_name" type="text" placeholder="Förnamn">
+        </div>
+
+        <div class="form-group">
+            <label for="class">Klass</label>
+            <select class="form-control" id="class" name="class">
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+                <option>TE18</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Uppdatera profil</button>
+    </form>
 {% endblock %}

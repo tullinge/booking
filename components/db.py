@@ -16,7 +16,7 @@ def sql_query(query):
 
     try:
         with conn.cursor() as cursor:
-            cursor.execute(sql_query)
+            cursor.execute(query)
             result = cursor.fetchall()
         conn.commit()
     finally:

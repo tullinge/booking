@@ -24,12 +24,12 @@ def login():
         if not username or not password:
             return render_template("admin/login.html", fail="Saknar variabler."), 400
 
-        elif:
-
+        elif len(username) >= 255 or len(password) >= 255:
+            return render_template("admin/login.html")
+            
         else:
-
-        # if validation has come this far, user should be authenticated
-        return redirect(f"{BASEPATH}/")
+            # if validation has come this far, user should be authenticated
+            return redirect(f"{BASEPATH}/")
     else:
         return render_template("admin/login.html")
 

@@ -40,9 +40,13 @@ DB_Password = '[DB Password]'
 
 ---
 
-- As an **admin** I want to be able to **get a list of codes** so that I can **hand them out to class mentors**
-- As an **admin** I want to be able to **get a list of registered users per activity** so that I can **inform activity leaders**
-- As an **admin** I want to be able to **get a list of registered users per class** so that I can **inform class mentors**
+- As a **admin** I want to be able to **login with my username and password**
+- As a **logged in admin** I want to be able to **get a list of codes** so that I can **hand them out to class mentors**
+- As a **logged in admin** I want to be able to **get a list of registered users per activity** so that I can **inform activity leaders**
+- As a **logged in admin** I want to be able to **get a list of registered users per class** so that I can **inform class mentors**
+- As a **logged in admin** I want to be able to **regster new admins**
+- As a **logged in admin** I want to be able to **remove old admins**
+- As a **logged in admin** I want to be able to **change password and username**
 
 ## Other requirements
 

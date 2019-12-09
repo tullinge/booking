@@ -42,10 +42,12 @@ def students_login():
         student = sql_query(f"SELECT * FROM students WHERE password='{password}'")
 
         if not student:
-            return render_template("student/login.html", fail="Användaren existerar inte/fel lösenord.")
+            return render_template(
+                "student/login.html", fail="Användaren existerar inte/fel lösenord."
+            )
 
         # means user is authentication
-        session["id"] = student[0][0] # has to be changed perhaps
+        session["id"] = student[0][0]  # has to be changed perhaps
         session["logged_in"] = True
 
         # if come this far, we'll redirect to the /setup page
@@ -64,8 +66,6 @@ def setup():
 
         if not first_name or not last_name or not school_class:
             return render_template("student/setup.html", fail="Saknar variabler.")
-
-        
 
 
 @student_routes.route("/activities")

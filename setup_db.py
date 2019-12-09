@@ -86,5 +86,6 @@ def create_tabels():
     """
     )
 
+
 if __name__ == "__main__":
     create_tabels()

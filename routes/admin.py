@@ -29,7 +29,10 @@ def login():
             return render_template("admin/login.html", fail="För kort lösenord."), 400
 
         if letter_check(username) or letter_check(password):
-            return render_template("admin/login.html", fail="Icke tillåtna kaktärer."),400
+            return (
+                render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
+                400,
+            )
 
         # if validation has come this far, user should be authenticated
         return redirect(f"{BASEPATH}/")

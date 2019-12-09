@@ -11,7 +11,11 @@ def letter_check(input):
     """Returns False if input variable contains invalid characters, True otherwise"""
 
     # only ascii letters/digits and swedish letters are allowed
-    allowed_characters = list(string.ascii_letters) + list(string.digits) + ["å", "ä", "ö", "Å", "Ä", "Ö"]
+    allowed_characters = (
+        list(string.ascii_letters)
+        + list(string.digits)
+        + ["å", "ä", "ö", "Å", "Ä", "Ö"]
+    )
 
     if any(x not in allowed_characters for x in input):
         # means we've found something that is not allowed
@@ -19,6 +23,7 @@ def letter_check(input):
 
     # means it's all OK
     return True
+
 
 def hash_password(password):
     # Hash a password for storing

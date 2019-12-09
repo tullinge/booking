@@ -48,4 +48,4 @@ app.register_blueprint(admin_routes, url_prefix="/admin")
 app.register_blueprint(student_routes, url_prefix="/")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")

@@ -16,7 +16,7 @@ def main():
         file.write(str(finnished_code_list))
         print(finnished_code_list)
     else:
-        print("404 error")
+        print("1 error")
 
 
 def generate_uuid():

@@ -10,6 +10,12 @@ def create_tabels():
             id INT NOT NULL AUTO_INCREMENT,
             name VARCHAR(50) DEFAULT NULL,
             spaces VARCHAR(3) DEFAULT NULL,
+            info VARCHAR(511) DEFAULT NULL,
+            extra BOOLEAN DEFAULT FALSE,
+            yesorno BOOLEAN DEFAULT FALSE,
+            question VARCHAR(50) DEFAULT NULL,
+            answeryesorno BOOLEAN DEFAULT NULL,
+            answer VARCHAR(255) DEFAULT NULL,
             PRIMARY KEY (id)
         );
     """)

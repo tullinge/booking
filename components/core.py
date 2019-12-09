@@ -3,10 +3,10 @@
 
 import string
 
-allowed_characters = string.ascii_letters + string.digits + ["å", "ä", "ö", "Å", "Ä", "Ö"]
+def letter_check(input):
+    allowed_characters = string.ascii_letters + string.digits + ["å", "ä", "ö", "Å", "Ä", "Ö"]
 
-def contains_illegal_characters(variable):
-    if any(x not in allowed_characters for x in variable):
+    if any(x not in allowed_characters for x in input):
         return True
         
     return False

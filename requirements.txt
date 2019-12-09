@@ -2,3 +2,5 @@ flask
 pymysql
 Flask-Session
 Flask-SQLAlchemy
+cryptography
+redis

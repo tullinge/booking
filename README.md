@@ -2,30 +2,32 @@
 
 A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium.
 
-### Requirements
+## Requirements
 
 - Docker
 - Python 3
 - Python libraries (look in `requirements.txt`)
+- MySQL database (container can be started with docker-compose)
+- Redis instance (container can be started with docker-compose)
 
-### Database Configuration
+## Database Configuration
 
 This is how the db_config.py file is structured
 
-```
+```python
 DB_Server = '[Name of Server that is hosting DB]'
 DB_Name = '[Name of DB]'
 DB_Username = '[DB Username]'
 DB_Password = '[DB Password]'
 ```
 
-### Instructions
+## Instructions
 
 1. `docker-compose up` starts the database container
 2. `python setup_db.py` populates the database with tables etc
 3. `python app.py` starts the web app
 
-### User stories
+## User stories
 
 - As a **student** I want to be able to **login with my code**
 - As a **logged in student** I want to be able to **browse activities**
@@ -42,7 +44,7 @@ DB_Password = '[DB Password]'
 - As an **admin** I want to be able to **get a list of registered users per activity** so that I can **inform activity leaders**
 - As an **admin** I want to be able to **get a list of registered users per class** so that I can **inform class mentors**
 
-### Other requirements
+## Other requirements
 
 - There should be a limit of available spots per activity
 - Students who are registering for **bowling** should be able to select if they want food or not

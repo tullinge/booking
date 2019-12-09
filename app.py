@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 from flask import Flask, render_template
 from datetime import timedelta
 
@@ -7,6 +10,9 @@ from flask_session.__init__ import Session
 # import blueprints
 from routes.admin import admin_routes
 from routes.student import student_routes
+
+# redis
+import redis
 
 app = Flask(__name__)
 
@@ -29,7 +35,7 @@ def error_500(e):
 
 # session setup
 SESSION_TYPE = "redis"
-SESSION_REDIS = "127.0.0.1:6379"
+SESSION_REDIS = redis.Redis("127.0.0.1")
 
 SESSION_PERMANENT = True
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)

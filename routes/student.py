@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 from flask import Blueprint, render_template, redirect ,request
 
 # blueprint init
@@ -6,6 +9,11 @@ student_routes = Blueprint(
     __name__,
     template_folder="../templates"
 )
+
+@student_routes.route("/")
+# @login_required <-- should be decorator
+def index():
+    return render_template("student/index.html")
 
 @student_routes.route("/login", methods=["GET", "POST"])
 def students_login():

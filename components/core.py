@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 import string
 
 allowed_characters = string.printable + ["å", "ä", "ö", "Å", "Ä", "Ö"]

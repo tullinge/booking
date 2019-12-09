@@ -33,3 +33,8 @@ def setup():
 # @login_required <-- should be decorator
 def activities():
     return render_template("student/activities.html")
+
+@student_routes.route("/confirmation")
+# @login_required <-- should be decorator
+def confirmation():
+    return render_template("student/confirmation.html")

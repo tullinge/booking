@@ -1,5 +1,9 @@
 # Booking
 
+[![Build Status](https://travis-ci.org/tullinge/booking.svg?branch=master)](https://travis-ci.org/tullinge/booking)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/context:python)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/alerts/)
+
 A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium.
 
 ## Requirements
@@ -12,13 +16,13 @@ A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium
 
 ## Database Configuration
 
-This is how the db_config.py file is structured
+This is how the db_config.py file is structured.
 
 ```python
-DB_Server = '[Name of Server that is hosting DB]'
-DB_Name = '[Name of DB]'
-DB_Username = '[DB Username]'
-DB_Password = '[DB Password]'
+DB_Server = '[hostname]'
+DB_Name = '[name of database]'
+DB_Username = '[username with access to database]'
+DB_Password = '[password for user]'
 ```
 
 ## Instructions

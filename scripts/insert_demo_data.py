@@ -26,7 +26,7 @@ def add_school_classes():
         """
     )
 
-def activities():
+def add_activities():
     sql_query(
         """
             INSERT INTO `activities` (`id`, `name`, `spaces`) 
@@ -39,4 +39,4 @@ def activities():
 
 add_students()
 add_school_classes()
-add_activitis()
+add_activities()

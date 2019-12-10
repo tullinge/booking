@@ -163,7 +163,13 @@ def selected_activity(id):
             400,
         )
 
-    return render_template("student/activity.html", activity=activity[0], fullname=session.get("fullname"), school_class=session.get("school_class"))
+    return render_template(
+        "student/activity.html",
+        activity=activity[0],
+        fullname=session.get("fullname"),
+        school_class=session.get("school_class"),
+    )
+
 
 @student_routes.route("/confirmation")
 @login_required

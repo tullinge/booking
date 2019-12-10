@@ -91,7 +91,7 @@ def create_tabels():
         """
         CREATE TABLE school_classes (
             id INT NOT NULL AUTO_INCREMENT,
-            class_name VARCHAR(6),
+            class_name VARCHAR(10) NOT NULL UNIQUE,
             PRIMARY KEY (id)
         );
     """

@@ -11,3 +11,4 @@ if __name__ == "__main__":
     sql_query("DROP TABLE answers")
     sql_query("DROP TABLE admins")
     sql_query("DROP TABLE students")
+    sql_query("DROP TABLE school_classes")

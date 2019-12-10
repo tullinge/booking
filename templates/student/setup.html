@@ -29,31 +29,9 @@
         <div class="form-group">
             <label for="class">Klass</label>
             <select class="form-control" id="class" name="class">
-                <option>BET</option>
-                <option>EK17A</option>
-                <option>EK17B</option>
-                <option>EK18A</option>
-                <option>EK18B</option>
-                <option>EK19A</option>
-                <option>EK19B</option>
-                <option>NA17A</option>
-                <option>NA17B</option>
-                <option>NA18A</option>
-                <option>NA18B</option>
-                <option>NA19A</option>
-                <option>NA19B</option>
-                <option>SA17A</option>
-                <option>SA17B</option>
-                <option>SA18A</option>
-                <option>SA18B</option>
-                <option>SA19A</option>
-                <option>SA19B</option>
-                <option>TE17</option>
-                <option>TE18</option>
-                <option>TE19</option>
-                <option>VO17</option>
-                <option>VO18</option>
-                <option>VO19</option>
+                {% for school_class in school_classes %}
+                <option value="{{ school_class }}">{{ school_class }}</option>
+                {% endif %}
             </select>
         </div>
 

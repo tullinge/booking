@@ -86,6 +86,16 @@ def create_tabels():
     """
     )
 
+    # school_classes
+    sql_query(
+        """
+        CREATE TABLE school_classes (
+            id INT NOT NULL AUTO_INCREMENT,
+            class_name VARCHAR(6),
+            PRIMARY KEY (id)
+        );
+    """
+    )
 
 if __name__ == "__main__":
     create_tabels()

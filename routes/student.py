@@ -57,15 +57,17 @@ def students_login():
 @student_routes.route("/setup", methods=["POST", "GET"])
 @login_required
 def setup():
+    school_classes = sql_query("SELECT * FROM school_classes")
+
     if request.method == "GET":
-        return render_template("student/setup.html")
+        return render_template("student/setup.html", school_classes=school_classes)
     elif request.method == "POST":
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
         school_class = request.form["class"]
 
         if not first_name or not last_name or not school_class:
-            return render_template("student/setup.html", fail="Saknar variabler.")
+            return render_template("student/setup.html", school_classes=school_classes, fail="Saknar variabler.")
 
 
 @student_routes.route("/activities")

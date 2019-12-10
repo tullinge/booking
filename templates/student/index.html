@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block body %}
-    <h1>Startsida</h1>
+    <h1>Tullinge Booking</h1>
+    <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+
+    <a href="/logout">
+        <button class="btn btn-primary">Logga ut</button>
+    </a>
+
+    <h2>Tillgängliga aktiviteter</h2>
+    <div class="list-group">
+        {% for activity in activities %}
+        <a href="/activity/{{ activity[0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ activity[1] }}</h5>
+            <small>0 lediga platser</small>
+            </div>
+            <p class="mb-1">{{ activity[3] }}</p>
+            <small>Totalt antal platser: {{ activity[2] }}</small>
+        </a>
+        {% endfor %}
+
 {% endblock %}

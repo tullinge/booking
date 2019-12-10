@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block body %}
+    <h1>Tullinge Booking - {{ activity[1] }}</h1>
+    <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+
+    <a href="/">
+        <button class="btn btn-primary">Tillbaka till startsidan</button>
+    </a>
+
+    <div>
+        <p>{{ activity[3] }}</p>
+        <p>Totalt antal platser: {{ activity[2] }}</p>
+    </div>
+
+{% endblock %}

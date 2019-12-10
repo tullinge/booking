@@ -4,6 +4,7 @@ sys.path.append("../")
 
 from components.db import sql_query
 
+
 def add_students():
     sql_query(
         """
@@ -15,27 +16,30 @@ def add_students():
         """
     )
 
+
 def add_school_classes():
     sql_query(
         """
             INSERT INTO `school_classes` (`id`, `class_name`) 
                 VALUES
-                    (1, "BET"),
-                    (2, "EK17A")
+                    (1, "DEV1"),
+                    (2, "DEV2")
             ;
         """
     )
 
+
 def add_activities():
     sql_query(
         """
-            INSERT INTO `activities` (`id`, `name`, `spaces`) 
+            INSERT INTO `activities` (`id`, `name`, `spaces`, `info`) 
                 VALUES
-                    (1, "Test", 1),
-                    (2, "Test2", 2)
+                    (1, "Demo Activity", 30, "This is a demo activity, added for testing purposes."),
+                    (2, "Demo Activity 2", 20, "And this is another one.")
             ;
         """
     )
+
 
 add_students()
 add_school_classes()

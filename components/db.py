@@ -12,6 +12,11 @@ def create_conn():
 
 
 def sql_query(query):
+    """
+    Performs specified SQL query in database. Returns result from cursor.fetchall(), usually tuple
+    If searching for a specific object, note that object will be wrapped in outside tuple
+    """
+
     conn = create_conn()
 
     try:

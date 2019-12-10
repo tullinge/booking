@@ -2,7 +2,7 @@
 # https://github.com/tullinge/booking
 
 from flask import Blueprint, render_template, request, redirect
-from components.core import letter_check
+from components.core import is_valid_input
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -28,7 +28,7 @@ def login():
         if len(password) <= 4:
             return render_template("admin/login.html", fail="För kort lösenord."), 400
 
-        if letter_check(username) or letter_check(password):
+        if not is_valid_input(username) or not is_valid_input(password):
             return (
                 render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
                 400,

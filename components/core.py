@@ -7,7 +7,7 @@ import binascii
 import os
 
 
-def letter_check(input):
+def is_valid_input(input):
     """Returns False if input variable contains invalid characters, True otherwise"""
 
     # only ascii letters/digits and swedish letters are allowed
@@ -22,6 +22,15 @@ def letter_check(input):
         return False
 
     # means it's all OK
+    return True
+
+
+def is_integer(variable):
+    try:
+        int(variable)
+    except Exception:
+        return False
+
     return True
 
 

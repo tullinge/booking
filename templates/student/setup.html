@@ -2,6 +2,7 @@
 {% block title %} - Konfigurera användare{% endblock %}
 {% block body %}
     <h1>Konfigurera användare</h1>
+    <p>På denna sida anger du namn och klass.</p>
 
     {% if fail %}
     <div class="alert alert-danger" role="alert">
@@ -30,11 +31,15 @@
             <label for="class">Klass</label>
             <select class="form-control" id="class" name="class">
                 {% for school_class in school_classes %}
-                <option value="{{ school_class }}">{{ school_class }}</option>
+                <option value="{{ school_class[1] }}">{{ school_class[1] }}</option>
                 {% endfor %}
             </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Uppdatera profil</button>
     </form>
+
+    <a href="/logout">
+        <button class="btn btn-primary">Logga ut</button>
+    </a>
 {% endblock %}

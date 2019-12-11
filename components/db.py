@@ -1,13 +1,19 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+from os import environ
 import pymysql
-from db_config import DB_Name, DB_Password, DB_Server, DB_Username
 
 
 def create_conn():
+    """
+    Creates a connection from environment variables (or developer defaults if missing)
+    """
     return pymysql.connect(
-        host=DB_Server, user=DB_Username, password=DB_Password, db=DB_Name,
+        host=environ.get("MYSQL_HOST", "localhost"),
+        user=environ.get("MYSQL_USER", "admin"),
+        password=environ.get("MYSQL_PASSWORD", "do-not-use-in-production"),
+        db=environ.get("MYSQL_DATABASE", "booking"),
     )
 
 

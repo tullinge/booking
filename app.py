@@ -1,6 +1,7 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+from os import environ
 from flask import Flask, render_template
 from datetime import timedelta
 
@@ -39,7 +40,7 @@ def error_500(e):
 
 # session setup
 SESSION_TYPE = "redis"
-SESSION_REDIS = redis.Redis("127.0.0.1")
+SESSION_REDIS = redis.Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)
 
 SESSION_PERMANENT = True
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)

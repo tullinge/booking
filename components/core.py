@@ -9,7 +9,7 @@ import os
 from components.db import sql_query
 
 
-def is_valid_input(input):
+def is_valid_input(input, allow_space=False, allow_punctuation=False):
     """Returns False if input variable contains invalid characters, True otherwise"""
 
     # only ascii letters/digits and swedish letters are allowed
@@ -18,6 +18,12 @@ def is_valid_input(input):
         + list(string.digits)
         + ["å", "ä", "ö", "Å", "Ä", "Ö"]
     )
+
+    if allow_space:
+        allowed_characters.append(" ")
+
+    if allow_punctuation:
+        allowed_characters.extend([".", ",", ":"])
 
     if any(x not in allowed_characters for x in input):
         # means we've found something that is not allowed

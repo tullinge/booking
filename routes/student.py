@@ -162,7 +162,7 @@ def selected_activity(id):
     if not activity:
         return (
             render_template(
-                "errors/custom.html", title="400", message="Activity is not integer."
+                "errors/custom.html", title="400", message="Activity dose not exist."
             ),
             400,
         )
@@ -191,14 +191,100 @@ def selected_activity(id):
         )
 
     if request.method == "POST":
-        # perform validation, submit data etc.
-        return "work in progress"
+        for k, v in request.form.items():
+            if not v:
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Saknar data.",
+                    ),
+                    400,
+                )
+
+            if not is_integer(k):
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Felaktigt skickad data.",
+                    ),
+                    400,
+                )
+
+            if not is_valid_input(
+                k, allow_space=True, allow_punctuation=True
+            ) or not is_valid_input(v, allow_space=True, allow_punctuation=True):
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Innehåller ogiltiga tecken.",
+                    ),
+                    400,
+                )
+
+        # check if it still has available_spaces
+        if calculate_available_spaces(id) < 1:
+            return (
+                render_template(
+                    "student/activity.html",
+                    activity=activity[0],
+                    fullname=session.get("fullname"),
+                    school_class=session.get("school_class"),
+                    questions=questions,
+                    available_spaces=calculate_available_spaces(id),
+                    fail="Denna aktivitet har inga lediga platser.",
+                ),
+                400,
+            )
+
+        # validation completed
+        for question_id, answer in request.form.items():
+            # check if question is of type written or not
+            question = sql_query(f"SELECT * FROM questions WHERE id={question_id}")[0]
+
+            if question[3]:
+                # written answers
+                sql_query(
+                    f"""
+                        INSERT INTO `answers` (`student_id`, `question_id`, `written_answer`)
+                            VALUES (`{session.get("fullname")}`, `{int(question_id)}`, `{answer}`)
+                        ;
+                    """
+                )
+            else:
+                # option
+                sql_query(
+                    f"""
+                        INSERT INTO `answers` (`student_id`, `question_id`, `option_id`)
+                            VALUES (`{session.get("fullname")}`, `{int(question_id)}`, `{int(answer)}`)
+                        ;
+                    """
+                )
+
+            return redirect("/")
 
 
 @student_routes.route("/confirmation")
 @login_required
 @user_setup_completed
 def confirmation():
+    student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
+    activity = sql_query(f"SELECT name FROM activities WHERE id={student[0][0]}")
+
     return render_template(
         "student/confirmation.html",
         fullname=session.get("fullname"),

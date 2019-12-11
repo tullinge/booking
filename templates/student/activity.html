@@ -8,6 +8,18 @@
         <button class="btn btn-primary">Tillbaka till startsidan</button>
     </a>
 
+    {% if fail %}
+    <div class="alert alert-danger" role="alert">
+        <p>{{ fail }}</p>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        <p>{{ success }}</p>
+    </div>
+    {% endif %}
+
     <div>
         <p>{{ activity[3] }}</p>
 
@@ -15,7 +27,7 @@
         <p>Lediga platser: {{ available_spaces }}</p>
     </div>
 
-    <h2>Frågor för denna aktivitet</h2>
+    {% if questions %}<h2>Frågor för denna aktivitet</h2>{% endif %}
 
     <div>
         <form action="/activity/{{ activity[0] }}", method="post">

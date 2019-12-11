@@ -5,7 +5,7 @@
 from flask import Blueprint, render_template, redirect, request, session
 
 # components import
-from components.core import is_valid_input, is_integer
+from components.core import is_valid_input, is_integer, calculate_available_spaces
 from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
 
@@ -17,7 +17,11 @@ student_routes = Blueprint("student_routes", __name__, template_folder="../templ
 @login_required
 @user_setup_completed
 def index():
-    activities = sql_query("SELECT * FROM activities")
+    query = sql_query("SELECT * FROM activities")
+
+    activities = []
+    for activity in query:
+        activities.append((activity, calculate_available_spaces(activity[0])))
 
     return render_template(
         "student/index.html",
@@ -141,40 +145,10 @@ def setup():
         return redirect("/")
 
 
-@student_routes.route("/activity/<id>")
+@student_routes.route("/activity/<id>", methods=["POST", "GET"])
 @login_required
 @user_setup_completed
 def selected_activity(id):
-    if not is_integer(id):
-        return (
-            render_template(
-                "errors/custom.html", title="400", message="ID is not integer."
-            ),
-            400,
-        )
-
-    activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
-
-    if not activity:
-        return (
-            render_template(
-                "errors/custom.html", title="400", message="Activity is not integer."
-            ),
-            400,
-        )
-
-    return render_template(
-        "student/activity.html",
-        activity=activity[0],
-        fullname=session.get("fullname"),
-        school_class=session.get("school_class"),
-    )
-
-
-@student_routes.route("/confirmation/<id>", methods=["POST", "GET"])
-@login_required
-@user_setup_completed
-def confirmation(id):
     if not is_integer(id):
         return (
             render_template(
@@ -206,15 +180,27 @@ def confirmation(id):
 
             questions.append([question, options])
 
-    if request.method == "POST":
-        # validate data, insert etc...
-        return "work in progress"
-
     if request.method == "GET":
         return render_template(
-            "student/confirmation.html",
+            "student/activity.html",
             activity=activity[0],
             fullname=session.get("fullname"),
             school_class=session.get("school_class"),
             questions=questions,
+            available_spaces=calculate_available_spaces(id),
         )
+
+    if request.method == "POST":
+        # perform validation, submit data etc.
+        return "work in progress"
+
+
+@student_routes.route("/confirmation")
+@login_required
+@user_setup_completed
+def confirmation():
+    return render_template(
+        "student/confirmation.html",
+        fullname=session.get("fullname"),
+        school_class=session.get("school_class"),
+    )

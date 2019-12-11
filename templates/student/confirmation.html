@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} - Bekräfta bokning{% endblock %}
+{% block title %} - Bokning bekräftad{% endblock %}
 {% block body %}
     {% if fail %}
     <div class="alert alert-danger" role="alert">
@@ -13,32 +13,9 @@
     </div>
     {% endif %}
 
-    <h1>Tullinge Booking - Bekräfta bokning</h1>
+    <h1>Tullinge Booking - Bokning bekräftad</h1>
     <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
 
-    <div>
-        <form action="/confirmation/{{ activity[0] }}", method="post">
-            {% for question in questions %}
-            {% if question[0][3] %}
-                <!-- written question -->
-                <div class="form-group">
-                    <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                    <input name="{{ question[0][0] }}" type="text" class="form-control" id="{{ question[0][0] }}" />
-                </div>
-            {% else %}
-                <!-- question with options -->
-                <div class="form-group">
-                    <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                    <select class="form-control" id="{{ question[0][0] }}" name="{{ question[0][0] }}">
-                        {% for option in question[1] %}
-                        <option value="{{ option[0] }}">{{ option[2] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            {% endif %}
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+
 
 {% endblock %}

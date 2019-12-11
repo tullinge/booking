@@ -11,13 +11,13 @@
     <h2>Tillgängliga aktiviteter</h2>
     <div class="list-group">
         {% for activity in activities %}
-        <a href="/activity/{{ activity[0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
+        <a href="/activity/{{ activity[0][0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ activity[1] }}</h5>
-            <small>0 lediga platser</small>
+            <h5 class="mb-1">{{ activity[0][1] }}</h5>
+            <small>{{ activity[1] }} lediga platser</small>
             </div>
-            <p class="mb-1">{{ activity[3] }}</p>
-            <small>Totalt antal platser: {{ activity[2] }}</small>
+            <p class="mb-1">{{ activity[0][3] }}</p>
+            <small>Totalt antal platser: {{ activity[0][2] }}</small>
         </a>
         {% endfor %}
 

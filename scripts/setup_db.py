@@ -51,6 +51,7 @@ def create_tabels():
         """
         CREATE TABLE answers (
             id INT NOT NULL AUTO_INCREMENT,
+            student_id INT NOT NULL,
             question_id INT NOT NULL,
             option_id INT DEFAULT NULL,
             written_answer VARCHAR(255) DEFAULT NULL,

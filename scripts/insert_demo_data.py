@@ -10,10 +10,10 @@ from components.db import sql_query
 def add_students():
     sql_query(
         """
-            INSERT INTO `students` (`id`, `password`) 
+            INSERT INTO `students` (`password`)
                 VALUES
-                    (1, "DEVBEAR1"),
-                    (2, "DevBear2")
+                    ("DEVBEAR1"),
+                    ("DevBear2")
             ;
         """
     )
@@ -22,10 +22,10 @@ def add_students():
 def add_school_classes():
     sql_query(
         """
-            INSERT INTO `school_classes` (`id`, `class_name`) 
+            INSERT INTO `school_classes` (`class_name`)
                 VALUES
-                    (1, "DEV1"),
-                    (2, "DEV2")
+                    ("DEV1"),
+                    ("DEV2")
             ;
         """
     )
@@ -34,10 +34,32 @@ def add_school_classes():
 def add_activities():
     sql_query(
         """
-            INSERT INTO `activities` (`id`, `name`, `spaces`, `info`) 
+            INSERT INTO `activities` (`name`, `spaces`, `info`)
                 VALUES
-                    (1, "Demo Activity", 30, "This is a demo activity, added for testing purposes."),
-                    (2, "Demo Activity 2", 20, "And this is another one.")
+                    ("Demo Activity", 30, "This is a demo activity, added for testing purposes."),
+                    ("Demo Activity 2", 20, "And this is another one.")
+            ;
+        """
+    )
+
+
+def add_questions_options():
+    sql_query(
+        """
+            INSERT INTO `questions` (`activity_id`, `question`, `written_answer`)
+            VALUES
+                (1, "Are you ready?", 0),
+                (1, "Written answer question", 1)
+            ;
+        """
+    )
+
+    sql_query(
+        """
+            INSERT INTO `options` (`question_id`, `text`)
+            VALUES
+                (1, "Yes!"),
+                (1, "No!")
             ;
         """
     )
@@ -46,3 +68,4 @@ def add_activities():
 add_students()
 add_school_classes()
 add_activities()
+add_questions_options()

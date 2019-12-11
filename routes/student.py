@@ -171,15 +171,50 @@ def selected_activity(id):
     )
 
 
-@student_routes.route("/confirmation")
+@student_routes.route("/confirmation/<id>", methods=["POST", "GET"])
 @login_required
 @user_setup_completed
-def confirmation():
+def confirmation(id):
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="ID is not integer."
+            ),
+            400,
+        )
+
     activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
 
-    return render_template(
-        "student/confirmation.html",
-        activity=activity[0],
-        fullname=session.get("fullname"),
-        school_class=session.get("school_class"),
-    )
+    if not activity:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Activity is not integer."
+            ),
+            400,
+        )
+
+    # check if activity has questions
+    query = sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
+    questions = []
+
+    if query:
+        # loops query to add each options for questions into list
+        for question in query:
+            options = sql_query(
+                f"SELECT * FROM options WHERE question_id={question[0]}"
+            )
+
+            questions.append([question, options])
+
+    if request.method == "POST":
+        # validate data, insert etc...
+        return "work in progress"
+
+    if request.method == "GET":
+        return render_template(
+            "student/confirmation.html",
+            activity=activity[0],
+            fullname=session.get("fullname"),
+            school_class=session.get("school_class"),
+            questions=questions,
+        )

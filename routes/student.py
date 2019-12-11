@@ -32,7 +32,7 @@ def students_login():
     if request.method == "GET":
         return render_template("student/login.html")
     else:
-        password = request.form["password"].upper()
+        password = request.form["password"]
 
         if not password:
             return render_template("student/login.html", fail="Saknar lösenord."), 400
@@ -175,4 +175,11 @@ def selected_activity(id):
 @login_required
 @user_setup_completed
 def confirmation():
-    return render_template("student/confirmation.html")
+    activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
+
+    return render_template(
+        "student/confirmation.html",
+        activity=activity[0],
+        fullname=session.get("fullname"),
+        school_class=session.get("school_class"),
+    )

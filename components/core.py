@@ -6,7 +6,6 @@ import hashlib
 import binascii
 import os
 
-
 def is_valid_input(input):
     """Returns False if input variable contains invalid characters, True otherwise"""
 

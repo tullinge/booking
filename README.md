@@ -28,8 +28,9 @@ DB_Password = '[password for user]'
 ## Instructions
 
 1. `docker-compose up` starts the database container
-2. `python setup_db.py` populates the database with tables etc
-3. `python app.py` starts the web app
+2. `python scripts/setup_db.py` creates the database structure
+3. `python scripts/insert_demo_data.py` seeds the database with demo data
+4. `python app.py` starts the web app
 
 ## User stories
 

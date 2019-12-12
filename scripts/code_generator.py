@@ -1,33 +1,37 @@
-import random as r
+#to run from right path
+import sys
+from pathlib import Path
+
+# Add parent folder
+sys.path.append(str(Path(__file__).parent.parent.absolute()))
+
+import random as random
+from components.db import sql_query
 
 temporary_code_list = []
 finnished_code_list = ["BEAR", "MINK", "SEAL", "KOKO", "GRIS", "HARE", "JOEY"]
 
 
-def main():
-    x = int(input("Hur många koder vill du ha?\n"))
-    if x < 36 ** 4:
-        for i in range(x - 7):
+def main(amount_of_codes):
+    if amount_of_codes < 36 ** 8:
+        for i in range(amount_of_codes - 7):
             temporary_code_list.append(generate_uuid())
         for code in temporary_code_list:
             if not code in finnished_code_list:
                 finnished_code_list.append(code)
-        file = open("finnished_codes.txt", "w")
-        file.write(str(finnished_code_list))
-        print(finnished_code_list)
-    else:
-        print("1 error")
-
+                sql_query(f"INSERT INTO `students` (`password`) VALUES ({code});")
 
 def generate_uuid():
     random_string = ""
     random_str_seq = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    uuid_format = [4]
+    uuid_format = [8]
     for n in uuid_format:
         for i in range(0, n):
-            random_string += str(random_str_seq[r.randint(0, len(random_str_seq) - 1)])
+            random_string += str(
+                random_str_seq[random.randint(0, len(random_str_seq) - 1)]
+            )
     return random_string
 
 
-if __name__ == "__main__":
-    main()
+main(30)
+print(sql_query("SELECT * FROM student"))

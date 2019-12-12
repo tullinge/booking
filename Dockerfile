@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y netcat
 COPY . /app
 WORKDIR /app
 
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN chmod u+x ./entrypoint.sh
 

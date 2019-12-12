@@ -36,13 +36,13 @@
                 <!-- written question -->
                 <div class="form-group">
                     <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                    <input name="{{ question[0][0] }}" type="text" class="form-control" id="{{ question[0][0] }}" />
+                    <input required name="{{ question[0][0] }}" type="text" class="form-control" id="{{ question[0][0] }}" />
                 </div>
             {% else %}
                 <!-- question with options -->
                 <div class="form-group">
                     <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                    <select class="form-control" id="{{ question[0][0] }}" name="{{ question[0][0] }}">
+                    <select required class="form-control" id="{{ question[0][0] }}" name="{{ question[0][0] }}">
                         {% for option in question[1] %}
                         <option value="{{ option[0] }}">{{ option[2] }}</option>
                         {% endfor %}

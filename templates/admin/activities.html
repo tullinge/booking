@@ -1,5 +1,21 @@
 {% extends "base.html" %}
 {% block title %} - Aktiviteter{% endblock %}
 {% block body %}
-    <h1>Aktiviteter<h1>
+{% include "admin/navbar.html" %}
+    <h1>Aktiviteter</h1>
+
+    <p>Tryck på en aktivitet för att få mer information samt möjlighet att redigera/ta bort.</p>
+
+    <div class="list-group">
+        {% for activity in activities %}
+        <a href="/admin/activity/{{ activity[0][0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ activity[0][1] }}</h5>
+            <small>{{ activity[1] }} lediga platser</small>
+            </div>
+            <p class="mb-1">{{ activity[0][3] }}</p>
+            <small>Totalt antal platser: {{ activity[0][2] }}</small>
+        </a>
+        {% endfor %}
+    </div>
 {% endblock %}

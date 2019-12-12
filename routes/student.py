@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, redirect, request, session
 from components.core import is_valid_input, is_integer, calculate_available_spaces
 from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
+from components.student import student_chosen_activity
 
 # blueprint init
 student_routes = Blueprint("student_routes", __name__, template_folder="../templates")
@@ -17,6 +18,7 @@ student_routes = Blueprint("student_routes", __name__, template_folder="../templ
 @login_required
 @user_setup_completed
 def index():
+    chosen_activity = student_chosen_activity()
     query = sql_query("SELECT * FROM activities")
 
     activities = []
@@ -28,6 +30,7 @@ def index():
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
         activities=activities,
+        chosen_activity=chosen_activity[1],
     )
 
 
@@ -294,15 +297,11 @@ def selected_activity(id):
 @login_required
 @user_setup_completed
 def confirmation():
-    student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
-
-    activity = None
-    if student[0][5]:
-        activity = sql_query(f"SELECT name FROM activities WHERE id={student[0][5]}")
+    activity = student_chosen_activity()
 
     return render_template(
         "student/confirmation.html",
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
-        activity=activity,
+        activity=activity[1],
     )

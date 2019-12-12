@@ -4,6 +4,8 @@
     <h1>Tullinge Booking</h1>
     <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
 
+    <p>Din bokning för aktivitet {{ chosen_activity[0][0] }} är bekräftad.</p>
+
     <a href="/logout">
         <button class="btn btn-primary">Logga ut</button>
     </a>
@@ -20,5 +22,6 @@
             <small>Totalt antal platser: {{ activity[0][2] }}</small>
         </a>
         {% endfor %}
+    </div>
 
 {% endblock %}

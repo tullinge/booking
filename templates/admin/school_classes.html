@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} - Klasser{% endblock %}
+{% block body %}
+{% include "admin/navbar.html" %}
+    <h1>Klasser</h1>
+
+    <ul class="list-group">
+        {% for class in school_classes %}
+        <li class="list-group-item">{{ class[1] }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

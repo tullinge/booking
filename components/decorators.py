@@ -19,6 +19,18 @@ def login_required(f):
     return decorated_function
 
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # check if user is logged in
+        if not session.get("admin_logged_in"):
+            return redirect("/admin/login")
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 def user_setup_completed(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

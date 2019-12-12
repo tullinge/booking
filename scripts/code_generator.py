@@ -1,4 +1,4 @@
-#to run from right path
+# to run from right path
 import sys
 from pathlib import Path
 
@@ -20,6 +20,7 @@ def main(amount_of_codes):
             if not code in finnished_code_list:
                 finnished_code_list.append(code)
                 sql_query(f"INSERT INTO `students` (`password`) VALUES ({code});")
+
 
 def generate_uuid():
     random_string = ""

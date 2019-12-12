@@ -1,21 +1,11 @@
 {% extends "base.html" %}
 {% block title %} - Bokning bekräftad{% endblock %}
 {% block body %}
-    {% if fail %}
-    <div class="alert alert-danger" role="alert">
-        <p>{{ fail }}</p>
-    </div>
-    {% endif %}
-
-    {% if success %}
-    <div class="alert alert-success" role="alert">
-        <p>{{ success }}</p>
-    </div>
-    {% endif %}
-
     <h1>Tullinge Booking - Bokning bekräftad</h1>
-    <p>Inloggad som {{ fullname }}, klass {{ school_class }}, aktivitet {{ choosen_activity }}.</p>
+    <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+    <p>Din bokning för aktivitet {{ activity[0][0] }} är bekräftad.</p>
 
-
-
+    <a href="/">
+        <button class="btn btn-primary">Tillbaka till startsidan</button>
+    </a>
 {% endblock %}

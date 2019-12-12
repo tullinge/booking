@@ -251,6 +251,9 @@ def selected_activity(id):
                 400,
             )
 
+        # delete any previous answers this user has submitted
+        sql_query(f"DELETE FROM answers WHERE student_id={session.get('id')}")
+
         # validation completed
         for question_id, answer in request.form.items():
             # check if question is of type written or not
@@ -261,7 +264,7 @@ def selected_activity(id):
                 sql_query(
                     f"""
                         INSERT INTO `answers` (`student_id`, `question_id`, `written_answer`)
-                            VALUES (`{session.get("fullname")}`, `{int(question_id)}`, `{answer}`)
+                            VALUES ({session.get("id")}, {question_id}, '{str(answer)}')
                         ;
                     """
                 )
@@ -270,12 +273,21 @@ def selected_activity(id):
                 sql_query(
                     f"""
                         INSERT INTO `answers` (`student_id`, `question_id`, `option_id`)
-                            VALUES (`{session.get("fullname")}`, `{int(question_id)}`, `{int(answer)}`)
+                            VALUES ({session.get("id")}, {question_id}, {answer})
                         ;
                     """
                 )
 
-            return redirect("/")
+        # set chosen_activity
+        sql_query(
+            f"""
+                UPDATE students
+                SET chosen_activity={int(id)}
+                WHERE id={session.get("id")}
+            """
+        )
+
+        return redirect("/confirmation")
 
 
 @student_routes.route("/confirmation")
@@ -283,10 +295,14 @@ def selected_activity(id):
 @user_setup_completed
 def confirmation():
     student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
-    activity = sql_query(f"SELECT name FROM activities WHERE id={student[0][0]}")
+
+    activity = None
+    if student[0][5]:
+        activity = sql_query(f"SELECT name FROM activities WHERE id={student[0][5]}")
 
     return render_template(
         "student/confirmation.html",
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
+        activity=activity,
     )

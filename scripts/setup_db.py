@@ -84,7 +84,7 @@ def create_tabels():
             last_name VARCHAR(50) DEFAULT NULL,
             first_name VARCHAR(50) DEFAULT NULL,
             class VARCHAR(10) DEFAULT NULL,
-            choosen_activity INT DEFAULT NULL,
+            chosen_activity INT DEFAULT NULL,
             PRIMARY KEY (id)
         );
     """

@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 #to run from right path
 import sys
 from pathlib import Path

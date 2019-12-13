@@ -6,7 +6,11 @@
 
     <ul class="list-group">
         {% for class in school_classes %}
-        <li class="list-group-item">{{ class[1] }}</li>
+        <li class="list-group-item">
+            <span>{{ class[1] }}</span>
+            <a href="#"><button type="button" class="btn btn-primary">Redigera</button></a>
+            <a href="#"><button type="button" class="btn btn-primary">Radera</button></a>
+        </li>
         {% endfor %}
     </ul>
 {% endblock %}

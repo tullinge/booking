@@ -3,4 +3,12 @@
 {% block body %}
 {% include "admin/navbar.html" %}
     <h1>Elever</h1>
+
+    <form action="/admin/students", method="post">
+        <div class="form-group">
+            <label for="amount_of_codes">Hur många koder vill du ha?</label>
+            <input name="amount_of_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
+        </div>
+        <button type="submit" class="btn btn-primary">Skicka</button>
+    </form>
 {% endblock %}

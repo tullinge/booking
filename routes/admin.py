@@ -153,9 +153,20 @@ def admin_users():
 
 
 # ------ add/remove students ------
-@admin_routes.route("/students")
+@admin_routes.route("/students", methods=["GET", "POST"])
 @admin_required
 def students():
+    if request.method == "GET":
+        return render_template("admin/login.html")
+    elif request.method == "POST":
+        amount_of_codes = request.form["amount_of_codes"]
+
+        # perform validation
+        if len(amount_of_codes) > 13 :
+            return (
+                render_template("admin/students.html", fail="För stort antal."),
+                400,
+            )
     return render_template("admin/students.html")
 
 

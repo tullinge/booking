@@ -33,7 +33,7 @@ def index():
         chosen_activity=chosen_activity[1],
     )
 
-
+# ------ login ------
 @student_routes.route("/login", methods=["GET", "POST"])
 def students_login():
     if request.method == "GET":
@@ -82,7 +82,7 @@ def students_login():
         # if come this far, we'll redirect to the /setup page
         return redirect("/setup")
 
-
+# ------ logout ------
 @student_routes.route("/logout")
 @login_required
 def logout():
@@ -91,7 +91,7 @@ def logout():
 
     return redirect("/login")
 
-
+# ------ setup ------
 @student_routes.route("/setup", methods=["POST", "GET"])
 @login_required
 @user_not_setup
@@ -147,7 +147,7 @@ def setup():
         # redirect to index
         return redirect("/")
 
-
+# ------ selected activity ------
 @student_routes.route("/activity/<id>", methods=["POST", "GET"])
 @login_required
 @user_setup_completed
@@ -292,7 +292,7 @@ def selected_activity(id):
 
         return redirect("/confirmation")
 
-
+# ------ confirmation  ------
 @student_routes.route("/confirmation")
 @login_required
 @user_setup_completed

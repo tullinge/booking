@@ -18,7 +18,7 @@ admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates
 
 BASEPATH = "/admin"
 
-
+# ------ login ------
 @admin_routes.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -78,14 +78,14 @@ def logout():
     return redirect(f"{BASEPATH}/login")
 
 
-# index
+# ------ index ------
 @admin_routes.route("/")
 @admin_required
 def index():
     return render_template("admin/index.html")
 
 
-# activities
+# ------ activities ------
 @admin_routes.route("/activities")
 @admin_required
 def activities():
@@ -98,7 +98,7 @@ def activities():
     return render_template("admin/activities.html", activities=activities)
 
 
-# selected activity
+# ------ selected activity ------
 @admin_routes.route("/activity/<id>", methods=["POST", "GET"])
 @admin_required
 def selected_activity(id):
@@ -145,21 +145,21 @@ def selected_activity(id):
         return "work in progress"
 
 
-# add/remove admin users
+# ------ add/remove admin users ------
 @admin_routes.route("/users")
 @admin_required
 def admin_users():
     return render_template("admin/users.html")
 
 
-# add/remove students
+# ------ add/remove students ------
 @admin_routes.route("/students")
 @admin_required
 def students():
     return render_template("admin/students.html")
 
 
-# add/remove school classes
+# ------ add/remove school classes ------
 @admin_routes.route("/classes")
 @admin_required
 def school_classes():

@@ -152,11 +152,12 @@ def admin_users():
     return render_template("admin/users.html")
 
 
-# create passwords for 
-@admin_routes.route("/student_control")
+# add/remove students
+@admin_routes.route("/students")
 @admin_required
-def student_control():
-    return render_template("admin/student_control.html")
+def students():
+    return render_template("admin/students.html")
+
 
 # add/remove school classes
 @admin_routes.route("/classes")

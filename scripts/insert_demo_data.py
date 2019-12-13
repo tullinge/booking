@@ -11,6 +11,7 @@ from components.db import sql_query
 
 # To add info to most databases for development purposes
 
+
 def add_students():
     sql_query(
         """

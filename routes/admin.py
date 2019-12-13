@@ -12,6 +12,7 @@ from components.core import (
     is_integer,
 )
 from components.decorators import admin_required
+from scripts.codes import generate_codes, reset_students
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -24,7 +25,7 @@ def login():
     if request.method == "GET":
         return render_template("admin/login.html")
     elif request.method == "POST":
-        username = request.form["username"].lower()
+        username = request.form["username"]
         password = request.form["password"]
 
         # perform validation, login etc...
@@ -157,16 +158,39 @@ def admin_users():
 @admin_required
 def students():
     if request.method == "GET":
-        return render_template("admin/login.html")
+        return render_template("admin/students.html")
     elif request.method == "POST":
-        amount_of_codes = request.form["amount_of_codes"]
+        
+        if "amount_of_codes" in request.form:
 
-        # perform validation
-        if len(amount_of_codes) > 13 :
-            return (
-                render_template("admin/students.html", fail="För stort antal."),
-                400,
-            )
+            amount_of_codes = request.form["amount_of_codes"]
+
+            # perform validation
+            if not is_valid_input(amount_of_codes):
+                return (
+                    render_template("admin/students.html", fail="Icke tillåtna kaktärer."),
+                    400,
+                )
+
+            if len(amount_of_codes) > 13 :
+                return (
+                    render_template("admin/students.html", fail="För stort antal."),
+                    400,
+                )
+            
+            if len(amount_of_codes) > 13 :
+                return (
+                    render_template("admin/students.html", fail="För stort antal."),
+                    400,
+                )
+
+            # allowed input
+
+            generate_codes(amount_of_codes)
+
+        else:
+            reset_students()
+
     return render_template("admin/students.html")
 
 

@@ -13,8 +13,8 @@ from components.db import sql_query
 
 def generate_codes(amount_of_codes):
     usebel_password_list = ["BESTBEAR", "SMOLMINK", "SEAL"]
-    if amount_of_codes < 36 ** 8 - 1000:
-        for n in range(amount_of_codes - 3):
+    if int(amount_of_codes) < 36 ** 8 - 1000:
+        for n in range((int(amount_of_codes) - 3)):
             new_password = ""
             allowed_caracter = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             legnth_of_code = 8
@@ -33,7 +33,3 @@ def generate_codes(amount_of_codes):
 def reset_students():
     sql_query("""DELETE FROM students;""")
     sql_query("""ALTER TABLE students AUTO_INCREMENT = 1""")
-
-
-reset_students()
-generate_codes(5)

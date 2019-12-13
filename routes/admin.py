@@ -162,7 +162,7 @@ def students():
         amount_of_codes = request.form["amount_of_codes"]
 
         # perform validation
-        if len(amount_of_codes) > 13 :
+        if len(amount_of_codes) > 13:
             return (
                 render_template("admin/students.html", fail="För stort antal."),
                 400,

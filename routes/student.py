@@ -287,8 +287,8 @@ def selected_activity(id):
                 # written answers
                 sql_query(
                     f"""
-                        INSERT INTO `answers` (`student_id`, `question_id`, `written_answer`)
-                            VALUES ({session.get("id")}, {question_id}, '{str(answer)}')
+                        INSERT INTO answers (student_id, question_id, written_answer)
+                            VALUES ({session.get('id')}, {question_id}, '{str(answer)}')
                         ;
                     """
                 )
@@ -296,8 +296,8 @@ def selected_activity(id):
                 # option
                 sql_query(
                     f"""
-                        INSERT INTO `answers` (`student_id`, `question_id`, `option_id`)
-                            VALUES ({session.get("id")}, {question_id}, {answer})
+                        INSERT INTO answers (student_id, question_id, option_id)
+                            VALUES ({session.get('id')}, {question_id}, {answer})
                         ;
                     """
                 )
@@ -307,7 +307,7 @@ def selected_activity(id):
             f"""
                 UPDATE students
                 SET chosen_activity={int(id)}
-                WHERE id={session.get("id")}
+                WHERE id={session.get('id')}
             """
         )
 

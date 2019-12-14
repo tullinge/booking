@@ -17,7 +17,7 @@ A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium
 1. `docker-compose up -d`
 2. `python scripts/setup_db.py`
 3. `python scripts/insert_demo_data.py`
-4. `python app.py`
+4. `python main.py`
    
 ### Instructions (deployment)
 

@@ -3,3 +3,4 @@ pymysql
 Flask-Session
 cryptography
 redis
+Flask-Minify

@@ -258,12 +258,103 @@ def activity_students(id):
 
 
 # ------ add/remove admin users ------
-@admin_routes.route("/users")
+@admin_routes.route("/users", methods=["GET", "POST"])
 @admin_required
 def admin_users():
-    admins = sql_query("SELECT id, name, username FROM admins")
+    template = "admin/users.html"
+    query = "SELECT id, name, username FROM admins"
+    admins = sql_query(query)
 
-    return render_template("admin/users.html", admins=admins)
+    if request.method == "GET":
+        return render_template(template, admins=admins)
+
+    if request.method == "POST":
+        data = request.form
+
+        if not data:
+            return (
+                render_template(template, admins=admins, fail="Ogiltig begäran."),
+                400,
+            )
+
+        # delete
+        if data["request_type"] == "delete":
+            if len(data) != 2 or not data["id"]:
+                return (
+                    render_template(template, admins=admins, fail="Saknar data."),
+                    400,
+                )
+
+            if not is_integer(data["id"]):
+                return (
+                    render_template(
+                        template, admins=admins, fail="Id måste vara heltal."
+                    ),
+                    400,
+                )
+
+            # cannot delete self
+            if int(data["id"]) == int(session.get("admin_id")):
+                return (
+                    render_template(
+                        template,
+                        admins=admins,
+                        fail="Kan inte radera den egna användaren.",
+                    ),
+                    400,
+                )
+
+            # delete user
+            sql_query(f"DELETE FROM admins WHERE id={data['id']}")
+
+            # update admins
+            admins = sql_query(query)
+
+            return render_template(
+                template, admins=admins, success="Användare raderad."
+            )
+
+        if data["request_type"] == "add":
+            if (
+                len(data) != 4
+                or not data["name"]
+                or not data["username"]
+                or not data["password"]
+            ):
+                return (
+                    render_template(template, admins=admins, fail="Saknar data."),
+                    400,
+                )
+
+            if not is_valid_input(data["name"], allow_space=True):
+                return (
+                    render_template(
+                        template, admins=admins, fail="Namn innehåller ogiltiga tecken."
+                    ),
+                    400,
+                )
+
+            if not is_valid_input(data["username"]):
+                return (
+                    render_template(
+                        template, admins=admins, fail="Ogiltigt användarnamn."
+                    ),
+                    400,
+                )
+
+            # create new user
+            sql_query(
+                f"INSERT INTO admins (name, username, password) VALUES ('{data['name']}', '{data['username']}', '{hash_password(data['password'])}')"
+            )
+
+            # re-fetch
+            admins = sql_query(query)
+
+            return render_template(
+                template, admins=admins, success="Nytt konto skapats."
+            )
+
+        return render_template(template, admins=admins, fail="Felaktig begäran."), 400
 
 
 # ------ add/remove students ------

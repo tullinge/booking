@@ -26,6 +26,13 @@ def admin_required(f):
         if not session.get("admin_logged_in"):
             return redirect("/admin/login")
 
+        # check if user exists aswell
+        if not sql_query(f"SELECT id FROM admins WHERE id={session.get('admin_id')}"):
+            session.pop("admin_logged_in", False)
+            session.pop("admin_id", None)
+
+            return redirect("/admin/login")
+
         return f(*args, **kwargs)
 
     return decorated_function

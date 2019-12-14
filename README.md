@@ -16,10 +16,11 @@ A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium
 
 1. `docker-compose up -d`
 2. `python scripts/setup_db.py`
-3. `python scripts/seed_db.py`
+3. `python scripts/insert_demo_data.py`
 4. `python app.py`
    
 ### Instructions (deployment)
+
 1. Set `DOCKER_HOST` and `MYSQL_PASSWORD`
 2. `docker-compose -f docker-compose.yml -f prod.yml up`
 3. `docker exec booking_app_1 python scripts/setup_db.py`

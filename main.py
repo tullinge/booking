@@ -3,6 +3,7 @@
 
 from os import environ
 from flask import Flask, render_template
+from flask_minify import minify
 from datetime import timedelta
 
 # import session
@@ -16,6 +17,9 @@ from routes.student import student_routes
 import redis
 
 app = Flask(__name__)
+
+# minify
+minify(app=app)
 
 # error routes
 @app.errorhandler(400)

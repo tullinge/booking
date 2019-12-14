@@ -13,6 +13,7 @@ from components.core import (
 )
 from components.decorators import admin_required
 from components.codes import generate_codes
+from components.admin import get_activites_with_spaces
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -87,16 +88,77 @@ def index():
 
 
 # ------ activities ------
-@admin_routes.route("/activities")
+@admin_routes.route("/activities", methods=["POST", "GET"])
 @admin_required
 def activities():
-    query = sql_query("SELECT * FROM activities")
+    template = "admin/activities.html"
+    activities = get_activites_with_spaces()
 
-    activities = []
-    for activity in query:
-        activities.append((activity, calculate_available_spaces(activity[0])))
+    if request.method == "GET":
+        return render_template("admin/activities.html", activities=activities)
 
-    return render_template("admin/activities.html", activities=activities)
+    if request.method == "POST":
+        data = request.form
+
+        if not data:
+            return (
+                render_template(
+                    template, activities=activities, fail="Ingen data skickades."
+                ),
+                400,
+            )
+
+        # creating activity
+        if (
+            not data["name"]
+            or not data["spaces"]
+            or not data["info"]
+            or not len(data) == 3
+        ):
+            return (
+                render_template(
+                    template, activities=activities, fail="Felaktig data skickades."
+                ),
+                400,
+            )
+
+        # validate
+        if not is_integer(data["spaces"]):
+            return (
+                render_template(
+                    template,
+                    activities=activities,
+                    fail="Antalet platser måste vara ett heltal.",
+                ),
+                400,
+            )
+
+        if not is_valid_input(data["name"], allow_space=True) or not is_valid_input(
+            data["info"], allow_space=True, allow_punctuation=True
+        ):
+            return (
+                render_template(
+                    template,
+                    activities=activities,
+                    fail="Data innehåller otillåtna tecken.",
+                ),
+                400,
+            )
+
+        # create
+        sql_query(
+            f"INSERT INTO activities (name, spaces, info) VALUES ('{data['name']}', {data['spaces']}, '{data['info']}')"
+        )
+
+        # re-fetch
+        activities = get_activites_with_spaces()
+
+        # success
+        return render_template(
+            template,
+            activities=activities,
+            success="Aktivitet skapad. Tryck på aktiviteten för att skapa frågor för aktiviteten.",
+        )
 
 
 # ------ selected activity ------

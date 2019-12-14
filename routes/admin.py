@@ -13,7 +13,10 @@ from components.core import (
 )
 from components.decorators import admin_required
 from components.codes import generate_codes
-from components.admin import get_activites_with_spaces
+from components.admin import (
+    get_activites_with_spaces,
+    get_activity_questions_and_options,
+)
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -165,6 +168,8 @@ def activities():
 @admin_routes.route("/activity/<id>", methods=["POST", "GET"])
 @admin_required
 def selected_activity(id):
+    template = "admin/activity.html"
+
     if not is_integer(id):
         return (
             render_template(
@@ -183,22 +188,12 @@ def selected_activity(id):
             400,
         )
 
-    # check if activity has questions
-    query = sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
-    questions = []
-
-    if query:
-        # loops query to add each options for questions into list
-        for question in query:
-            options = sql_query(
-                f"SELECT * FROM options WHERE question_id={question[0]}"
-            )
-
-            questions.append([question, options])
+    # get questions
+    questions = get_activity_questions_and_options(id)
 
     if request.method == "GET":
         return render_template(
-            "admin/activity.html",
+            template,
             activity=activity[0],
             questions=questions,
             available_spaces=calculate_available_spaces(id),
@@ -206,6 +201,60 @@ def selected_activity(id):
 
     elif request.method == "POST":
         return "work in progress"
+
+
+@admin_routes.route("/activity/<id>/students")
+@admin_required
+def activity_students(id):
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer."
+            ),
+            400,
+        )
+
+    activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
+
+    if not activity:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Activity dose not exist."
+            ),
+            400,
+        )
+
+    # get students that have booked this activity and their answers
+    query = sql_query(
+        f"SELECT id, last_name, first_name, class FROM students WHERE chosen_activity={id}"
+    )
+
+    students = []
+    for student in query:
+        answer_query = sql_query(
+            f"SELECT option_id, written_answer FROM answers WHERE student_id={student[0]}"
+        )
+
+        answers = []
+        for answer in answer_query:
+            if answer[0] is not None:
+                option_name = sql_query(
+                    f"SELECT text FROM options WHERE id={answer[0]}"
+                )[0][0]
+                answers.append(option_name)
+            else:
+                answers.append(answer[1])
+
+        students.append((student, answers))
+
+    questions = sql_query(f"SELECT question FROM questions WHERE activity_id={id}")
+
+    return render_template(
+        "admin/activity_students.html",
+        students=students,
+        activity=activity[0],
+        questions=questions,
+    )
 
 
 # ------ add/remove admin users ------

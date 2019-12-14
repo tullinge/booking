@@ -7,6 +7,7 @@ import string
 from components.core import random_string
 from components.db import sql_query
 
+
 def generate_codes(amount_of_codes):
     new_passwords = []
 
@@ -24,4 +25,3 @@ def reset_students():
     sql_query("""DELETE FROM students;""")
     sql_query("""DELETE FROM answers;""")
     sql_query("""ALTER TABLE students AUTO_INCREMENT = 1""")
-    

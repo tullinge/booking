@@ -160,7 +160,7 @@ def students():
     if request.method == "GET":
         return render_template("admin/students.html")
     elif request.method == "POST":
-        
+
         if "amount_of_codes" in request.form:
 
             amount_of_codes = request.form["amount_of_codes"]
@@ -168,17 +168,19 @@ def students():
             # perform validation
             if not is_valid_input(amount_of_codes):
                 return (
-                    render_template("admin/students.html", fail="Icke tillåtna kaktärer."),
+                    render_template(
+                        "admin/students.html", fail="Icke tillåtna kaktärer."
+                    ),
                     400,
                 )
 
-            if len(amount_of_codes) > 13 :
+            if len(amount_of_codes) > 13:
                 return (
                     render_template("admin/students.html", fail="För stort antal."),
                     400,
                 )
-            
-            if len(amount_of_codes) > 13 :
+
+            if len(amount_of_codes) > 13:
                 return (
                     render_template("admin/students.html", fail="För stort antal."),
                     400,

@@ -1,3 +1,6 @@
+# tullinge/booking
+# https://github.com/tullinge/booking
+
 import sys
 from pathlib import Path
 
@@ -51,6 +54,7 @@ def create_tabels():
         """
         CREATE TABLE answers (
             id INT NOT NULL AUTO_INCREMENT,
+            student_id INT NOT NULL,
             question_id INT NOT NULL,
             option_id INT DEFAULT NULL,
             written_answer VARCHAR(255) DEFAULT NULL,
@@ -83,7 +87,7 @@ def create_tabels():
             last_name VARCHAR(50) DEFAULT NULL,
             first_name VARCHAR(50) DEFAULT NULL,
             class VARCHAR(10) DEFAULT NULL,
-            choosen_activity INT DEFAULT NULL,
+            chosen_activity INT DEFAULT NULL,
             PRIMARY KEY (id)
         );
     """

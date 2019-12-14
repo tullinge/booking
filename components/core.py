@@ -5,9 +5,12 @@ import string
 import hashlib
 import binascii
 import os
+import random
+
+from components.db import sql_query
 
 
-def is_valid_input(input):
+def is_valid_input(input, allow_space=False, allow_punctuation=False):
     """Returns False if input variable contains invalid characters, True otherwise"""
 
     # only ascii letters/digits and swedish letters are allowed
@@ -16,6 +19,12 @@ def is_valid_input(input):
         + list(string.digits)
         + ["å", "ä", "ö", "Å", "Ä", "Ö"]
     )
+
+    if allow_space:
+        allowed_characters.append(" ")
+
+    if allow_punctuation:
+        allowed_characters.extend([".", ",", ":"])
 
     if any(x not in allowed_characters for x in input):
         # means we've found something that is not allowed
@@ -32,6 +41,15 @@ def is_integer(variable):
         return False
 
     return True
+
+
+def calculate_available_spaces(activity_id):
+    """Returns integer of available spaces using specified activity_id"""
+
+    activity = sql_query(f"SELECT * FROM activities WHERE id={activity_id}")[0]
+    students = sql_query(f"SELECT * FROM students WHERE chosen_activity={activity_id}")
+
+    return activity[2] - len(students)
 
 
 def hash_password(password):
@@ -58,3 +76,11 @@ def verify_password(stored_password, provided_password):
     pwdhash = binascii.hexlify(pwdhash).decode("ascii")
 
     return pwdhash == stored_password
+
+
+def random_string(length=10):
+    """Generate a random string of fixed length"""
+
+    return "".join(
+        random.choice(string.ascii_uppercase + string.digits) for i in range(length)
+    )

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} - Bokning bekräftad{% endblock %}
+{% block body %}
+    <h1>Tullinge Booking - Bokning bekräftad</h1>
+    <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+    <p>Din bokning för aktivitet {{ activity[0][0] }} är bekräftad.</p>
+
+    <a href="/">
+        <button class="btn btn-primary">Tillbaka till startsidan</button>
+    </a>
+{% endblock %}

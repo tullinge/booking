@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %} - Klasser{% endblock %}
+{% block body %}
+{% include "admin/navbar.html" %}
+    {% if fail %}
+    <div class="alert alert-danger" role="alert">
+        <p>{{ fail }}</p>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        <p>{{ success }}</p>
+    </div>
+    {% endif %}
+    <h1>Klasser</h1>
+
+    <h2>Skapa ny klass</h2>
+    <form action="/admin/classes" method="POST">
+        <div class="form-group">
+            <input type="hidden" id="request_type" name="request_type" value="add">
+            <label for="class_name">Klassnamn</label>
+            <input name="class_name" type="text" class="form-control" id="class_name" aria-describedby="class_name_help" placeholder="Ange klass">
+            <small id="class_name_help" class="form-text text-muted">Kommer dyka upp i listan bland valbara klasser för elever vid första inloggning.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Skapa</button>
+    </form>
+
+    <ul class="list-group">
+        {% for class in school_classes %}
+        <li class="list-group-item">
+            <span>{{ class[1] }}</span>
+            <form action="/admin/classes" method="POST">
+                <input type="hidden" id="request_type" name="request_type" value="delete">
+                <input type="hidden" id="id" name="id" value="{{ class[0] }}">
+                <button type="submit" class="btn btn-primary">Radera</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

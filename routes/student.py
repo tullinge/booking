@@ -5,9 +5,10 @@
 from flask import Blueprint, render_template, redirect, request, session
 
 # components import
-from components.core import is_valid_input, is_integer
+from components.core import is_valid_input, is_integer, calculate_available_spaces
 from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
+from components.student import student_chosen_activity
 
 # blueprint init
 student_routes = Blueprint("student_routes", __name__, template_folder="../templates")
@@ -17,16 +18,23 @@ student_routes = Blueprint("student_routes", __name__, template_folder="../templ
 @login_required
 @user_setup_completed
 def index():
-    activities = sql_query("SELECT * FROM activities")
+    chosen_activity = student_chosen_activity()
+    query = sql_query("SELECT * FROM activities")
+
+    activities = []
+    for activity in query:
+        activities.append((activity, calculate_available_spaces(activity[0])))
 
     return render_template(
         "student/index.html",
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
         activities=activities,
+        chosen_activity=chosen_activity[1],
     )
 
 
+# ------ login ------
 @student_routes.route("/login", methods=["GET", "POST"])
 def students_login():
     if request.method == "GET":
@@ -76,6 +84,7 @@ def students_login():
         return redirect("/setup")
 
 
+# ------ logout ------
 @student_routes.route("/logout")
 @login_required
 def logout():
@@ -85,6 +94,7 @@ def logout():
     return redirect("/login")
 
 
+# ------ setup ------
 @student_routes.route("/setup", methods=["POST", "GET"])
 @login_required
 @user_not_setup
@@ -141,7 +151,8 @@ def setup():
         return redirect("/")
 
 
-@student_routes.route("/activity/<id>")
+# ------ selected activity ------
+@student_routes.route("/activity/<id>", methods=["POST", "GET"])
 @login_required
 @user_setup_completed
 def selected_activity(id):
@@ -158,20 +169,144 @@ def selected_activity(id):
     if not activity:
         return (
             render_template(
-                "errors/custom.html", title="400", message="Activity is not integer."
+                "errors/custom.html", title="400", message="Activity dose not exist."
             ),
             400,
         )
 
-    return render_template(
-        "student/activity.html",
-        activity=activity[0],
-        fullname=session.get("fullname"),
-        school_class=session.get("school_class"),
-    )
+    # check if activity has questions
+    query = sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
+    questions = []
+
+    if query:
+        # loops query to add each options for questions into list
+        for question in query:
+            options = sql_query(
+                f"SELECT * FROM options WHERE question_id={question[0]}"
+            )
+
+            questions.append([question, options])
+
+    if request.method == "GET":
+        return render_template(
+            "student/activity.html",
+            activity=activity[0],
+            fullname=session.get("fullname"),
+            school_class=session.get("school_class"),
+            questions=questions,
+            available_spaces=calculate_available_spaces(id),
+        )
+
+    if request.method == "POST":
+        for k, v in request.form.items():
+            if not v:
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Saknar data.",
+                    ),
+                    400,
+                )
+
+            if not is_integer(k):
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Felaktigt skickad data.",
+                    ),
+                    400,
+                )
+
+            if not is_valid_input(
+                k, allow_space=True, allow_punctuation=True
+            ) or not is_valid_input(v, allow_space=True, allow_punctuation=True):
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity[0],
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Innehåller ogiltiga tecken.",
+                    ),
+                    400,
+                )
+
+        # check if it still has available_spaces
+        if calculate_available_spaces(id) < 1:
+            return (
+                render_template(
+                    "student/activity.html",
+                    activity=activity[0],
+                    fullname=session.get("fullname"),
+                    school_class=session.get("school_class"),
+                    questions=questions,
+                    available_spaces=calculate_available_spaces(id),
+                    fail="Denna aktivitet har inga lediga platser.",
+                ),
+                400,
+            )
+
+        # delete any previous answers this user has submitted
+        sql_query(f"DELETE FROM answers WHERE student_id={session.get('id')}")
+
+        # validation completed
+        for question_id, answer in request.form.items():
+            # check if question is of type written or not
+            question = sql_query(f"SELECT * FROM questions WHERE id={question_id}")[0]
+
+            if question[3]:
+                # written answers
+                sql_query(
+                    f"""
+                        INSERT INTO `answers` (`student_id`, `question_id`, `written_answer`)
+                            VALUES ({session.get("id")}, {question_id}, '{str(answer)}')
+                        ;
+                    """
+                )
+            else:
+                # option
+                sql_query(
+                    f"""
+                        INSERT INTO `answers` (`student_id`, `question_id`, `option_id`)
+                            VALUES ({session.get("id")}, {question_id}, {answer})
+                        ;
+                    """
+                )
+
+        # set chosen_activity
+        sql_query(
+            f"""
+                UPDATE students
+                SET chosen_activity={int(id)}
+                WHERE id={session.get("id")}
+            """
+        )
+
+        return redirect("/confirmation")
 
 
+# ------ confirmation  ------
 @student_routes.route("/confirmation")
 @login_required
+@user_setup_completed
 def confirmation():
-    return render_template("student/confirmation.html")
+    activity = student_chosen_activity()
+
+    return render_template(
+        "student/confirmation.html",
+        fullname=session.get("fullname"),
+        school_class=session.get("school_class"),
+        activity=activity[1],
+    )

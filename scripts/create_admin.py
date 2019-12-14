@@ -15,8 +15,5 @@ username = input("Enter username: ")
 password = hash_password(input("Enter password: "))
 
 sql_query(
-    f"""
-        INSERT INTO admins (name, username, password)
-        VALUES ('{name}', '{username}', '{password}')
-    """
+    f"INSERT INTO admins (name, username, password) VALUES ('{name}', '{username}', '{password}')"
 )

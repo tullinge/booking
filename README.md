@@ -8,29 +8,23 @@ A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium
 
 ## Requirements
 
-- Docker
+- Docker & docker-compose
 - Python 3
 - Python libraries (look in `requirements.txt`)
-- MySQL database (container can be started with docker-compose)
-- Redis instance (container can be started with docker-compose)
 
-## Database Configuration
+### Instructions (running locally)
 
-This is how the db_config.py file is structured.
+1. `docker-compose up -d`
+2. `python scripts/setup_db.py`
+3. `python scripts/insert_demo_data.py`
+4. `python main.py`
+   
+### Instructions (deployment)
 
-```python
-DB_Server = '[hostname]'
-DB_Name = '[name of database]'
-DB_Username = '[username with access to database]'
-DB_Password = '[password for user]'
-```
-
-## Instructions
-
-1. `docker-compose up` starts the database container
-2. `python scripts/setup_db.py` creates the database structure
-3. `python scripts/insert_demo_data.py` seeds the database with demo data
-4. `python app.py` starts the web app
+1. Set `DOCKER_HOST` and `MYSQL_PASSWORD`
+2. `docker-compose -f docker-compose.yml -f prod.yml up`
+3. `docker exec booking_app_1 python scripts/setup_db.py`
+4. `docker exec -it booking_app_1 python scripts/code_generator.py` ???
 
 ## User stories
 

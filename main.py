@@ -5,6 +5,7 @@ from os import environ
 from flask import Flask, render_template
 from flask_minify import minify
 from datetime import timedelta
+from version import version
 
 # import session
 from flask_session.__init__ import Session
@@ -20,6 +21,12 @@ app = Flask(__name__)
 
 # minify
 minify(app=app)
+
+# make version variable available across all templates
+@app.context_processor
+def inject_version():
+    return dict(version=version)
+
 
 # error routes
 @app.errorhandler(400)

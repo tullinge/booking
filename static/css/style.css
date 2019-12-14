@@ -21,3 +21,9 @@ body {
 .align-center {
     text-align: center;
 }
+
+.footer div {
+    padding-left: 0.5em;
+    padding-top: 1.5em;
+    font-style: italic;
+}

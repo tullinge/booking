@@ -18,8 +18,11 @@ jobs:
         - black --check
     - stage: build docker image
       script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build . -t tullingegymnasium/booking_app:latest
       deploy:
         provider: script
-        script: docker push tullingegymnasium/booking_app:latest
+        script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push tullingegymnasium/booking_app:latest && 
+        on:
+          branch: dockerize-flask
+      after_deploy:
+        - rm -rf /home/travis/.docker/config.json

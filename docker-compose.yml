@@ -1,21 +1,13 @@
 version: '3.7'
 
 services:
-  db:
+  mysql:
     image: mysql
     environment:
       MYSQL_DATABASE: 'booking'
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: 'do-not-use-in-production'
       MYSQL_ROOT_PASSWORD: 'do-not-use-in-production'
-    ports:
-      - 3306:3306
-    expose:
-      - 3306
 
   redis:
     image: redis
-    ports:
-      - 6379:6379
-    expose:
-      - 6379

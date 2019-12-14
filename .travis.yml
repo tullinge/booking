@@ -1,18 +1,29 @@
 sudo: required
 language: python
 services:
-  - mysql
+  - docker
 
-before_install:
-  - mysql -e 'CREATE DATABASE booking;'
-  - mysql -e "GRANT ALL PRIVILEGES ON booking.* To 'admin' IDENTIFIED BY 'do-not-use-in-production';"
-  - python -m pip install --upgrade pip
-  - pip install -r requirements.txt
+jobs:
+  include:
+    - stage: Check code quality
+      before_install:
+        - python -m pip install --upgrade pip
 
-install:
-  - pip3 install flake8 black
+      install:
+        - pip3 install flake8 black
 
-script:
-  - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-  - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-  - black --check .
+      script:
+        - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        - black --check
+    - stage: build docker image
+      script:
+        - docker build . -t tullingegymnasium/booking_app:$TRAVIS_COMMIT
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push tullingegymnasium/booking_app:$TRAVIS_COMMIT 
+        on:
+          branch: master
+      after_deploy:
+        - rm -rf /home/travis/.docker/config.json

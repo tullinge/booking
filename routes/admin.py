@@ -42,7 +42,9 @@ def login():
         if len(password) <= 4:
             return render_template("admin/login.html", fail="För kort lösenord."), 400
 
-        if not is_valid_input(username, allow_punctuation=True):
+        if not is_valid_input(
+            username, allow_punctuation=False, allow_space=False, swedish=False
+        ):
             return (
                 render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
                 400,
@@ -136,8 +138,8 @@ def activities():
                 400,
             )
 
-        if not is_valid_input(data["name"], allow_space=True) or not is_valid_input(
-            data["info"], allow_space=True, allow_punctuation=True
+        if not is_valid_input(data["name"], allow_newline=False) or not is_valid_input(
+            data["info"]
         ):
             return (
                 render_template(
@@ -200,6 +202,38 @@ def selected_activity(id):
         )
 
     elif request.method == "POST":
+        data = request.form
+
+        if not data or not data["question"]:
+            print(data["question"])
+            return (
+                render_template(
+                    template,
+                    activity=activity[0],
+                    questions=questions,
+                    available_spaces=calculate_available_spaces(id),
+                    fail="Ingen data skickades/saknar data.",
+                ),
+                400,
+            )
+
+        # is written answer
+        if request.form.get("written_answer"):
+            sql_query(
+                f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 1)"
+            )
+
+            # re-fetch
+            questions = get_activity_questions_and_options(id)
+
+            return render_template(
+                template,
+                activity=activity[0],
+                questions=questions,
+                available_spaces=calculate_available_spaces(id),
+                success="Fråga skapad.",
+            )
+
         return "work in progress"
 
 
@@ -326,7 +360,9 @@ def admin_users():
                     400,
                 )
 
-            if not is_valid_input(data["name"], allow_space=True):
+            if not is_valid_input(
+                data["name"], allow_newline=False, allow_punctuation=False
+            ):
                 return (
                     render_template(
                         template, admins=admins, fail="Namn innehåller ogiltiga tecken."
@@ -334,7 +370,13 @@ def admin_users():
                     400,
                 )
 
-            if not is_valid_input(data["username"]):
+            if not is_valid_input(
+                data["username"],
+                allow_space=False,
+                allow_newline=False,
+                swedish=False,
+                allow_punctuation=False,
+            ):
                 return (
                     render_template(
                         template, admins=admins, fail="Ogiltigt användarnamn."
@@ -449,7 +491,13 @@ def school_classes():
                     400,
                 )
 
-            if not is_valid_input(data["class_name"]):
+            if not is_valid_input(
+                data["class_name"],
+                allow_space=False,
+                allow_newline=False,
+                allow_punctuation=False,
+                swedish=False,
+            ):
                 return (
                     render_template(
                         template,

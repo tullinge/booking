@@ -48,7 +48,13 @@ def students_login():
         if not len(password) == 8:
             return render_template("student/login.html", fail="Fel längd."), 400
 
-        if not is_valid_input(password):
+        if not is_valid_input(
+            password,
+            allow_newline=False,
+            allow_space=False,
+            allow_punctuation=False,
+            swedish=False,
+        ):
             return (
                 render_template(
                     "student/login.html",
@@ -118,9 +124,16 @@ def setup():
 
         # make sure to validate input variables against string authentication
         if (
-            not is_valid_input(first_name)
-            or not is_valid_input(last_name)
-            or not is_valid_input(school_class)
+            not is_valid_input(first_name, allow_newline=False, allow_punctuation=False)
+            or not is_valid_input(
+                last_name, allow_newline=False, allow_punctuation=False
+            )
+            or not is_valid_input(
+                school_class,
+                allow_newline=False,
+                allow_punctuation=False,
+                allow_space=False,
+            )
         ):
             return render_template(
                 "student/setup.html",
@@ -228,8 +241,12 @@ def selected_activity(id):
                 )
 
             if not is_valid_input(
-                k, allow_space=True, allow_punctuation=True
-            ) or not is_valid_input(v, allow_space=True, allow_punctuation=True):
+                k,
+                allow_newline=False,
+                allow_punctuation=False,
+                allow_space=False,
+                swedish=False,
+            ) or not is_valid_input(v, allow_newline=False):
                 return (
                     render_template(
                         "student/activity.html",

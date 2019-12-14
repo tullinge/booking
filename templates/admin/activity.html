@@ -4,6 +4,19 @@
 {% include "admin/navbar.html" %}
     <div class="content">
         <h1>Aktivitet - {{ activity[1] }}, ID #{{ activity[0] }}</h1>
+
+        {% if fail %}
+        <div class="alert alert-danger" role="alert">
+            <p>{{ fail }}</p>
+        </div>
+        {% endif %}
+    
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            <p>{{ success }}</p>
+        </div>
+        {% endif %}
+
         <p>Totalt antal platser: {{ activity[2] }}</p>
         <p>Lediga platser: {{ available_spaces }}</p>
     
@@ -14,10 +27,10 @@
         </a>
         
         <h2>Skapa ny fråga</h2>
-        <form action="/admin/activity/{{ activity[0] }}">
+        <form action="/admin/activity/{{ activity[0] }}" method="POST">
             <div class="form-group">
                 <label for="question">Fråga</label>
-                <input name="question" type="text" class="form-control" id="question" placeholder="Ange frågan">
+                <input name="question" type="text" class="form-control" id="question" placeholder="Fråga">
             </div>
     
             <div class="form-check">

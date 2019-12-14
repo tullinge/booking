@@ -10,27 +10,35 @@ import random
 from components.db import sql_query
 
 
-def is_valid_input(input, allow_space=False, allow_punctuation=False):
-    """Returns False if input variable contains invalid characters, True otherwise"""
+def is_valid_input(
+    variable, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
+):
+    """Returns boolean whether variable is valid input or not"""
 
-    # only ascii letters/digits and swedish letters are allowed
-    allowed_characters = (
-        list(string.ascii_letters)
-        + list(string.digits)
-        + ["å", "ä", "ö", "Å", "Ä", "Ö"]
-    )
+    ILLEGAL_CHARACTERS = ["<", ">", ";"]
+    ALLOWED_CHARACTERS = list(string.ascii_letters) + list(string.digits)
 
     if allow_space:
-        allowed_characters.append(" ")
+        ALLOWED_CHARACTERS.extend(list(string.whitespace))
+
+    if not allow_newline:
+        try:
+            ALLOWED_CHARACTERS.remove("\n")
+        except Exception:
+            pass
 
     if allow_punctuation:
-        allowed_characters.extend([".", ",", ":"])
+        ALLOWED_CHARACTERS.extend(list(string.punctuation))
 
-    if any(x not in allowed_characters for x in input):
-        # means we've found something that is not allowed
+    if swedish:
+        ALLOWED_CHARACTERS.extend(["å", "ä", "ö", "Å", "Ä", "Ö"])
+
+    if any(x in variable for x in ILLEGAL_CHARACTERS):
         return False
 
-    # means it's all OK
+    if any(x not in ALLOWED_CHARACTERS for x in variable):
+        return False
+
     return True
 
 

@@ -6,6 +6,8 @@
 
 A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium.
 
+Demo site at [allaktivitetsdagen.tullingelabs.se](http://allaktivitetsdagen.tullingelabs.se/login)
+
 ## Requirements
 
 - Docker & docker-compose
@@ -22,7 +24,7 @@ A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium
 ### Instructions (deployment)
 
 1. Set `DOCKER_HOST` and `MYSQL_PASSWORD`
-2. `docker-compose -f docker-compose.yml -f prod.yml up`
+2. `docker-compose -f docker-compose.yml -f prod.yml up -d`
 3. `docker exec booking_app_1 python scripts/setup_db.py`
 4. `docker exec -it booking_app_1 python scripts/code_generator.py` ???
 

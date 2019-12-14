@@ -23,6 +23,19 @@
         <button type="submit" class="btn btn-primary">Skicka</button>
     </form>
 
+    <a href="/admin/students?show=all">
+        <button class="btn btn-primary">
+            Visa alla elever
+        </button>
+    </a>
+
+    <div class="alert alert-warning" role="alert">
+        <p>Om du visar alla elever och har skapat många koder i systemet kan det vara svårt att visa sidan (lång lista).</p>
+    </div>
+
+
+    {% if students %}
+    <h2>Elever</h2>
     <table class="table">
         <thead>
             <tr>
@@ -45,4 +58,23 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
+
+    {% if new_codes %}
+    <h2>Nya koder som skapats</h2>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Kod</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for code in new_codes %}
+            <tr>
+                <th scope="row">{{ code }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table
+    {% endif %}
 {% endblock %}

@@ -157,9 +157,11 @@ def admin_users():
 @admin_routes.route("/students", methods=["GET", "POST"])
 @admin_required
 def students():
-    if request.method == "GET":
+    students = None
+    if request.args.get("show"):
         students = sql_query("SELECT * FROM students")
 
+    if request.method == "GET":
         return render_template("admin/students.html", students=students)
     elif request.method == "POST":
         data = request.form
@@ -203,11 +205,10 @@ def students():
             )
 
         # successful
-        generate_codes(data["generate_codes"])
-        students = sql_query("SELECT * FROM students")
+        new_codes = generate_codes(data["generate_codes"])
 
         return render_template(
-            "admin/students.html", students=students, success="Nya koder har skapats."
+            "admin/students.html", new_codes=new_codes, success="Nya koder har skapats."
         )
 
 

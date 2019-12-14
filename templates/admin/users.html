@@ -2,5 +2,37 @@
 {% block title %} - Adminanvändare{% endblock %}
 {% block body %}
 {% include "admin/navbar.html" %}
-    <h1>Adminanvändare<h1>
+    <h1>Adminanvändare</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Namn</th>
+            <th scope="col">Användarnamn</th>
+            <th scope="col">Åtgärd</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in admins %}
+            <tr>
+                <th scope="row">{{ admin[0] }}</th>
+                <td>{{ admin[1] }}</td>
+                <td>{{ admin[2] }}</td>
+                <td>
+                    <a href="#">
+                        <button class="btn btn-primary">
+                            Byt lösenord
+                        </button>
+                    </a>
+                    <a href="#">
+                        <button class="btn btn-primary">
+                            Radera
+                        </button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -150,7 +150,9 @@ def selected_activity(id):
 @admin_routes.route("/users")
 @admin_required
 def admin_users():
-    return render_template("admin/users.html")
+    admins = sql_query("SELECT id, name, username FROM admins")
+
+    return render_template("admin/users.html", admins=admins)
 
 
 # ------ add/remove students ------
@@ -213,9 +215,109 @@ def students():
 
 
 # ------ add/remove school classes ------
-@admin_routes.route("/classes")
+@admin_routes.route("/classes", methods=["POST", "GET"])
 @admin_required
 def school_classes():
+    template = "admin/school_classes.html"
     school_classes = sql_query("SELECT * FROM school_classes")
 
-    return render_template("admin/school_classes.html", school_classes=school_classes)
+    if request.method == "GET":
+        return render_template(template, school_classes=school_classes)
+
+    if request.method == "POST":
+        data = request.form
+
+        if not data or len(data) != 2:
+            return (
+                render_template(
+                    template, school_classes=school_classes, fail="Ingen data angiven."
+                ),
+                400,
+            )
+
+        # if adding
+        if data["request_type"] == "add":
+            if not data["class_name"]:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="Saknar variabler.",
+                    ),
+                    400,
+                )
+
+            if not is_valid_input(data["class_name"]):
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="Innehåller ogiltiga tecken.",
+                    ),
+                    400,
+                )
+
+            if len(data["class_name"]) < 3 or len(data["class_name"]) > 10:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="För kort/långt klassnamn.",
+                    ),
+                    400,
+                )
+
+            # create
+            sql_query(
+                f"INSERT INTO school_classes (class_name) VALUES ('{data['class_name']}')"
+            )
+
+            # re-fetch
+            school_classes = sql_query("SELECT * FROM school_classes")
+
+            return (
+                render_template(
+                    template, school_classes=school_classes, success="Ny klass skapad."
+                ),
+                201,
+            )
+
+        # if deleting
+        if data["request_type"] == "delete":
+            if not data["id"]:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="Saknar variabler.",
+                    ),
+                    400,
+                )
+
+            if not is_integer(data["id"]):
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="Id måste vara heltal.",
+                    ),
+                    400,
+                )
+
+            # delete
+            sql_query(f"DELETE FROM school_classes WHERE id={data['id']}")
+
+            # re-fetch
+            school_classes = sql_query("SELECT * FROM school_classes")
+
+            return render_template(
+                template, school_classes=school_classes, success="Klass raderad."
+            )
+
+        # if invalid request_type
+        return (
+            render_template(
+                template, school_classes=school_classes, fail="Ogiltig förfrågan."
+            ),
+            400,
+        )

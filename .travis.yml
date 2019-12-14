@@ -22,7 +22,7 @@ jobs:
       deploy:
         skip_cleanup: true
         provider: script
-        script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push tullingegymnasium/booking_app:latest && 
+        script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push tullingegymnasium/booking_app:latest 
         on:
           branch: dockerize-flask
       after_deploy:

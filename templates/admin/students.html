@@ -15,14 +15,34 @@
     {% endif %}
     <h1>Elever</h1>
 
-    <form action="/admin/students", method="post">
+    <form action="/admin/students" method="post">
         <div class="form-group">
-            <label for="amount_of_codes">Hur många lösenord vill du ha?</label>
-            <input name="amount_of_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
+            <label for="generate_codes">Hur många lösenord vill du ha?</label>
+            <input name="generate_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
         </div>
         <button type="submit" class="btn btn-primary">Skicka</button>
     </form>
-    <form action="/admin/students", method="post">
-        <button type="submit" name="reset_students" class="btn btn-primary">Rensa lösenord</button>
-    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Kod</th>
+            <th scope="col">Namn</th>
+            <th scope="col">Klass</th>
+            <th scope="col">Vald aktivitet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <th scope="row">{{ student[0] }}</th>
+                <td>{{ student[1] }}</td>
+                <td>{{ student[2] }} {{ student[3] }}</td>
+                <td>{{ student[4] }}</td>
+                <td>{{ student[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

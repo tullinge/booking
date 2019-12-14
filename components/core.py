@@ -5,6 +5,7 @@ import string
 import hashlib
 import binascii
 import os
+import random
 
 from components.db import sql_query
 
@@ -75,3 +76,11 @@ def verify_password(stored_password, provided_password):
     pwdhash = binascii.hexlify(pwdhash).decode("ascii")
 
     return pwdhash == stored_password
+
+
+def random_string(length=10):
+    """Generate a random string of fixed length"""
+
+    return "".join(
+        random.choice(string.ascii_uppercase + string.digits) for i in range(length)
+    )

@@ -12,7 +12,7 @@ from components.core import (
     is_integer,
 )
 from components.decorators import admin_required
-from scripts.codes import generate_codes, reset_students
+from components.codes import generate_codes
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -158,42 +158,57 @@ def admin_users():
 @admin_required
 def students():
     if request.method == "GET":
-        return render_template("admin/students.html")
+        students = sql_query("SELECT * FROM students")
+
+        return render_template("admin/students.html", students=students)
     elif request.method == "POST":
+        data = request.form
 
-        if "amount_of_codes" in request.form:
+        if not data:
+            return (
+                render_template(
+                    "admin/students.html",
+                    students=students,
+                    fail="Ingen data skickades.",
+                ),
+                400,
+            )
 
-            amount_of_codes = request.form["amount_of_codes"]
+        if not data["generate_codes"]:
+            return (
+                render_template(
+                    "admin/students.html",
+                    students=students,
+                    fail="Felaktig data skickades.",
+                ),
+                400,
+            )
 
-            # perform validation
-            if not is_valid_input(amount_of_codes):
-                return (
-                    render_template(
-                        "admin/students.html", fail="Icke tillåtna kaktärer."
-                    ),
-                    400,
-                )
+        if not is_integer(data["generate_codes"]):
+            return (
+                render_template(
+                    "admin/students.html",
+                    students=students,
+                    fail="Antal måste vara heltal",
+                ),
+                400,
+            )
 
-            if len(amount_of_codes) > 13:
-                return (
-                    render_template("admin/students.html", fail="För stort antal."),
-                    400,
-                )
+        if len(data["generate_codes"]) > 13:
+            return (
+                render_template(
+                    "admin/students.html", students=students, fail="För stort tal."
+                ),
+                400,
+            )
 
-            if len(amount_of_codes) > 13:
-                return (
-                    render_template("admin/students.html", fail="För stort antal."),
-                    400,
-                )
+        # successful
+        generate_codes(data["generate_codes"])
+        students = sql_query("SELECT * FROM students")
 
-            # allowed input
-
-            generate_codes(amount_of_codes)
-
-        else:
-            reset_students()
-
-    return render_template("admin/students.html")
+        return render_template(
+            "admin/students.html", students=students, success="Nya koder har skapats."
+        )
 
 
 # ------ add/remove school classes ------

@@ -11,7 +11,7 @@ from components.db import sql_query
 def generate_codes(amount_of_codes):
     new_passwords = []
 
-    while int(amount_of_codes) == len(new_passwords):
+    while int(amount_of_codes) != len(new_passwords):
         password = random_string(length=8)
 
         if not password in new_passwords:
@@ -19,9 +19,3 @@ def generate_codes(amount_of_codes):
             new_passwords.append(password)
 
     return new_passwords
-
-
-def reset_students():
-    sql_query("""DELETE FROM students;""")
-    sql_query("""DELETE FROM answers;""")
-    sql_query("""ALTER TABLE students AUTO_INCREMENT = 1""")

@@ -2,3 +2,22 @@
 tullinge/booking
 https://github.com/tullinge/booking
 */
+
+body {
+    background-color: white !important;
+}
+
+.content {
+    padding: 0.5em;
+}
+
+.login-content {
+    width: 100%;
+    padding: 0px;
+    margin: auto;
+    max-width: 400px;
+}
+
+.align-center {
+    text-align: center;
+}

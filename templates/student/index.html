@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block body %}
-    <h1>Tullinge Booking</h1>
-    <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+    <div class="content">
+        <h1>Tullinge Booking</h1>
+        <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
+    
+        {% if chosen_activity %}
+        <p>Din bokning för aktivitet {{ chosen_activity[0][0] }} är bekräftad.</p>
+        {% endif %}
+    
+        <a href="/logout">
+            <button class="btn btn-primary">Logga ut</button>
+        </a>
+    
+        <h2>Tillgängliga aktiviteter</h2>
+    </div>
 
-    {% if chosen_activity %}
-    <p>Din bokning för aktivitet {{ chosen_activity[0][0] }} är bekräftad.</p>
-    {% endif %}
-
-    <a href="/logout">
-        <button class="btn btn-primary">Logga ut</button>
-    </a>
-
-    <h2>Tillgängliga aktiviteter</h2>
     <div class="list-group">
         {% for activity in activities %}
         <a href="/activity/{{ activity[0][0] }}" class="list-group-item list-group-item-action flex-column align-items-start">

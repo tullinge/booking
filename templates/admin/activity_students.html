@@ -2,28 +2,30 @@
 {% block title %} - Elever som bokat {{ activity[2] }}{% endblock %}
 {% block body %}
 {% include "admin/navbar.html" %}
-    <h1>Elever som bokat aktivitet {{ activity[1] }}</h1>
+    <div class="content">
+        <h1>Elever som bokat aktivitet {{ activity[1] }}</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Namn</th>
-                <th scope="col">Klass</th>
-                {% for question in questions %}
-                <th scope="col">{{ question[0] }}</th>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Namn</th>
+                    <th scope="col">Klass</th>
+                    {% for question in questions %}
+                    <th scope="col">{{ question[0] }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student[0][2] }} {{ student[0][1] }}</td>
+                    <td>{{ student[0][3] }}</td>
+                    {% for answer in student[1] %}
+                    <td>{{ answer }}</td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <td>{{ student[0][2] }} {{ student[0][1] }}</td>
-                <td>{{ student[0][3] }}</td>
-                {% for answer in student[1] %}
-                <td>{{ answer }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

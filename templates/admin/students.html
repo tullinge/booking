@@ -2,79 +2,81 @@
 {% block title %} - Elever{% endblock %}
 {% block body %}
 {% include "admin/navbar.html" %}
-    {% if fail %}
-    <div class="alert alert-danger" role="alert">
-        <p>{{ fail }}</p>
-    </div>
-    {% endif %}
-
-    {% if success %}
-    <div class="alert alert-success" role="alert">
-        <p>{{ success }}</p>
-    </div>
-    {% endif %}
-    <h1>Elever</h1>
-
-    <form action="/admin/students" method="post">
-        <div class="form-group">
-            <label for="generate_codes">Hur många lösenord vill du ha?</label>
-            <input name="generate_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
+    <div class="content">
+        {% if fail %}
+        <div class="alert alert-danger" role="alert">
+            <p>{{ fail }}</p>
         </div>
-        <button type="submit" class="btn btn-primary">Skicka</button>
-    </form>
-
-    <a href="/admin/students?show=all">
-        <button class="btn btn-primary">
-            Visa alla elever
-        </button>
-    </a>
-
-    <div class="alert alert-warning" role="alert">
-        <p>Om du visar alla elever och har skapat många koder i systemet kan det vara svårt att visa sidan (lång lista).</p>
+        {% endif %}
+    
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            <p>{{ success }}</p>
+        </div>
+        {% endif %}
+        <h1>Elever</h1>
+    
+        <form action="/admin/students" method="post">
+            <div class="form-group">
+                <label for="generate_codes">Hur många lösenord vill du ha?</label>
+                <input name="generate_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
+            </div>
+            <button type="submit" class="btn btn-primary">Skicka</button>
+        </form>
+    
+        <a href="/admin/students?show=all">
+            <button class="btn btn-primary">
+                Visa alla elever
+            </button>
+        </a>
+    
+        <div class="alert alert-warning" role="alert">
+            <p>Om du visar alla elever och har skapat många koder i systemet kan det vara svårt att visa sidan (lång lista).</p>
+        </div>
+    
+    
+        {% if students %}
+        <h2>Elever</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Kod</th>
+                <th scope="col">Namn</th>
+                <th scope="col">Klass</th>
+                <th scope="col">Vald aktivitet</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <th scope="row">{{ student[0] }}</th>
+                    <td>{{ student[1] }}</td>
+                    <td>{{ student[2] }} {{ student[3] }}</td>
+                    <td>{{ student[4] }}</td>
+                    <td>{{ student[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    
+        {% if new_codes %}
+        <h2>Nya koder som skapats</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Kod</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for code in new_codes %}
+                <tr>
+                    <th scope="row">{{ code }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
-
-
-    {% if students %}
-    <h2>Elever</h2>
-    <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Kod</th>
-            <th scope="col">Namn</th>
-            <th scope="col">Klass</th>
-            <th scope="col">Vald aktivitet</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <th scope="row">{{ student[0] }}</th>
-                <td>{{ student[1] }}</td>
-                <td>{{ student[2] }} {{ student[3] }}</td>
-                <td>{{ student[4] }}</td>
-                <td>{{ student[5] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
-
-    {% if new_codes %}
-    <h2>Nya koder som skapats</h2>
-    <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">Kod</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for code in new_codes %}
-            <tr>
-                <th scope="row">{{ code }}</th>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table
-    {% endif %}
 {% endblock %}

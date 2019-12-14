@@ -1,25 +1,29 @@
 {% extends "base.html" %}
 {% block title %} - Logga in{% endblock %}
 {% block body %}
-    {% if fail %}
-    <div class="alert alert-danger" role="alert">
-        <p>{{ fail }}</p>
-    </div>
-    {% endif %}
+    <div class="content login-content">
+        <h1 class="align-center">Tullinge Booking</h1>
 
-    {% if success %}
-    <div class="alert alert-success" role="alert">
-        <p>{{ success }}</p>
-    </div>
-    {% endif %}
-
-    <form action="/login" method="post">
-        <div class="form-group">
-            <label for="password">Kod</label>
-            <input name="password" type="text" class="form-control" id="password" placeholder="Password">
+        {% if fail %}
+        <div class="alert alert-danger" role="alert">
+            <p>{{ fail }}</p>
         </div>
-
-
-        <button type="submit" class="btn btn-primary">Logga in</button>
-    </form>
+        {% endif %}
+    
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            <p>{{ success }}</p>
+        </div>
+        {% endif %}
+    
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="password">Kod</label>
+                <input name="password" type="text" class="form-control" id="password" placeholder="Password">
+            </div>
+    
+    
+            <button type="submit" class="btn btn-primary">Logga in</button>
+        </form>
+    </div>
 {% endblock %}

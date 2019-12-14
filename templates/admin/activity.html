@@ -2,55 +2,57 @@
 {% block title %} - Aktivitet #{{ activity[0] }}{% endblock %}
 {% block body %}
 {% include "admin/navbar.html" %}
-    <h1>Aktivitet - {{ activity[1] }}, ID #{{ activity[0] }}</h1>
-    <p>Totalt antal platser: {{ activity[2] }}</p>
-    <p>Lediga platser: {{ available_spaces }}</p>
-
-    <a href="/admin/activity/{{ activity[0] }}/students">
-        <button class="btn btn-primary">
-            Visa elever som bokat denna aktivitet
-        </button>
-    </a>
+    <div class="content">
+        <h1>Aktivitet - {{ activity[1] }}, ID #{{ activity[0] }}</h1>
+        <p>Totalt antal platser: {{ activity[2] }}</p>
+        <p>Lediga platser: {{ available_spaces }}</p>
     
-    <h2>Skapa ny fråga</h2>
-    <form action="/admin/activity/{{ activity[0] }}">
-        <div class="form-group">
-            <label for="question">Fråga</label>
-            <input name="question" type="text" class="form-control" id="question" placeholder="Ange frågan">
-        </div>
-
-        <div class="form-check">
-            <input name="written_answer" type="checkbox" class="form-check-input" id="written_answer">
-            <label class="form-check-label" for="written_answer">Fritextsfråga (annars alternativsfråga)</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Skapa</button>
-    </form>
-
-    <h2>Frågor för denna aktivitet</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Fråga</th>
-                <th scope="col">Typ av fråga</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for question in questions %}
-            <tr>
-                <th scope="row">{{ question[0][0] }}</th>
-                <td>{{ question[0][1] }}</td>
-                <td>{% if question[0][2] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
-            </tr>
-            {% if not question[0][2] %}
-            
-            <tr>
-                <td></td>
-                <td><i>{% for option in question[1] %} {{ option[2] }}{% endfor %}</i></td>
-                <td></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
+        <a href="/admin/activity/{{ activity[0] }}/students">
+            <button class="btn btn-primary">
+                Visa elever som bokat denna aktivitet
+            </button>
+        </a>
+        
+        <h2>Skapa ny fråga</h2>
+        <form action="/admin/activity/{{ activity[0] }}">
+            <div class="form-group">
+                <label for="question">Fråga</label>
+                <input name="question" type="text" class="form-control" id="question" placeholder="Ange frågan">
+            </div>
+    
+            <div class="form-check">
+                <input name="written_answer" type="checkbox" class="form-check-input" id="written_answer">
+                <label class="form-check-label" for="written_answer">Fritextsfråga (annars alternativsfråga)</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Skapa</button>
+        </form>
+    
+        <h2>Frågor för denna aktivitet</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fråga</th>
+                    <th scope="col">Typ av fråga</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr>
+                    <th scope="row">{{ question[0][0] }}</th>
+                    <td>{{ question[0][1] }}</td>
+                    <td>{% if question[0][2] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
+                </tr>
+                {% if not question[0][2] %}
+                
+                <tr>
+                    <td></td>
+                    <td><i>{% for option in question[1] %} {{ option[2] }}{% endfor %}</i></td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

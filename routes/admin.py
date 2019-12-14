@@ -234,7 +234,98 @@ def selected_activity(id):
                 success="Fråga skapad.",
             )
 
-        return "work in progress"
+        # admin is creating question with options
+        sql_query(
+            f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 0)"
+        )
+
+        # re-fetch
+        questions = get_activity_questions_and_options(id)
+
+        return render_template(
+            template,
+            activity=activity[0],
+            questions=questions,
+            available_spaces=calculate_available_spaces(id),
+            success="Fråga skapad. Tryck på frågan nedan för att lägga till svarsalternativ.",
+        )
+
+
+@admin_routes.route("/question/<id>", methods=["POST", "GET"])
+@admin_required
+def question_id(id):
+    template = "admin/view_question.html"
+
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer."
+            ),
+            400,
+        )
+
+    question = sql_query(f"SELECT * FROM questions WHERE id={id}")
+
+    if not question:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Question does not exist."
+            ),
+            400,
+        )
+
+    if question[0][3]:
+        return (
+            render_template(
+                "errors/custom.html",
+                title="400",
+                message="Question is not correct type.",
+            ),
+            400,
+        )
+
+    # get options
+    options = sql_query(f"SELECT * FROM options WHERE question_id={question[0][0]}")
+
+    if request.method == "GET":
+        return render_template(template, question=question[0], options=options)
+
+    if request.method == "POST":
+        data = request.form
+
+        if not request.form["text"]:
+            return (
+                render_template(
+                    template, question=question[0], options=options, fail="Saknar data."
+                ),
+                400,
+            )
+
+        if not is_valid_input(data["text"], allow_newline=False):
+            return (
+                render_template(
+                    template,
+                    question=question[0],
+                    options=options,
+                    fail="Ogiltiga tecken skickade.",
+                ),
+                400,
+            )
+
+        # add option
+        sql_query(
+            f"INSERT INTO options (question_id, text) VALUES ({id}, '{data['text']}')"
+        )
+
+        # re-fetch
+        options = sql_query(f"SELECT * FROM options WHERE question_id={question[0][0]}")
+
+        return render_template(
+            template,
+            question=question[0],
+            options=options,
+            success="Alternativ skapat.",
+        )
 
 
 @admin_routes.route("/activity/<id>/students")

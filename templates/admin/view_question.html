@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %} - Visa fråga{% endblock %}
+{% block body %}
+{% include "admin/navbar.html" %}
+    <div class="content">
+        <h1>Visa fråga #{{ question[0] }}</h1>
+
+        {% if fail %}
+        <div class="alert alert-danger" role="alert">
+            <p>{{ fail }}</p>
+        </div>
+        {% endif %}
+    
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            <p>{{ success }}</p>
+        </div>
+        {% endif %}
+
+        <form action="/admin/question/{{ question[0] }}" method="POST">
+            <div class="form-group">
+                <label for="text">Alternativtext</label>
+                <input name="text" type="text" class="form-control" id="text" placeholder="Svar">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Skapa</button>
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for option in options %}
+                <tr>
+                    <td>{{ option[0] }}</td>
+                    <td>{{ option[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>        
+    </div>
+{% endblock %}

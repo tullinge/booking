@@ -432,3 +432,63 @@ def school_classes():
             ),
             400,
         )
+
+
+# change password
+@admin_routes.route("/changepassword", methods=["POST", "GET"])
+@admin_required
+def change_password():
+    template = "admin/changepassword.html"
+
+    # view page
+    if request.method == "GET":
+        return render_template(template)
+
+    # change
+    if request.method == "POST":
+        data = request.form
+
+        admin = sql_query(
+            f"SELECT password FROM admins WHERE id={session.get('admin_id')}"
+        )
+
+        if not admin:
+            return render_template(template, fail="Admin does not exist."), 400
+
+        if (
+            len(data) != 3
+            or not data["current_password"]
+            or not data["new_password"]
+            or not data["new_password_verify"]
+        ):
+            return render_template(template, fail="Felaktig begäran."), 400
+
+        if not verify_password(admin[0][0], data["current_password"]):
+            return (
+                render_template(template, fail="Felaktigt angivet nuvarande lösenord."),
+                400,
+            )
+
+        if data["new_password"] != data["new_password_verify"]:
+            return (
+                render_template(
+                    template, fail="Nya lösenordet måste vara likadant i båda fälten."
+                ),
+                400,
+            )
+
+        if len(data["new_password"]) <= 4:
+            return (
+                render_template(
+                    template, fail="Lösenord för kort, måste vara längre än 4."
+                ),
+                400,
+            )
+
+        # update user
+        sql_query(
+            f"UPDATE admins SET password = '{hash_password(data['new_password'])}' WHERE id = {session.get('admin_id')}"
+        )
+
+        # change password
+        return render_template(template, success="Lösenord bytt.")

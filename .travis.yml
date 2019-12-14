@@ -18,7 +18,7 @@ jobs:
         - black --check
     - stage: build docker image
       script:
-        - docker build . -t tullingegymnasium/booking_app:$TRAVIS_COMMIT
+        - docker build -t tullingegymnasium/booking_app:$TRAVIS_COMMIT -t tullingegymnasium/booking_app:latest .
       deploy:
         skip_cleanup: true
         provider: script

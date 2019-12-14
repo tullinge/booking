@@ -1,6 +1,7 @@
 # Booking
 
-[![Build Status](https://travis-ci.org/tullinge/booking.svg?branch=master)](https://travis-ci.org/tullinge/booking)
+[![Build Status](https://travis-ci.com/tullinge/booking.svg?branch=master)](https://travis-ci.com/tullinge/booking)
+[![Dependencies](https://img.shields.io/librariesio/github/tullinge/booking)](https://libraries.io/github/tullinge/booking)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/context:python)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/alerts/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -19,7 +20,7 @@ Demo site at [allaktivitetsdagen.tullingelabs.se](http://allaktivitetsdagen.tull
 
 1. `docker-compose up -d`
 2. `python scripts/setup_db.py`
-3. `python scripts/insert_demo_data.py`
+3. `python scripts/create_admin.py`
 4. `python main.py`
    
 ### Instructions (deployment)
@@ -27,7 +28,7 @@ Demo site at [allaktivitetsdagen.tullingelabs.se](http://allaktivitetsdagen.tull
 1. Set `DOCKER_HOST` and `MYSQL_PASSWORD`
 2. `docker-compose -f docker-compose.yml -f prod.yml up -d`
 3. `docker exec booking_app_1 python scripts/setup_db.py`
-4. `docker exec -it booking_app_1 python scripts/code_generator.py` ???
+4. `docker exec -it booking_app_1 python scripts/create_admin.py`
 
 ## User stories
 

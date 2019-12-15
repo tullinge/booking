@@ -14,10 +14,18 @@ from components.student import student_chosen_activity
 student_routes = Blueprint("student_routes", __name__, template_folder="../templates")
 
 
+# index
 @student_routes.route("/")
 @login_required
 @user_setup_completed
 def index():
+    """
+    Student index
+
+    * list available activities (GET)
+        - along with information about them (also how many spaces available)
+    """
+
     chosen_activity = student_chosen_activity()
     query = sql_query("SELECT * FROM activities")
 
@@ -34,9 +42,16 @@ def index():
     )
 
 
-# ------ login ------
+# login
 @student_routes.route("/login", methods=["GET", "POST"])
 def students_login():
+    """
+    Student authentication
+
+    * display login form (GET)
+    * validate and parse data, login if success (POST)
+    """
+
     if request.method == "GET":
         return render_template("student/login.html")
     else:
@@ -90,21 +105,34 @@ def students_login():
         return redirect("/setup")
 
 
-# ------ logout ------
+# logout
 @student_routes.route("/logout")
 @login_required
 def logout():
+    """
+    Student logout
+
+    * destory user session (GET)
+    """
+
     session.pop("logged_in", False)
     session.pop("id", None)
 
     return redirect("/login")
 
 
-# ------ setup ------
+# setup
 @student_routes.route("/setup", methods=["POST", "GET"])
 @login_required
 @user_not_setup
 def setup():
+    """
+    Student setup
+
+    * only show page if student has not yet configured it's user (GET)
+    * add first_name, last_name and school_class to student object (POST)
+    """
+
     school_classes = sql_query("SELECT * FROM school_classes")
 
     if request.method == "GET":
@@ -164,11 +192,18 @@ def setup():
         return redirect("/")
 
 
-# ------ selected activity ------
+# selected activity
 @student_routes.route("/activity/<id>", methods=["POST", "GET"])
 @login_required
 @user_setup_completed
 def selected_activity(id):
+    """
+    Selected activity
+
+    * show activity information (GET)
+    * book student to activity, if available spaces are still left (POST)
+    """
+
     if not is_integer(id):
         return (
             render_template(
@@ -314,11 +349,17 @@ def selected_activity(id):
         return redirect("/confirmation")
 
 
-# ------ confirmation  ------
+# confirmation
 @student_routes.route("/confirmation")
 @login_required
 @user_setup_completed
 def confirmation():
+    """
+    Confirmation page
+
+    * confirm the students new booking (GET)
+    """
+
     activity = student_chosen_activity()
 
     return render_template(

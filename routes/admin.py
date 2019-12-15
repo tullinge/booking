@@ -23,9 +23,16 @@ admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates
 
 BASEPATH = "/admin"
 
-# ------ login ------
+# admin login
 @admin_routes.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Admin authentication
+
+    * display login form (GET)
+    * parse and validate data, login if correct password (POST)
+    """
+
     if request.method == "GET":
         return render_template("admin/login.html")
     elif request.method == "POST":
@@ -90,27 +97,41 @@ def login():
         return redirect(f"{BASEPATH}/")
 
 
-# logout, pop session
+# admin logout, pop session
 @admin_routes.route("/logout")
 @admin_required
 def logout():
+    """
+    Destroy admin session and set admin_id as invalid
+    """
     session.pop("admin_logged_in", False)
     session.pop("admin_id", None)
 
     return redirect(f"{BASEPATH}/login")
 
 
-# ------ index ------
+# index
 @admin_routes.route("/")
 @admin_required
 def index():
+    """
+    Admin index
+    """
+
     return render_template("admin/index.html")
 
 
-# ------ activities ------
+# activities
 @admin_routes.route("/activities", methods=["POST", "GET"])
 @admin_required
 def activities():
+    """
+    Activities management
+
+    * list available activities (GET)
+    * create new activities (POST)
+    """
+
     template = "admin/activities.html"
     activities = get_activites_with_spaces()
 
@@ -181,10 +202,18 @@ def activities():
         )
 
 
-# ------ selected activity ------
+# selected activity
 @admin_routes.route("/activity/<id>", methods=["POST", "GET"])
 @admin_required
 def selected_activity(id):
+    """
+    Manage specific activity
+
+    * display activity information (GET)
+    * display questions attatched to this activity (GET)
+    * create new questions for this activity (POST)
+    """
+
     template = "admin/activity.html"
 
     if not is_integer(id):
@@ -266,9 +295,18 @@ def selected_activity(id):
         )
 
 
+# view question
 @admin_routes.route("/question/<id>", methods=["POST", "GET"])
 @admin_required
 def question_id(id):
+    """
+    Manage question options, requires specific question id
+    question must not be of type written_answer
+
+    * list existing options for this question (GET)
+    * create new options for this question (POST)
+    """
+
     template = "admin/view_question.html"
 
     if not is_integer(id):
@@ -343,9 +381,18 @@ def question_id(id):
         )
 
 
+# booked students to specific activity
 @admin_routes.route("/activity/<id>/students")
 @admin_required
 def activity_students(id):
+    """
+    Students booked to activity
+
+    * display all students booked to this activity (GET)
+        - along with any answers to questions available for this activity
+    * (hopefully) printer friendly
+    """
+
     if not is_integer(id):
         return (
             render_template(
@@ -397,10 +444,18 @@ def activity_students(id):
     )
 
 
-# ------ add/remove admin users ------
+# admin user management
 @admin_routes.route("/users", methods=["GET", "POST"])
 @admin_required
 def admin_users():
+    """
+    Admin user management
+
+    * list all existing admin users (GET)
+    * delete existing admin users (POST)
+    * create new admin users (POST)
+    """
+
     template = "admin/users.html"
     query = "SELECT id, name, username FROM admins"
     admins = sql_query(query)
@@ -530,10 +585,17 @@ def admin_users():
         return render_template(template, admins=admins, fail="Felaktig begäran."), 400
 
 
-# ------ add/remove students ------
+# student codes
 @admin_routes.route("/students", methods=["GET", "POST"])
 @admin_required
 def students():
+    """
+    Student account management
+
+    * list all students/codes (GET)
+    * create new codes, show them to admin (POST)
+    """
+
     students = None
     if request.args.get("show"):
         students = sql_query("SELECT * FROM students")
@@ -589,10 +651,18 @@ def students():
         )
 
 
-# ------ add/remove school classes ------
+# school classes management
 @admin_routes.route("/classes", methods=["POST", "GET"])
 @admin_required
 def school_classes():
+    """
+    School classes management
+
+    * list available school_classes (GET)
+    * create new school_classes (POST)
+    * delete existing school_classes (POST)
+    """
+
     template = "admin/school_classes.html"
     school_classes = sql_query("SELECT * FROM school_classes")
 
@@ -708,6 +778,12 @@ def school_classes():
 @admin_routes.route("/changepassword", methods=["POST", "GET"])
 @admin_required
 def change_password():
+    """
+    Change account password
+
+    * display form (GET)
+    * change password for logged in admin (POST)
+    """
     template = "admin/changepassword.html"
 
     # view page

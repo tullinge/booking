@@ -4,19 +4,19 @@
 {% include "admin/navbar.html" %}
     <div class="content">
         {% if fail %}
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger no-print" role="alert">
             <p>{{ fail }}</p>
         </div>
         {% endif %}
     
         {% if success %}
-        <div class="alert alert-success" role="alert">
+        <div class="alert alert-success no-print" role="alert">
             <p>{{ success }}</p>
         </div>
         {% endif %}
         <h1>Elever</h1>
     
-        <form action="/admin/students" method="post">
+        <form class="no-print" action="/admin/students" method="post">
             <div class="form-group">
                 <label for="generate_codes">Hur många lösenord vill du ha?</label>
                 <input name="generate_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
@@ -25,17 +25,16 @@
         </form>
     
         <a href="/admin/students?show=all">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary no-print">
                 Visa alla elever
             </button>
         </a>
     
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning no-print" role="alert">
             <p>Om du visar alla elever och har skapat många koder i systemet kan det vara svårt att visa sidan (lång lista).</p>
         </div>
     
-    
-        {% if students %}
+        {% if students %}    
         <h2>Elever</h2>
         <table class="table">
             <thead>
@@ -62,6 +61,10 @@
         {% endif %}
     
         {% if new_codes %}
+        <button onclick="window.print();" class="btn btn-primary no-print">
+            Skriv ut
+        </button>
+
         <h2>Nya koder som skapats</h2>
         <table class="table">
             <thead>

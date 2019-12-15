@@ -27,3 +27,11 @@ body {
     padding-top: 1.5em;
     font-style: italic;
 }
+
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

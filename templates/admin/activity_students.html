@@ -4,6 +4,9 @@
 {% include "admin/navbar.html" %}
     <div class="content">
         <h1>Elever som bokat aktivitet {{ activity[1] }}</h1>
+        <button onclick="window.print();" class="btn btn-primary no-print">
+            Skriv ut
+        </button>
 
         <table class="table">
             <thead>
@@ -27,5 +30,8 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <p>Utskriftsdatum: {{ generation_time }}</p>
     </div>
+
 {% endblock %}

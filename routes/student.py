@@ -55,7 +55,7 @@ def students_login():
     if request.method == "GET":
         return render_template("student/login.html")
     else:
-        password = request.form["password"]
+        password = request.form["password"].upper()
 
         if not password:
             return render_template("student/login.html", fail="Saknar lösenord."), 400

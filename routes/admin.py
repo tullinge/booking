@@ -37,13 +37,27 @@ def login():
             return render_template("admin/login.html", fail="Saknar variabler."), 400
 
         if len(username) >= 255 or len(password) >= 255:
-            return render_template("admin/login.html", fail="För lång input."), 400
+            return (
+                render_template(
+                    "admin/login.html", fail="För långt användarnamn/lösenord."
+                ),
+                400,
+            )
 
-        if len(password) <= 4:
-            return render_template("admin/login.html", fail="För kort lösenord."), 400
+        if len(password) < 8 or len(username) < 4:
+            return (
+                render_template(
+                    "admin/login.html", fail="För kort användarnamn/lösenord."
+                ),
+                400,
+            )
 
         if not is_valid_input(
-            username, allow_punctuation=False, allow_space=False, swedish=False
+            username,
+            allow_punctuation=False,
+            allow_space=False,
+            swedish=False,
+            allow_newline=False,
         ):
             return (
                 render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
@@ -76,6 +90,7 @@ def login():
         return redirect(f"{BASEPATH}/")
 
 
+# logout, pop session
 @admin_routes.route("/logout")
 @admin_required
 def logout():
@@ -475,6 +490,31 @@ def admin_users():
                     400,
                 )
 
+            # check for length
+            for k, v in data.items():
+                if (
+                    len(v) >= 255 or len(v) < 4 and k != "request_type"
+                ):  # request_type is ignored from this validation
+                    return (
+                        render_template(
+                            template,
+                            admins=admins,
+                            fail=f"{k} för kort eller för långt (4-255).",
+                        ),
+                        400,
+                    )
+
+                if k == "password":
+                    if len(v) < 8:
+                        return (
+                            render_template(
+                                template,
+                                admins=admins,
+                                fail="Lösenordet måste vara minst 8 karaktärer långt.",
+                            ),
+                            400,
+                        )
+
             # create new user
             sql_query(
                 f"INSERT INTO admins (name, username, password) VALUES ('{data['name']}', '{data['username']}', '{hash_password(data['password'])}')"
@@ -707,10 +747,11 @@ def change_password():
                 400,
             )
 
-        if len(data["new_password"]) <= 4:
+        if len(data["new_password"]) < 8:
             return (
                 render_template(
-                    template, fail="Lösenord för kort, måste vara längre än 4."
+                    template,
+                    fail="Lösenord för kort, måste vara längre än 8 karaktärer.",
                 ),
                 400,
             )

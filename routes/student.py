@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, redirect, request, session
 
 # components import
 from components.core import is_valid_input, is_integer, calculate_available_spaces
+from components.limiter_obj import limiter
 from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
 from components.student import student_chosen_activity
@@ -44,6 +45,7 @@ def index():
 
 # login
 @student_routes.route("/login", methods=["GET", "POST"])
+@limiter.limit("200 per hour")
 def students_login():
     """
     Student authentication
@@ -123,6 +125,7 @@ def logout():
 
 # setup
 @student_routes.route("/setup", methods=["POST", "GET"])
+@limiter.limit("500 per hour")
 @login_required
 @user_not_setup
 def setup():
@@ -220,6 +223,7 @@ def setup():
 
 # selected activity
 @student_routes.route("/activity/<id>", methods=["POST", "GET"])
+@limiter.limit("500 per hour")
 @login_required
 @user_setup_completed
 def selected_activity(id):
@@ -377,6 +381,7 @@ def selected_activity(id):
 
 # confirmation
 @student_routes.route("/confirmation")
+@limiter.limit("500 per hour")
 @login_required
 @user_setup_completed
 def confirmation():

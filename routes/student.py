@@ -133,10 +133,11 @@ def setup():
     * add first_name, last_name and school_class to student object (POST)
     """
 
+    template = "student/setup.html"
     school_classes = sql_query("SELECT * FROM school_classes")
 
     if request.method == "GET":
-        return render_template("student/setup.html", school_classes=school_classes)
+        return render_template(template, school_classes=school_classes)
     elif request.method == "POST":
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
@@ -144,18 +145,40 @@ def setup():
 
         # all input variables need to be present
         if not first_name or not last_name or not school_class:
-            return render_template(
-                "student/setup.html",
-                school_classes=school_classes,
-                fail="Saknar variabler.",
+            return (
+                render_template(
+                    template, school_classes=school_classes, fail="Saknar variabler.",
+                ),
+                400,
             )
+
+        # check for length
+        for k, v in request.form.items():
+            if len(v) < 4 or len(v) > 50:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail=f"{k} är för lång eller för kort.",
+                    ),
+                    400,
+                )
+
+            if k == "class":
+                if len(v) > 10:
+                    return (
+                        render_template(
+                            template,
+                            school_classes=school_classes,
+                            fail="Klassnamn får inte vara längre än 10 tecken.",
+                        ),
+                        400,
+                    )
 
         # make sure to validate input variables against string authentication
         if (
-            not is_valid_input(first_name, allow_newline=False, allow_punctuation=False)
-            or not is_valid_input(
-                last_name, allow_newline=False, allow_punctuation=False
-            )
+            not is_valid_input(first_name, allow_newline=False)
+            or not is_valid_input(last_name, allow_newline=False)
             or not is_valid_input(
                 school_class,
                 allow_newline=False,
@@ -163,10 +186,13 @@ def setup():
                 allow_space=False,
             )
         ):
-            return render_template(
-                "student/setup.html",
-                school_classes=school_classes,
-                fail="Icke tillåtna karaktärer. Endast alfabetet och siffror tillåts.",
+            return (
+                render_template(
+                    "student/setup.html",
+                    school_classes=school_classes,
+                    fail="Icke tillåtna karaktärer. Endast alfabetet och siffror tillåts.",
+                ),
+                400,
             )
 
         # verify that the school_class provided by the user actually is valid
@@ -174,7 +200,7 @@ def setup():
             school_classes
         ):  # poorly validated, but should be sufficient
             return render_template(
-                "student/setup.html",
+                template,
                 school_classes=school_classes,
                 fail="Angiven skolklass existerar inte.",
             )

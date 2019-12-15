@@ -154,12 +154,12 @@ def setup():
 
         # check for length
         for k, v in request.form.items():
-            if len(v) < 4 or len(v) > 50:
+            if len(v) < 1 or len(v) > 50:
                 return (
                     render_template(
                         template,
                         school_classes=school_classes,
-                        fail=f"{k} är för lång eller för kort.",
+                        fail=f"{k} är för lång eller för kort (1-50).",
                     ),
                     400,
                 )

@@ -15,7 +15,7 @@ Demo site at [allaktivitetsdagen.tullingelabs.se](http://allaktivitetsdagen.tull
 
 - Docker & docker-compose
 - Python 3
-- Python libraries (look in `requirements.txt`)
+- Python libraries (look in `requirements.txt`, can be installed using `pip install -r requirements.txt`)
 
 ### Instructions (running locally)
 

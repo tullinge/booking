@@ -7,6 +7,8 @@ import binascii
 import os
 import random
 
+from flask import request
+
 from components.db import sql_query
 
 
@@ -92,3 +94,12 @@ def random_string(length=10):
     return "".join(
         random.choice(string.ascii_uppercase + string.digits) for i in range(length)
     )
+
+
+def get_client_ip():
+    if request.environ.get("HTTP_X_FORWARDED_FOR") is None:
+        remote_ip = request.environ["REMOTE_ADDR"]
+    else:
+        remote_ip = request.environ["HTTP_X_FORWARDED_FOR"]
+
+    return remote_ip

@@ -11,6 +11,7 @@ from components.core import (
     calculate_available_spaces,
     is_integer,
 )
+from components.limiter_obj import limiter
 from components.decorators import admin_required
 from components.codes import generate_codes
 from components.admin import (
@@ -25,6 +26,7 @@ BASEPATH = "/admin"
 
 # admin login
 @admin_routes.route("/login", methods=["GET", "POST"])
+@limiter.limit("100 per hour")
 def login():
     """
     Admin authentication

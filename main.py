@@ -11,6 +11,9 @@ from version import version
 # import session
 from flask_session.__init__ import Session
 
+# import limiter
+from components.limiter_obj import limiter
+
 # import blueprints
 from routes.admin import admin_routes
 from routes.student import student_routes
@@ -18,7 +21,14 @@ from routes.student import student_routes
 # redis
 import redis
 
+# flask application
 app = Flask(__name__)
+
+# setup rate limit
+app.config[
+    "RATELIMIT_STORAGE_URL"
+] = f"redis://{environ.get('REDIS_HOST', 'localhost')}"
+limiter.init_app(app)
 
 # minify
 minify(app=app)
@@ -43,6 +53,11 @@ def error_404(e):
 @app.errorhandler(405)
 def error_405(e):
     return render_template("errors/405.html"), 405
+
+
+@app.errorhandler(429)
+def error_429(e):
+    return render_template("errors/429.html"), 429
 
 
 @app.errorhandler(500)

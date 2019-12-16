@@ -5,7 +5,12 @@
 from flask import Blueprint, render_template, redirect, request, session
 
 # components import
-from components.core import is_valid_input, is_integer, calculate_available_spaces
+from components.core import (
+    is_valid_input,
+    basic_validation,
+    is_integer,
+    calculate_available_spaces,
+)
 from components.limiter_obj import limiter
 from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
@@ -58,13 +63,15 @@ def students_login():
     if request.method == "GET":
         return render_template("student/login.html")
     else:
+        expected_values = ["password"]
+
+        if not basic_validation(expected_values):
+            return render_template(template, fail="Saknar/felaktig data."), 400
+
         password = request.form["password"]
 
-        if not password:
-            return render_template(template, fail="Saknar lösenord."), 400
-
         if not len(password) == 8:
-            return render_template(template, fail="Fel längd."), 400
+            return render_template(template, fail="Lösenordet har fel längd."), 400
 
         if not is_valid_input(
             password,
@@ -143,18 +150,16 @@ def setup():
     if request.method == "GET":
         return render_template(template, school_classes=school_classes)
     elif request.method == "POST":
+        expected_values = ["first_name", "last_name", "class"]
+
+        if not basic_validation(expected_values):
+            return render_template(
+                template, school_classes=school_classes, fail="Saknar/felaktig data."
+            )
+
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
         school_class = request.form["class"]
-
-        # all input variables need to be present
-        if not first_name or not last_name or not school_class:
-            return (
-                render_template(
-                    template, school_classes=school_classes, fail="Saknar variabler.",
-                ),
-                400,
-            )
 
         # check for length
         for k, v in request.form.items():

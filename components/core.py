@@ -44,6 +44,23 @@ def is_valid_input(
     return True
 
 
+def basic_validation(expected_values):
+    """
+    Basic input/form validation, checks if all expected values are present
+
+    :param expected_values, list of values that should be defined
+    """
+
+    if len(request.form) is not len(expected_values):
+        return False
+
+    for v in expected_values:
+        if not request.form.get(v):
+            return False
+
+    return True
+
+
 def is_integer(variable):
     try:
         int(variable)

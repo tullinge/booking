@@ -11,6 +11,7 @@ jobs:
 
       install:
         - pip3 install flake8 black
+        - pip3 install regex
 
       script:
         - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

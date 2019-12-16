@@ -706,7 +706,7 @@ def school_classes():
                     400,
                 )
             
-            class_check = sql_query(f"""SELECT class_name FROM school_classes WHEAR class_name={data["class_name"]}""")
+            class_check = sql_query(f"""SELECT * FROM `school_classes` WHEAR `class_name` = BINARY '{data["class_name"]}' """)
 
             if not class_check:
                 return (

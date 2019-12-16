@@ -51,17 +51,18 @@ def students_login():
     * display login form (GET)
     * validate and parse data, login if success (POST)
     """
+    template = "student/login.html"
 
     if request.method == "GET":
         return render_template("student/login.html")
     else:
-        password = request.form["password"].upper()
+        password = request.form["password"]
 
         if not password:
-            return render_template("student/login.html", fail="Saknar lösenord."), 400
+            return render_template(template, fail="Saknar lösenord."), 400
 
         if not len(password) == 8:
-            return render_template("student/login.html", fail="Fel längd."), 400
+            return render_template(template, fail="Fel längd."), 400
 
         if not is_valid_input(
             password,
@@ -72,7 +73,7 @@ def students_login():
         ):
             return (
                 render_template(
-                    "student/login.html",
+                    template,
                     fail="Icke tillåtna kaktärer. Endast alfabetet och siffror tillåts.",
                 ),
                 400,
@@ -85,7 +86,7 @@ def students_login():
 
         if not student:
             return render_template(
-                "student/login.html", fail="Användaren existerar inte/fel lösenord."
+                template, fail="Användaren existerar inte/fel lösenord."
             )
 
         # means user is authentication

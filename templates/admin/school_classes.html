@@ -36,6 +36,11 @@
                     <input type="hidden" id="id" name="id" value="{{ class[0] }}">
                     <button type="submit" class="btn btn-primary">Radera</button>
                 </form>
+                <a href="/admin/classes/{{ class[0] }}/students">
+                    <button class="btn btn-primary">
+                        Visa elever som registrerat sig i denna klass
+                    </button>
+                </a>
             </li>
             {% endfor %}
         </ul>

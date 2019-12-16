@@ -118,7 +118,14 @@ def index():
     Admin index
     """
 
-    return render_template("admin/index.html")
+    amount_activities = len(sql_query("SELECT * FROM activities"))
+    amount_students = len(sql_query("SELECT * FROM students"))
+
+    return render_template(
+        "admin/index.html",
+        amount_activities=amount_activities,
+        amount_students=amount_students,
+    )
 
 
 # activities

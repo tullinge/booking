@@ -18,6 +18,7 @@ jobs:
         - black --check
     - stage: build docker image
       script:
+        - sed -i "s/development/$TRAVIS_COMMIT/g" version.py
         - docker build -t tullingegymnasium/booking_app:latest .
       deploy:
         skip_cleanup: true

@@ -43,7 +43,7 @@ def inject_version():
     )
 
 
-# error routesU
+# error routes
 @app.errorhandler(400)
 def error_400(e):
     return render_template("errors/400.html"), 400
@@ -82,9 +82,6 @@ Session(app)
 # register blueprints
 app.register_blueprint(admin_routes, url_prefix="/admin")
 app.register_blueprint(student_routes, url_prefix="/")
-
-# from components.blueprints.google_auth import auth_app
-# app.register_blueprint(auth_app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

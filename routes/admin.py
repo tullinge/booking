@@ -122,9 +122,10 @@ def index():
 
     amount_activities = len(sql_query("SELECT * FROM activities"))
     amount_codes = len(sql_query("SELECT * FROM students"))
-    amount_students_setup = sql_query("SELECT COUNT(chosen_activity) FROM students WHERE chosen_activity <> NULL;")
-    amount_students_setup = amount_students_setup [0][0] 
-
+    amount_students_setup = sql_query(
+        "SELECT COUNT(chosen_activity) FROM students WHERE chosen_activity <> NULL;"
+    )
+    amount_students_setup = amount_students_setup[0][0]
 
     return render_template(
         "admin/index.html",
@@ -704,6 +705,20 @@ def school_classes():
                     ),
                     400,
                 )
+            
+            class_check = sql_query(
+                f"""SELECT * FROM `school_classes` WHEAR `class_name` = BINARY '{data["class_name"]}' """
+                )
+
+            if class_check:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="klass finns redan.",
+                    ),
+                    400,
+                )
 
             if not is_valid_input(
                 data["class_name"],
@@ -785,6 +800,44 @@ def school_classes():
             ),
             400,
         )
+
+
+# show students per class
+@admin_routes.route("/classes/<id>/students")
+@admin_required
+def student_classes(id):
+    """
+    Show students registrered to class
+
+    * display list of all students (GET)
+    """
+
+    template = "admin/class_students.html"
+
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer"
+            ),
+            400,
+        )
+
+    school_class = sql_query(f"SELECT * FROM school_classes WHERE id={id}")
+
+    if not school_classes:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Class does not exist."
+            ),
+            400,
+        )
+
+    # show students with  class defined as this one
+    students = sql_query(
+        f"SELECT id, first_name, last_name, class, chosen_activity FROM students WHERE class='{school_class[0][1]}'"
+    )
+
+    return render_template(template, school_class=school_class[0], students=students)
 
 
 # change password

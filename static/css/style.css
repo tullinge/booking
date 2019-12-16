@@ -28,6 +28,11 @@ body {
     font-style: italic;
 }
 
+button {
+    margin-top: 0.1em !important;
+    margin-bottom: 0.1em !important;
+}
+
 @media print
 {    
     .no-print, .no-print *

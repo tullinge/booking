@@ -119,7 +119,7 @@ def index():
     """
 
     amount_activities = len(sql_query("SELECT * FROM activities"))
-    amount_students = len(sql_query("SELECT * FROM students"))
+    amount_codes = len(sql_query("SELECT * FROM students"))
     amount_students_setup = sql_query("SELECT COUNT(chosen_activity) FROM students WHERE chosen_activity <> NULL;")
     amount_students_setup = amount_students_setup [0][0] 
 
@@ -127,7 +127,7 @@ def index():
     return render_template(
         "admin/index.html",
         amount_activities=amount_activities,
-        amount_students=amount_students,
+        amount_codes=amount_codes,
         amount_students_setup=amount_students_setup,
     )
 

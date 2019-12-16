@@ -34,7 +34,11 @@
             <p>Om du visar alla elever och har skapat många koder i systemet kan det vara svårt att visa sidan (lång lista).</p>
         </div>
     
-        {% if students %}    
+        {% if students %}
+        <button onclick="window.print();" class="btn btn-primary no-print">
+            Skriv ut
+        </button>
+          
         <h2>Elever</h2>
         <table class="table">
             <thead>

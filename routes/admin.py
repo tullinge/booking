@@ -705,6 +705,18 @@ def school_classes():
                     ),
                     400,
                 )
+            
+            class_check = sql_query(f"""SELECT class_name FROM school_classes WHEAR class_name={data["class_name"]}""")
+
+            if not class_check:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="klass finns redan.",
+                    ),
+                    400,
+                )
 
             if not is_valid_input(
                 data["class_name"],

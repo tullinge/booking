@@ -13,7 +13,7 @@ from components.core import (
 )
 from components.limiter_obj import limiter
 from components.decorators import admin_required
-from components.codes import generate_codes
+from components.codes import generate_code
 from components.admin import (
     get_activites_with_spaces,
     get_activity_questions_and_options,
@@ -600,14 +600,13 @@ def admin_users():
 
 
 # student codes
-@admin_routes.route("/students", methods=["GET", "POST"])
+@admin_routes.route("/students", methods=["GET"])
 @admin_required
 def students():
     """
     Student account management
 
     * list all students/codes (GET)
-    * create new codes, show them to admin (POST)
     """
 
     students = None
@@ -616,53 +615,6 @@ def students():
 
     if request.method == "GET":
         return render_template("admin/students.html", students=students)
-    elif request.method == "POST":
-        data = request.form
-
-        if not data:
-            return (
-                render_template(
-                    "admin/students.html",
-                    students=students,
-                    fail="Ingen data skickades.",
-                ),
-                400,
-            )
-
-        if not data["generate_codes"]:
-            return (
-                render_template(
-                    "admin/students.html",
-                    students=students,
-                    fail="Felaktig data skickades.",
-                ),
-                400,
-            )
-
-        if not is_integer(data["generate_codes"]):
-            return (
-                render_template(
-                    "admin/students.html",
-                    students=students,
-                    fail="Antal måste vara heltal",
-                ),
-                400,
-            )
-
-        if len(data["generate_codes"]) > 13:
-            return (
-                render_template(
-                    "admin/students.html", students=students, fail="För stort tal."
-                ),
-                400,
-            )
-
-        # successful
-        new_codes = generate_codes(data["generate_codes"])
-
-        return render_template(
-            "admin/students.html", new_codes=new_codes, success="Nya koder har skapats."
-        )
 
 
 # school classes management
@@ -734,7 +686,7 @@ def school_classes():
 
             # create
             sql_query(
-                f"INSERT INTO school_classes (class_name) VALUES ('{data['class_name']}')"
+                f"INSERT INTO school_classes (class_name, password) VALUES ('{data['class_name']}', '{generate_code()}')"
             )
 
             # re-fetch
@@ -771,6 +723,9 @@ def school_classes():
 
             # delete
             sql_query(f"DELETE FROM school_classes WHERE id={data['id']}")
+
+            # update students
+            sql_query(f"UPDATE students SET class_id=NULL WHERE class_id={data['id']}")
 
             # re-fetch
             school_classes = sql_query("SELECT * FROM school_classes")
@@ -820,7 +775,7 @@ def student_classes(id):
 
     # show students with  class defined as this one
     students = sql_query(
-        f"SELECT id, first_name, last_name, class, chosen_activity FROM students WHERE class='{school_class[0][1]}'"
+        f"SELECT id, first_name, last_name, chosen_activity FROM students WHERE class_id={school_class[0][0]}"
     )
 
     return render_template(template, school_class=school_class[0], students=students)

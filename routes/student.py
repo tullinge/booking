@@ -160,66 +160,44 @@ def setup():
     """
 
     template = "student/setup.html"
-    school_classes = sql_query("SELECT * FROM school_classes")
 
     if request.method == "GET":
-        return render_template(template, school_classes=school_classes)
+        return render_template(template)
     elif request.method == "POST":
-        expected_values = ["class"]
+        expected_values = ["join_code"]
 
         if not basic_validation(expected_values):
-            return render_template(
-                template, school_classes=school_classes, fail="Saknar/felaktig data."
-            )
+            return render_template(template, fail="Saknar/felaktig data.")
 
-        school_class = request.form["class"]
+        join_code = request.form["join_code"]
 
-        # check for length
-        for k, v in request.form.items():
-            if k == "class":
-                if len(v) > 10 or len(v) > 50:
-                    return (
-                        render_template(
-                            template,
-                            school_classes=school_classes,
-                            fail="Klassnamn får inte vara längre än 10 tecken.",
-                        ),
-                        400,
-                    )
+        if len(join_code) != 8:
+            return render_template(template, fail="Fel längd på kod."), 40
 
         # make sure to validate input variables against string authentication
         if not is_valid_input(
-            school_class,
-            allow_newline=False,
-            allow_punctuation=False,
-            allow_space=False,
+            join_code, allow_newline=False, allow_punctuation=False, allow_space=False,
         ):
             return (
-                render_template(
-                    "student/setup.html",
-                    school_classes=school_classes,
-                    fail="Icke tillåtna karaktärer. Endast alfabetet och siffror tillåts.",
-                ),
+                render_template(template, fail="Icke tillåtna karaktärer.",),
                 400,
             )
 
-        # verify that the school_class provided by the user actually is valid
-        if school_class not in str(
-            school_classes
-        ):  # poorly validated, but should be sufficient
-            return render_template(
-                template,
-                school_classes=school_classes,
-                fail="Angiven skolklass existerar inte.",
-            )
+        # verify code
+        school_class = sql_query(
+            f"SELECT * FROM school_classes WHERE password='{join_code}'"
+        )
+
+        if not school_class:
+            return render_template(template, fail="Felaktig kod.",), 400
 
         # passed validation, update user variables
         sql_query(
-            f"UPDATE students SET class = '{school_class}' WHERE id={session['id']}"
+            f"UPDATE students SET class_id={school_class[0][0]}  WHERE id={session['id']}"
         )
 
         # if above fails, would raise exception
-        session["school_class"] = school_class
+        session["school_class"] = school_class[0][1]
 
         # redirect to index
         return redirect("/")

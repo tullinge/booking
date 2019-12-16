@@ -3,26 +3,8 @@
 {% block body %}
 {% include "admin/navbar.html" %}
     <div class="content">
-        {% if fail %}
-        <div class="alert alert-danger no-print" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success no-print" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
         <h1>Elever</h1>
-    
-        <form class="no-print" action="/admin/students" method="post">
-            <div class="form-group">
-                <label for="generate_codes">Hur många lösenord vill du ha?</label>
-                <input name="generate_codes" type="text" class="form-control" id="amount_of_codes" placeholder="Antal koder">
-            </div>
-            <button type="submit" class="btn btn-primary">Skicka</button>
-        </form>
+        <p>Visar elever som har loggat in med sina Google konton minst en gång. Notera att elever som har loggat in men som saknar klass <b>kan</b> vara elever utanför Tullinge gymnasium.</p>
     
         <a href="/admin/students?show=all">
             <button class="btn btn-primary no-print">
@@ -44,7 +26,7 @@
             <thead>
                 <tr>
                 <th scope="col">#</th>
-                <th scope="col">Kod</th>
+                <th scope="col">E-mail (kopplad via Google)</th>
                 <th scope="col">Namn</th>
                 <th scope="col">Klass</th>
                 <th scope="col">Vald aktivitet</th>
@@ -63,28 +45,7 @@
             </tbody>
         </table>
         {% endif %}
-    
-        {% if new_codes %}
-        <button onclick="window.print();" class="btn btn-primary no-print">
-            Skriv ut
-        </button>
 
-        <h2>Nya koder som skapats</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">Kod</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for code in new_codes %}
-                <tr>
-                    <th scope="row">{{ code }}</th>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
         <p>Utskriftsdatum: {{ generation_time }}</p>
     </div>
 {% endblock %}

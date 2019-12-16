@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% block title %} - Logga in{% endblock %}
 {% block custom_head %}
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <style>
 .footer div {
     text-align: center;
 }
+.g-signin2 {
+    margin: auto;
+}
 </style>
+<meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}">
 {% endblock %}
 {% block body %}
     <div class="content login-content">
@@ -23,14 +28,22 @@
         </div>
         {% endif %}
     
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label for="password">Kod</label>
-                <input name="password" type="text" class="form-control" id="password" placeholder="Password">
-            </div>
-    
-    
-            <button type="submit" class="btn btn-primary">Logga in</button>
-        </form>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        
+        <script>
+        function onSignIn(googleUser) {
+            var id_token = googleUser.getAuthResponse().id_token;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/callback');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                console.log('Signed in as');
+                window.location.replace("/setup");
+            };
+            xhr.send('idtoken=' + id_token);
+        }
+        </script>
     </div>
 {% endblock %}
+

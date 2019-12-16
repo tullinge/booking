@@ -2,7 +2,13 @@
 # https://github.com/tullinge/booking
 
 # imports
+import os
 from flask import Blueprint, render_template, redirect, request, session
+
+# google API (and auth)
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import requests as requests_module
 
 # components import
 from components.core import (
@@ -19,6 +25,9 @@ from components.student import student_chosen_activity
 # blueprint init
 student_routes = Blueprint("student_routes", __name__, template_folder="../templates")
 
+# variables
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", default=False)
+GSUITE_DOMAIN_NAME = os.environ.get("GSUITE_DOMAIN_NAME", default=False)
 
 # index
 @student_routes.route("/")
@@ -49,70 +58,76 @@ def index():
 
 
 # login
-@student_routes.route("/login", methods=["GET", "POST"])
+@student_routes.route("/login")
 @limiter.limit("200 per hour")
 def students_login():
-    """
-    Student authentication
+    return render_template("student/login.html", GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID)
 
-    * display login form (GET)
-    * validate and parse data, login if success (POST)
-    """
-    template = "student/login.html"
 
-    if request.method == "GET":
-        return render_template("student/login.html")
-    else:
-        expected_values = ["password"]
+@student_routes.route("/callback", methods=["POST"])
+def students_callback():
+    if not basic_validation(["idtoken"]):
+        return "Missing request data", 400
 
-        if not basic_validation(expected_values):
-            return render_template(template, fail="Saknar/felaktig data."), 400
+    token = request.form["idtoken"]
 
-        password = request.form["password"]
-
-        if not len(password) == 8:
-            return render_template(template, fail="Lösenordet har fel längd."), 400
-
-        if not is_valid_input(
-            password,
-            allow_newline=False,
-            allow_space=False,
-            allow_punctuation=False,
-            swedish=False,
-        ):
-            return (
-                render_template(
-                    template,
-                    fail="Icke tillåtna kaktärer. Endast alfabetet och siffror tillåts.",
-                ),
-                400,
-            )
-
-        # authentication
-        student = sql_query(
-            f"SELECT * FROM `students` WHERE `password` = BINARY '{password}'"
+    try:
+        # Specify the CLIENT_ID of the app that accesses the backend:
+        idinfo = id_token.verify_oauth2_token(
+            token, requests.Request(), GOOGLE_CLIENT_ID
         )
 
-        if not student:
-            return render_template(
-                template, fail="Användaren existerar inte/fel lösenord."
-            )
+        # Or, if multiple clients access the backend server:
+        # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+        # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+        #     raise ValueError('Could not verify audience.')
 
-        # means user is authentication
-        session["id"] = student[0][0]
-        session["logged_in"] = True
+        if idinfo["iss"] not in ["accounts.google.com", "https://accounts.google.com"]:
+            return "Wrong issuer", 400
+            # raise ValueError('Wrong issuer.')
 
-        # try to set fullname if user has already configured
-        student = student[0]
+        # If auth request is from a G Suite domain:
+        if idinfo["hd"] != GSUITE_DOMAIN_NAME:
+            return "Wrong hosted domain", 400
+            # raise ValueError('Wrong hosted domain.')
 
-        if student[2] and student[3]:
-            session["fullname"] = f"{student[3]} {student[2]}"
+        # ID token is valid. Get the user's Google Account ID from the decoded token.
+        userid = idinfo["sub"]
+    except ValueError:
+        # Invalid token
+        return "Invalid token", 400
 
-        if student[4]:
-            session["school_class"] = student[4]
+    # user signed in
+    r = requests_module.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
 
-        # if come this far, we'll redirect to the /setup page
-        return redirect("/setup")
+    if r.status_code is not requests_module.codes.ok:
+        return "could not verify token", 400
+
+    data = r.json()
+
+    # verify
+    if data["aud"] != GOOGLE_CLIENT_ID:
+        return "'aud' is not valid!", 400
+
+    existing_student = sql_query(
+        f"SELECT * FROM students WHERE email='{data['email']}'"
+    )
+
+    # check if email exists in students
+    if not existing_student:
+        # create new object
+        sql_query(
+            f"INSERT INTO students (email, last_name, first_name) VALUES ('{data['email']}', '{data['family_name']}', '{data['given_name']}')"
+        )
+        existing_student = sql_query(
+            f"SELECT * FROM students WHERE email='{data['email']}'"
+        )
+
+    session["fullname"] = f"{data['given_name']} {data['family_name']}"
+    session["logged_in"] = True
+    session["id"] = existing_student[0][0]
+
+    return "Authenticated"
 
 
 # logout
@@ -150,31 +165,19 @@ def setup():
     if request.method == "GET":
         return render_template(template, school_classes=school_classes)
     elif request.method == "POST":
-        expected_values = ["first_name", "last_name", "class"]
+        expected_values = ["class"]
 
         if not basic_validation(expected_values):
             return render_template(
                 template, school_classes=school_classes, fail="Saknar/felaktig data."
             )
 
-        first_name = request.form["first_name"]
-        last_name = request.form["last_name"]
         school_class = request.form["class"]
 
         # check for length
         for k, v in request.form.items():
-            if len(v) < 1 or len(v) > 50:
-                return (
-                    render_template(
-                        template,
-                        school_classes=school_classes,
-                        fail=f"{k} är för lång eller för kort (1-50).",
-                    ),
-                    400,
-                )
-
             if k == "class":
-                if len(v) > 10:
+                if len(v) > 10 or len(v) > 50:
                     return (
                         render_template(
                             template,
@@ -185,15 +188,11 @@ def setup():
                     )
 
         # make sure to validate input variables against string authentication
-        if (
-            not is_valid_input(first_name, allow_newline=False)
-            or not is_valid_input(last_name, allow_newline=False)
-            or not is_valid_input(
-                school_class,
-                allow_newline=False,
-                allow_punctuation=False,
-                allow_space=False,
-            )
+        if not is_valid_input(
+            school_class,
+            allow_newline=False,
+            allow_punctuation=False,
+            allow_space=False,
         ):
             return (
                 render_template(
@@ -216,11 +215,10 @@ def setup():
 
         # passed validation, update user variables
         sql_query(
-            f"UPDATE students SET first_name = '{first_name}', last_name = '{last_name}', class = '{school_class}' WHERE id={session['id']}"
+            f"UPDATE students SET class = '{school_class}' WHERE id={session['id']}"
         )
 
         # if above fails, would raise exception
-        session["fullname"] = f"{first_name} {last_name}"
         session["school_class"] = school_class
 
         # redirect to index

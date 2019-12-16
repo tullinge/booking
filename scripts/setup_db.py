@@ -83,7 +83,7 @@ def create_tabels():
         """
         CREATE TABLE students (
             id INT NOT NULL AUTO_INCREMENT,
-            password VARCHAR(8) NOT NULL UNIQUE,
+            email VARCHAR(255) NOT NULL UNIQUE,
             last_name VARCHAR(50) DEFAULT NULL,
             first_name VARCHAR(50) DEFAULT NULL,
             class VARCHAR(10) DEFAULT NULL,

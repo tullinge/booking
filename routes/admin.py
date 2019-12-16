@@ -788,6 +788,44 @@ def school_classes():
         )
 
 
+# show students per class
+@admin_routes.route("/classes/<id>/students")
+@admin_required
+def student_classes(id):
+    """
+    Show students registrered to class
+
+    * display list of all students (GET)
+    """
+
+    template = "admin/class_students.html"
+
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer"
+            ),
+            400,
+        )
+
+    school_class = sql_query(f"SELECT * FROM school_classes WHERE id={id}")
+
+    if not school_classes:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Class does not exist."
+            ),
+            400,
+        )
+
+    # show students with  class defined as this one
+    students = sql_query(
+        f"SELECT id, first_name, last_name, class, chosen_activity FROM students WHERE class='{school_class[0][1]}'"
+    )
+
+    return render_template(template, school_class=school_class[0], students=students)
+
+
 # change password
 @admin_routes.route("/changepassword", methods=["POST", "GET"])
 @admin_required

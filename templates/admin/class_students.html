@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} - Elever i klass {{ school_class[1] }}{% endblock %}
+{% block body %}
+{% include "admin/navbar.html" %}
+    <div class="content">
+        <h1>Elever registrerade på klass {{ school_class[1] }}</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Namn</th>
+                <th scope="col">Klass</th>
+                <th scope="col">Vald aktivitet</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <th scope="row">{{ student[0] }}</th>
+                    <td>{{ student[1] }} {{ student[2] }}</td>
+                    <td>{{ student[3] }}</td>
+                    <td>{{ student[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

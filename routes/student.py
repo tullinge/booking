@@ -13,6 +13,7 @@ from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
 # components import
 from components.core import (
     is_valid_input,
+    valid_input,
     basic_validation,
     is_integer,
     calculate_available_spaces,
@@ -36,7 +37,7 @@ def index():
     * list available activities (GET)
         - along with information about them (also how many spaces available)
     """
-
+    template = "student/index.html"
     chosen_activity = student_chosen_activity()
     query = sql_query("SELECT * FROM activities")
 
@@ -45,7 +46,7 @@ def index():
         activities.append((activity, calculate_available_spaces(activity[0])))
 
     return render_template(
-        "student/index.html",
+        template,
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
         activities=activities,
@@ -148,7 +149,8 @@ def students_callback():
 @student_routes.route("/callback/error", methods=["POST"])
 def callback_error():
     return render_template(
-        "student/callback_error.html", message=request.form.get("message")
+        "student/callback_error.html",
+        message=request.form.get("message")
     )
 
 
@@ -189,20 +191,27 @@ def setup():
         expected_values = ["join_code"]
 
         if not basic_validation(expected_values):
-            return render_template(template, fail="Saknar/felaktig data.")
+            return render_template(
+                template,
+                fail="Saknar/felaktig data."
+            )
 
         join_code = request.form["join_code"]
 
-        if len(join_code) != 8:
-            return render_template(template, fail="Fel längd på kod."), 40
-
         # make sure to validate input variables against string authentication
-        if not is_valid_input(
-            join_code, allow_newline=False, allow_punctuation=False, allow_space=False,
+        if not valid_input(
+            join_code,
+            8,
+            8,
+            allow_newline=False,
+            allow_punctuation=False,
+            allow_space=False,
         ):
             return (
-                render_template(template, fail="Icke tillåtna karaktärer.",),
-                400,
+                render_template(
+                    template,
+                    fail="Icke tillåtna karaktärer."
+                ), 400,
             )
 
         # verify code
@@ -211,7 +220,10 @@ def setup():
         )
 
         if not school_class:
-            return render_template(template, fail="Felaktig kod.",), 400
+            return render_template(
+                template,
+                fail="Felaktig kod."
+                ), 400
 
         # passed validation, update user variables
         sql_query(
@@ -237,13 +249,14 @@ def selected_activity(id):
     * show activity information (GET)
     * book student to activity, if available spaces are still left (POST)
     """
-
+    template = "student/activity.html"
     if not is_integer(id):
         return (
             render_template(
-                "errors/custom.html", title="400", message="ID is not integer."
-            ),
-            400,
+                "errors/custom.html",
+                title="400",
+                message="ID is not integer."
+            ), 400,
         )
 
     activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
@@ -251,9 +264,10 @@ def selected_activity(id):
     if not activity:
         return (
             render_template(
-                "errors/custom.html", title="400", message="Activity dose not exist."
-            ),
-            400,
+                "errors/custom.html",
+                title="400",
+                message="Activity dose not exist."
+            ), 400,
         )
 
     # check if activity has questions
@@ -271,7 +285,7 @@ def selected_activity(id):
 
     if request.method == "GET":
         return render_template(
-            "student/activity.html",
+            template,
             activity=activity[0],
             fullname=session.get("fullname"),
             school_class=session.get("school_class"),
@@ -284,29 +298,27 @@ def selected_activity(id):
             if not v:
                 return (
                     render_template(
-                        "student/activity.html",
+                        template,
                         activity=activity[0],
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
                         fail="Saknar data.",
-                    ),
-                    400,
+                    ), 400,
                 )
 
             if not is_integer(k):
                 return (
                     render_template(
-                        "student/activity.html",
+                        template,
                         activity=activity[0],
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
                         fail="Felaktigt skickad data.",
-                    ),
-                    400,
+                    ), 400,
                 )
 
             if not is_valid_input(
@@ -318,30 +330,28 @@ def selected_activity(id):
             ) or not is_valid_input(v, allow_newline=False):
                 return (
                     render_template(
-                        "student/activity.html",
+                        template,
                         activity=activity[0],
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
                         fail="Innehåller ogiltiga tecken.",
-                    ),
-                    400,
+                    ), 400,
                 )
 
         # check if it still has available_spaces
         if calculate_available_spaces(id) < 1:
             return (
                 render_template(
-                    "student/activity.html",
+                    template,
                     activity=activity[0],
                     fullname=session.get("fullname"),
                     school_class=session.get("school_class"),
                     questions=questions,
                     available_spaces=calculate_available_spaces(id),
                     fail="Denna aktivitet har inga lediga platser.",
-                ),
-                400,
+                ), 400,
             )
 
         # delete any previous answers this user has submitted
@@ -394,11 +404,11 @@ def confirmation():
 
     * confirm the students new booking (GET)
     """
-
+    template = "student/confirmation.html"
     activity = student_chosen_activity()
 
     return render_template(
-        "student/confirmation.html",
+        template,
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
         activity=activity[1],

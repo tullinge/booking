@@ -846,7 +846,7 @@ def school_classes():
                 )
 
             class_check = sql_query(
-                f"""SELECT * FROM `school_classes` WHEAR `class_name` = BINARY '{data["class_name"]}' """
+                f"""SELECT * FROM school_classes WHERE class_name = BINARY '{data["class_name"].upper()}'"""
             )
 
             if class_check:
@@ -887,7 +887,7 @@ def school_classes():
 
             # create
             sql_query(
-                f"INSERT INTO school_classes (class_name, password) VALUES ('{data['class_name']}', '{generate_code()}')"
+                f"INSERT INTO school_classes (class_name, password) VALUES ('{data['class_name'].upper()}', '{generate_code()}')"
             )
 
             # re-fetch

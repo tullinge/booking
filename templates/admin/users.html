@@ -51,13 +51,13 @@
             <tbody>
                 {% for admin in admins %}
                 <tr>
-                    <th scope="row">{{ admin[0] }}</th>
-                    <td>{{ admin[1] }}</td>
-                    <td>{{ admin[2] }}</td>
+                    <th scope="row">{{ admin["id"] }}</th>
+                    <td>{{ admin["name"] }}</td>
+                    <td>{{ admin["username"] }}</td>
                     <td>
                         <form action="/admin/users" method="POST">
                             <input type="hidden" id="request_type" name="request_type" value="delete" />
-                            <input type="hidden" id="id" name="id" value="{{ admin[0] }}" />
+                            <input type="hidden" id="id" name="id" value="{{ admin['id'] }}" />
 
                             <button type="submit" class="btn btn-primary">
                                 Radera

@@ -648,7 +648,7 @@ def admin_users():
 
     template = "admin/users.html"
     query = "SELECT id, name, username FROM admins"
-    admins = sql_query(query)
+    admins = dict_sql_query(query)
 
     if request.method == "GET":
         return render_template(template, admins=admins)
@@ -693,7 +693,7 @@ def admin_users():
             sql_query(f"DELETE FROM admins WHERE id={data['id']}")
 
             # update admins
-            admins = sql_query(query)
+            admins = dict_sql_query(query)
 
             return render_template(
                 template, admins=admins, success="Användare raderad."
@@ -778,7 +778,7 @@ def admin_users():
             )
 
             # re-fetch
-            admins = sql_query(query)
+            admins = dict_sql_query(query)
 
             return render_template(
                 template, admins=admins, success="Nytt konto skapats."
@@ -835,7 +835,7 @@ def school_classes():
     """
 
     template = "admin/school_classes.html"
-    school_classes = sql_query("SELECT * FROM school_classes")
+    school_classes = dict_sql_query("SELECT * FROM school_classes")
 
     if request.method == "GET":
         return render_template(template, school_classes=school_classes)
@@ -909,7 +909,7 @@ def school_classes():
             )
 
             # re-fetch
-            school_classes = sql_query("SELECT * FROM school_classes")
+            school_classes = dict_sql_query("SELECT * FROM school_classes")
 
             return (
                 render_template(
@@ -947,7 +947,7 @@ def school_classes():
             sql_query(f"UPDATE students SET class_id=NULL WHERE class_id={data['id']}")
 
             # re-fetch
-            school_classes = sql_query("SELECT * FROM school_classes")
+            school_classes = dict_sql_query("SELECT * FROM school_classes")
 
             return render_template(
                 template, school_classes=school_classes, success="Klass raderad."

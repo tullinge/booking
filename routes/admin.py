@@ -10,6 +10,7 @@ from components.core import (
     verify_password,
     calculate_available_spaces,
     is_integer,
+    basic_validation,
 )
 from components.limiter_obj import limiter
 from components.decorators import admin_required
@@ -155,64 +156,100 @@ def activities():
     if request.method == "POST":
         data = request.form
 
-        if not data:
-            return (
-                render_template(
-                    template, activities=activities, fail="Ingen data skickades."
-                ),
-                400,
-            )
-
         # creating activity
-        if (
-            not data["name"]
-            or not data["spaces"]
-            or not data["info"]
-            or not len(data) == 3
-        ):
-            return (
-                render_template(
-                    template, activities=activities, fail="Felaktig data skickades."
-                ),
-                400,
+        if request.form.get("request_type") == "add":
+            expected_values = ["name", "spaces", "info", "request_type"]
+
+            if not basic_validation(expected_values):
+                return (
+                    render_template(
+                        template, activities=activities, fail="Felaktig data."
+                    ),
+                    400,
+                )
+
+            # validate
+            if not is_integer(data["spaces"]):
+                return (
+                    render_template(
+                        template,
+                        activities=activities,
+                        fail="Antalet platser måste vara ett heltal.",
+                    ),
+                    400,
+                )
+
+            if not is_valid_input(
+                data["name"], allow_newline=False
+            ) or not is_valid_input(data["info"]):
+                return (
+                    render_template(
+                        template,
+                        activities=activities,
+                        fail="Data innehåller otillåtna tecken.",
+                    ),
+                    400,
+                )
+
+            # create
+            sql_query(
+                f"INSERT INTO activities (name, spaces, info) VALUES ('{data['name']}', {data['spaces']}, '{data['info']}')"
             )
 
-        # validate
-        if not is_integer(data["spaces"]):
+            # re-fetch
+            activities = get_activites_with_spaces()
+
+            # success
+            return render_template(
+                template,
+                activities=activities,
+                success="Aktivitet skapad. Tryck på aktiviteten för att skapa frågor för aktiviteten.",
+            )
+
+        if request.form.get("request_type") == "delete":
+            expected_values = ["id", "request_type"]
+
+            # validate
+            if not basic_validation(expected_values):
+                return (
+                    render_template(
+                        template, activities=activities, fail="Felaktig data."
+                    ),
+                    400,
+                )
+
+            if not is_integer(data["id"]):
+                return (
+                    render_template(
+                        template, activities=activities, fail="Id has to be integer."
+                    ),
+                    400,
+                )
+
+            # delete activity
+            sql_query(f"DELETE FROM activities WHERE id={data['id']}")
+
+            # set chosen_activity to null on students that have booked this one
+            sql_query(
+                f"UPDATE students SET chosen_activity=NULL WHERE chosen_activity={data['id']}"
+            )
+
+            # re-fetch
+            activities = get_activites_with_spaces()
+
+            # success
             return (
                 render_template(
                     template,
                     activities=activities,
-                    fail="Antalet platser måste vara ett heltal.",
+                    success="Aktivitet borttagen. Alla elever som hade bokat denna aktivitet har fått den avbokad.",
                 ),
                 400,
             )
 
-        if not is_valid_input(data["name"], allow_newline=False) or not is_valid_input(
-            data["info"]
-        ):
-            return (
-                render_template(
-                    template,
-                    activities=activities,
-                    fail="Data innehåller otillåtna tecken.",
-                ),
-                400,
-            )
-
-        # create
-        sql_query(
-            f"INSERT INTO activities (name, spaces, info) VALUES ('{data['name']}', {data['spaces']}, '{data['info']}')"
-        )
-
-        # re-fetch
-        activities = get_activites_with_spaces()
-
-        # success
-        return render_template(
-            template,
-            activities=activities,
-            success="Aktivitet skapad. Tryck på aktiviteten för att skapa frågor för aktiviteten.",
+        return (
+            render_template(template, activities=activities, fail="Ogiltig begäran."),
+            400,
         )
 
 

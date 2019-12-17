@@ -16,9 +16,15 @@
             <p>{{ success }}</p>
         </div>
         {% endif %}
+
+        <div class="alert alert-warning" role="alert">
+            <p>Om du raderar en befintlig aktivitet kommer <b>alla bokningar på denna aktivtet att raderas, utan förvarning till elever</b>.</p>
+        </div>
     
         <h2>Skapa ny aktivitet</h2>
         <form action="/admin/activities" method="POST">
+            <input type="hidden" name="request_type" value="add" />
+
             <div class="form-group">
                 <label for="name">Namn</label>
                 <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Ange aktivitetens namn.">
@@ -52,7 +58,18 @@
             <h5 class="mb-1">{{ activity[0][1] }}</h5>
             <small>{{ activity[1] }} lediga platser</small>
             </div>
-            <p class="mb-1">{{ activity[0][3] }}</p>
+            <p class="mb-1">
+                {{ activity[0][3] }}
+                <br />
+                <form style="float: right" action="/admin/activities" method="POST">
+                    <input type="hidden" name="request_type" value="delete" />
+                    <input type="hidden" name="id" value="{{ activity[0][0] }}" />
+    
+                    <button type="submit" class="btn btn-primary">
+                        Radera
+                    </button>
+                </form>
+            </p>
             <small>Totalt antal platser: {{ activity[0][2] }}</small>
         </a>
         {% endfor %}

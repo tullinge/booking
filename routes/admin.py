@@ -263,6 +263,7 @@ def selected_activity(id):
     * display activity information (GET)
     * display questions attatched to this activity (GET)
     * create new questions for this activity (POST)
+    * delete questions for this activity (POST)
     """
 
     template = "admin/activity.html"
@@ -299,23 +300,39 @@ def selected_activity(id):
     elif request.method == "POST":
         data = request.form
 
-        if not data or not data["question"]:
-            print(data["question"])
-            return (
-                render_template(
+        if request.form.get("request_type") == "add":
+            if not request.form.get("question"):
+                return (
+                    render_template(
+                        template,
+                        activity=activity[0],
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Ingen data skickades/saknar data.",
+                    ),
+                    400,
+                )
+
+            # is written answer
+            if request.form.get("written_answer"):
+                sql_query(
+                    f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 1)"
+                )
+
+                # re-fetch
+                questions = get_activity_questions_and_options(id)
+
+                return render_template(
                     template,
                     activity=activity[0],
                     questions=questions,
                     available_spaces=calculate_available_spaces(id),
-                    fail="Ingen data skickades/saknar data.",
-                ),
-                400,
-            )
+                    success="Fråga skapad.",
+                )
 
-        # is written answer
-        if request.form.get("written_answer"):
+            # admin is creating question with options
             sql_query(
-                f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 1)"
+                f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 0)"
             )
 
             # re-fetch
@@ -326,23 +343,62 @@ def selected_activity(id):
                 activity=activity[0],
                 questions=questions,
                 available_spaces=calculate_available_spaces(id),
-                success="Fråga skapad.",
+                success="Fråga skapad. Tryck på frågan nedan för att lägga till svarsalternativ.",
             )
 
-        # admin is creating question with options
-        sql_query(
-            f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 0)"
-        )
+        if request.form.get("request_type") == "delete":
+            # form validation
+            if not basic_validation(["request_type", "id"]):
+                return (
+                    render_template(
+                        activity=activity[0],
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Saknar data.",
+                    ),
+                    400,
+                )
 
-        # re-fetch
-        questions = get_activity_questions_and_options(id)
+            if not is_integer(data["id"]):
+                return (
+                    render_template(
+                        activity=activity[0],
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Id must be integer.",
+                    ),
+                    400,
+                )
 
-        return render_template(
-            template,
-            activity=activity[0],
-            questions=questions,
-            available_spaces=calculate_available_spaces(id),
-            success="Fråga skapad. Tryck på frågan nedan för att lägga till svarsalternativ.",
+            # delete
+            sql_query(f"DELETE FROM questions WHERE id={data['id']}")
+
+            # delete options
+            sql_query(f"DELETE FROM options WHERE question_id={data['id']}")
+
+            # delete students answers
+            sql_query(f"DELETE FROM answers WHERE question_id={data['id']}")
+
+            # re-fetch
+            questions = get_activity_questions_and_options(id)
+
+            return render_template(
+                template,
+                activity=activity[0],
+                questions=questions,
+                available_spaces=calculate_available_spaces(id),
+                success="Frågan borttagen.",
+            )
+
+        # bad request
+        return (
+            render_template(
+                activity=activity[0],
+                questions=questions,
+                available_spaces=calculate_available_spaces(id),
+                fail="Ogiltig begäran.",
+            ),
+            400,
         )
 
 

@@ -17,6 +17,10 @@
         </div>
         {% endif %}
 
+        <div class="alert alert-warning" role="alert">
+            <p>Om du raderar en fråga kommer <b>alla svar på denna fråga att raderas, utan förvarning till elever</b>.</p>
+        </div>
+
         <p>Totalt antal platser: {{ activity[2] }}</p>
         <p>Lediga platser: {{ available_spaces }}</p>
     
@@ -28,6 +32,8 @@
         
         <h2>Skapa ny fråga</h2>
         <form action="/admin/activity/{{ activity[0] }}" method="POST">
+            <input type="hidden" name="request_type" value="add" />
+
             <div class="form-group">
                 <label for="question">Fråga</label>
                 <input name="question" type="text" class="form-control" id="question" placeholder="Fråga">
@@ -58,12 +64,19 @@
                     <td>{% if question[0][2] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
                     <td>
                         {% if not question[0][2] %}
-                        <a href="/admin/question/{{ question[0][0] }}">
+                        <a style="float: left; margin-right: 0.3em;" href="/admin/question/{{ question[0][0] }}">
                             <button class="btn btn-primary">
                                 Lägg till svarsalternativ
                             </button>
                         </a>
                         {% endif %}
+                        <form method="POST" action="/admin/activity/{{ activity[0] }}">
+                            <input type="hidden" name="request_type" value="delete" />
+                            <input type="hidden" name="id" value="{{ question[0][0] }}" />
+                            <button type="submit" class="btn btn-primary">
+                                Radera
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% if not question[0][2] %}

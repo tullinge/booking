@@ -13,7 +13,7 @@ from components.core import hash_password, is_valid_input
 data = {}
 
 data["name"] = input("Enter name: ")
-data["username"] = input("Enter username: ")
+data["username"] = input("Enter username: ").lower()
 data["password"] = input("Enter password: ")
 
 for k, v in data.items():

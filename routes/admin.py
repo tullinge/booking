@@ -40,7 +40,7 @@ def login():
         return render_template("admin/login.html")
     elif request.method == "POST":
         username = request.form["username"]
-        password = request.form["password"]
+        password = request.form["password"].lower()
 
         # perform validation, login etc...
         if not username or not password:
@@ -684,9 +684,21 @@ def admin_users():
                             400,
                         )
 
+            if sql_query(
+                f"SELECT id FROM admins WHERE username='{data['username'].lower()}'"
+            ):
+                return (
+                    render_template(
+                        template,
+                        admins=admins,
+                        fail="En admin med detta användarnamn existerar redan.",
+                    ),
+                    400,
+                )
+
             # create new user
             sql_query(
-                f"INSERT INTO admins (name, username, password) VALUES ('{data['name']}', '{data['username']}', '{hash_password(data['password'])}')"
+                f"INSERT INTO admins (name, username, password) VALUES ('{data['name']}', '{data['username'].lower()}', '{hash_password(data['password'])}')"
             )
 
             # re-fetch

@@ -51,27 +51,48 @@
         <p>Tryck på en aktivitet för att få mer information samt möjlighet att redigera/ta bort.</p>
     </div>
 
-    <div class="list-group">
-        {% for activity in activities %}
-        <a href="/admin/activity/{{ activity[0][0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ activity[0][1] }}</h5>
-            <small>{{ activity[1] }} lediga platser</small>
-            </div>
-            <p class="mb-1">
-                {{ activity[0][3] }}
-                <br />
-                <form style="float: right" action="/admin/activities" method="POST">
-                    <input type="hidden" name="request_type" value="delete" />
-                    <input type="hidden" name="id" value="{{ activity[0][0] }}" />
-    
-                    <button type="submit" class="btn btn-primary">
-                        Radera
-                    </button>
-                </form>
-            </p>
-            <small>Totalt antal platser: {{ activity[0][2] }}</small>
-        </a>
-        {% endfor %}
-    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Namn</th>
+                <th scope="col">Beskrivning</th>
+                <th scope="col">Totalt antal platser</th>
+                <th scope="col">Lediga platser</th>
+                <th scope="col">Åtgärder</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+            <a href="/admin/activity/{{ activity[0][0] }}">
+                <tr>
+                    <th scope="row">{{ activity[0][0] }}</th>
+                    <th scope="row">{{ activity[0][1] }}</th>
+                    <td>{{ activity[0][3] }}</td>
+                    <td>{{ activity[0][2] }}</td>
+                    <td>{{ activity[1] }}</td>
+                    <td>
+                        <form action="/admin/activities" method="POST">
+                            <input type="hidden" name="request_type" value="delete" />
+                            <input type="hidden" name="id" value="{{ activity[0][0] }}" />
+            
+                            <button type="submit" class="btn btn-danger">
+                                Radera
+                            </button>
+                        </form>
+
+                        <a href="/admin/activity/{{ activity[0][0] }}/edit">
+                            <button type="submit" class="btn btn-primary">
+                                Redigera
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+            </a>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

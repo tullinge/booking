@@ -402,6 +402,93 @@ def selected_activity(id):
         )
 
 
+@admin_routes.route("/activity/<id>/edit", methods=["POST", "GET"])
+@admin_required
+def edit_activity(id):
+    """
+    Edit activity
+
+    * display activity information (GET)
+    * edit activity information (POST)
+    """
+
+    template = "admin/activity_edit.html"
+
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer."
+            ),
+            400,
+        )
+
+    activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
+
+    if not activity:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Activity doesn't exist."
+            ),
+            400,
+        )
+
+    if request.method == "GET":
+        return render_template(template, activity=activity[0])
+
+    if request.method == "POST":
+        if not basic_validation(["name", "spaces", "info"]):
+            return (
+                render_template(template, activity=activity[0], fail="Saknar data."),
+                400,
+            )
+
+        if not is_integer(request.form["spaces"]):
+            return (
+                render_template(
+                    template,
+                    activity=activity[0],
+                    fail="Antalet platser måste vara ett heltal.",
+                ),
+                400,
+            )
+
+        if not is_valid_input(
+            request.form["name"], allow_newline=False
+        ) or not is_valid_input(request.form["info"]):
+            return (
+                render_template(
+                    template,
+                    activity=activity[0],
+                    fail="Data innehåller otillåtna tecken.",
+                ),
+                400,
+            )
+
+        if int(request.form["spaces"]) < len(
+            sql_query(f"SELECT * FROM students WHERE chosen_activity={id}")
+        ):
+            return (
+                render_template(
+                    template,
+                    activity=activity[0],
+                    fail="Antalet platser kan inte vara mindre än antalet bokningar.",
+                ),
+                400,
+            )
+
+        # update
+        sql_query(
+            f"UPDATE activities SET name = '{request.form['name']}', spaces = {request.form['spaces']}, info = '{request.form['info']}' WHERE id={id}"
+        )
+
+        # re-fetch
+        activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
+
+        return render_template(
+            template, activity=activity[0], success="Aktiviteten uppdaterad."
+        )
+
+
 # view question
 @admin_routes.route("/question/<id>", methods=["POST", "GET"])
 @admin_required

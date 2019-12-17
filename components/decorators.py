@@ -42,11 +42,15 @@ def user_setup_completed(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # decorator should be after @login_required, therefore assume user auth
-        student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")[
-            0
-        ]  # 0 is the first element of list
+        student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
 
-        if student:
+        if not student:
+            session.pop("id", None)
+            session.pop("logged_in", False)
+
+            return redirect("/login")
+
+        if student[0]:
             if (
                 not student[2] or not student[3] or not student[4]
             ):  # checks if user-configurable variables are defined

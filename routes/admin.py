@@ -5,7 +5,8 @@ from flask import Blueprint, render_template, request, redirect, session
 
 from components.db import sql_query
 from components.core import (
-    is_valid_input,
+    valid_input,
+    integer_validation,
     hash_password,
     verify_password,
     calculate_available_spaces,
@@ -42,34 +43,14 @@ def login():
         password = request.form["password"]
 
         # perform validation, login etc...
-        if not username or not password:
-            return render_template("admin/login.html", fail="Saknar variabler."), 400
-
-        if len(username) >= 255 or len(password) >= 255:
+        if not valid_input(
+            username, 4, 255, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False,
+        ) or not valid_input(
+            password, 8, 255, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False:
             return (
                 render_template(
-                    "admin/login.html", fail="För långt användarnamn/lösenord."
+                    "admin/login.html", fail="Otilåten input."
                 ),
-                400,
-            )
-
-        if len(password) < 8 or len(username) < 4:
-            return (
-                render_template(
-                    "admin/login.html", fail="För kort användarnamn/lösenord."
-                ),
-                400,
-            )
-
-        if not is_valid_input(
-            username,
-            allow_punctuation=False,
-            allow_space=False,
-            swedish=False,
-            allow_newline=False,
-        ):
-            return (
-                render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
                 400,
             )
 
@@ -163,39 +144,25 @@ def activities():
                 400,
             )
 
-        # creating activity
-        if (
-            not data["name"]
-            or not data["spaces"]
-            or not data["info"]
-            or not len(data) == 3
-        ):
-            return (
-                render_template(
-                    template, activities=activities, fail="Felaktig data skickades."
-                ),
-                400,
-            )
-
         # validate
-        if not is_integer(data["spaces"]):
+        if not integer_validation(data["spaces"], 3, 3):
             return (
                 render_template(
                     template,
                     activities=activities,
-                    fail="Antalet platser måste vara ett heltal.",
+                    fail="Otilåten input.",
                 ),
                 400,
             )
-
-        if not is_valid_input(data["name"], allow_newline=False) or not is_valid_input(
-            data["info"]
+        if not valid_input(
+            data["name"], 4, 255, allow_newline=False,
+        ) or not valid_input(
+            data["info"], 4, 255, allow_newline=False,
         ):
             return (
                 render_template(
-                    template,
                     activities=activities,
-                    fail="Data innehåller otillåtna tecken.",
+                    fail="Otilåten input."
                 ),
                 400,
             )
@@ -360,21 +327,15 @@ def question_id(id):
     if request.method == "POST":
         data = request.form
 
-        if not request.form["text"]:
-            return (
-                render_template(
-                    template, question=question[0], options=options, fail="Saknar data."
-                ),
-                400,
-            )
-
-        if not is_valid_input(data["text"], allow_newline=False):
+        if not valid_input(
+            data["text"], 0, 511, allow_newline=False
+            ):
             return (
                 render_template(
                     template,
                     question=question[0],
                     options=options,
-                    fail="Ogiltiga tecken skickade.",
+                    fail="Otilåten input.",
                 ),
                 400,
             )
@@ -524,28 +485,20 @@ def admin_users():
             )
 
         if data["request_type"] == "add":
-            if (
-                len(data) != 4
-                or not data["name"]
-                or not data["username"]
-                or not data["password"]
-            ):
-                return (
-                    render_template(template, admins=admins, fail="Saknar data."),
-                    400,
-                )
-
-            if not is_valid_input(
-                data["name"], allow_newline=False, allow_punctuation=False
+            
+            if not valid_input(
+                data["name"],
+                allow_newline=False,
+                allow_punctuation=False
             ):
                 return (
                     render_template(
-                        template, admins=admins, fail="Namn innehåller ogiltiga tecken."
+                        template, admins=admins, fail="Ogiltigt namn."
                     ),
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_input(
                 data["username"],
                 allow_space=False,
                 allow_newline=False,
@@ -719,29 +672,13 @@ def school_classes():
                     ),
                     400,
                 )
-
-            if not is_valid_input(
-                data["class_name"],
-                allow_space=False,
-                allow_newline=False,
-                allow_punctuation=False,
-                swedish=False,
+            if not valid_input(
+                data["class_name"], 3, 10, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False,
             ):
                 return (
                     render_template(
-                        template,
                         school_classes=school_classes,
-                        fail="Innehåller ogiltiga tecken.",
-                    ),
-                    400,
-                )
-
-            if len(data["class_name"]) < 3 or len(data["class_name"]) > 10:
-                return (
-                    render_template(
-                        template,
-                        school_classes=school_classes,
-                        fail="För kort/långt klassnamn.",
+                        fail="Otilåten input."
                     ),
                     400,
                 )

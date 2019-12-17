@@ -430,8 +430,6 @@ def activity_students(id):
         f"SELECT id, last_name, first_name, class_id FROM students WHERE chosen_activity={id}"
     )
 
-    school_classes = sql_query("SELECT * FROM school_classes")
-
     students = []
     for student in query:
         answer_query = sql_query(
@@ -448,7 +446,14 @@ def activity_students(id):
             else:
                 answers.append(answer[1])
 
-        students.append((student, answers, school_classes[student[3] - 1][1]))
+        try:
+            class_name = sql_query(
+                f"SELECT class_name FROM school_classes WHERE id={student[3]}"
+            )[0][0]
+        except Exception:
+            class_name = "error"
+
+        students.append((student, answers, class_name))
 
     questions = sql_query(f"SELECT question FROM questions WHERE activity_id={id}")
 

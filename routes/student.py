@@ -89,6 +89,18 @@ def students_callback():
             # raise ValueError('Wrong issuer.')
 
         # If auth request is from a G Suite domain:
+        if "hd" not in idinfo:
+            return (
+                jsonify(
+                    {
+                        "status": False,
+                        "code": 400,
+                        "message": "User is not using hosted email, please use your school address.",
+                    }
+                ),
+                400,
+            )
+
         if idinfo["hd"] != GSUITE_DOMAIN_NAME:
             return (
                 jsonify(
@@ -140,6 +152,7 @@ def students_callback():
 
     session["fullname"] = f"{data['given_name']} {data['family_name']}"
     session["logged_in"] = True
+    session["picture_url"] = idinfo["picture"]
     session["id"] = existing_student[0][0]
 
     return jsonify({"status": True, "code": 200, "message": "authenticated"}), 400

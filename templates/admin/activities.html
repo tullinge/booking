@@ -65,10 +65,17 @@
         </thead>
         <tbody>
             {% for activity in activities %}
-            <a href="/admin/activity/{{ activity[0][0] }}">
                 <tr>
-                    <th scope="row">{{ activity[0][0] }}</th>
-                    <th scope="row">{{ activity[0][1] }}</th>
+                    <th scope="row">
+                        <a href="/admin/activity/{{ activity[0][0] }}">
+                            {{ activity[0][0] }}
+                        </a>
+                    </th>
+                    <th scope="row">
+                        <a href="/admin/activity/{{ activity[0][0] }}">
+                            {{ activity[0][1] }}
+                        </a>
+                    </th>
                     <td>{{ activity[0][3] }}</td>
                     <td>{{ activity[0][2] }}</td>
                     <td>{{ activity[1] }}</td>
@@ -85,6 +92,12 @@
                         <a href="/admin/activity/{{ activity[0][0] }}/edit">
                             <button type="submit" class="btn btn-primary">
                                 Redigera
+                            </button>
+                        </a>
+
+                        <a href="/admin/activity/{{ activity[0][0] }}">
+                            <button type="submit" class="btn btn-info">
+                                Visa aktivitet och frågor
                             </button>
                         </a>
                     </td>

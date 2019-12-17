@@ -464,18 +464,6 @@ def edit_activity(id):
                 400,
             )
 
-        if int(request.form["spaces"]) < len(
-            sql_query(f"SELECT * FROM students WHERE chosen_activity={id}")
-        ):
-            return (
-                render_template(
-                    template,
-                    activity=activity[0],
-                    fail="Antalet platser kan inte vara mindre än antalet bokningar.",
-                ),
-                400,
-            )
-
         # update
         sql_query(
             f"UPDATE activities SET name = '{request.form['name']}', spaces = {request.form['spaces']}, info = '{request.form['info']}' WHERE id={id}"

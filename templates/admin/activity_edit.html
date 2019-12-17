@@ -22,6 +22,10 @@
             <p>{{ success }}</p>
         </div>
         {% endif %}
+
+        <div class="alert alert-warning" role="alert">
+            <p>Systemet tillåter dig att sätta det totala antalet platser till ett tal som är lägre än antalet elever som redan hunnit boka aktivteten.</p>
+        </div>
     
         <form action="/admin/activity/{{ activity[0] }}/edit" method="POST">
             <div class="form-group">

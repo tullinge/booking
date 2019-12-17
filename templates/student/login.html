@@ -6,9 +6,12 @@
 .footer div {
     text-align: center;
 }
-.g-signin2 {
-    margin-left: auto;
-    margin-right: auto;
+.g-signin2{
+  width: 100%;
+}
+
+.g-signin2 > div{
+  margin: 0 auto;
 }
 </style>
 {% endblock %}
@@ -28,7 +31,7 @@
         </div>
         {% endif %}
     
-        <p>Du loggar in med ditt skolkonto.</p>
+        <p class="align-center">Du loggar in med ditt skolkonto.</p>
 
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
 

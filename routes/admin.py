@@ -3,7 +3,7 @@
 
 from flask import Blueprint, render_template, request, redirect, session
 
-from components.db import sql_query
+from components.db import sql_query, dict_sql_query
 from components.core import (
     is_valid_input,
     hash_password,
@@ -11,6 +11,7 @@ from components.core import (
     calculate_available_spaces,
     is_integer,
     basic_validation,
+    dict_search,
 )
 from components.limiter_obj import limiter
 from components.decorators import admin_required
@@ -796,9 +797,26 @@ def students():
     * list all students/codes (GET)
     """
 
-    students = None
+    students = []
     if request.args.get("show"):
-        students = sql_query("SELECT * FROM students")
+        for student in dict_sql_query("SELECT * FROM students"):
+            students.append(
+                {
+                    "student": student,
+                    "activity_name": dict_sql_query(
+                        f"SELECT name FROM activities WHERE id={student['chosen_activity']}",
+                        fetchone=True,
+                    )["name"]
+                    if student["chosen_activity"]
+                    else "Ej valt",
+                    "class_name": dict_sql_query(
+                        f"SELECT class_name FROM school_classes WHERE id={student['class_id']}",
+                        fetchone=True,
+                    )["class_name"]
+                    if student["class_id"]
+                    else "Har ej gått med.",
+                }
+            )
 
     if request.method == "GET":
         return render_template("admin/students.html", students=students)
@@ -854,7 +872,7 @@ def school_classes():
                     render_template(
                         template,
                         school_classes=school_classes,
-                        fail="klass finns redan.",
+                        fail="Denna klass finns redan.",
                     ),
                     400,
                 )
@@ -964,7 +982,9 @@ def student_classes(id):
             400,
         )
 
-    school_class = sql_query(f"SELECT * FROM school_classes WHERE id={id}")
+    school_class = dict_sql_query(
+        f"SELECT * FROM school_classes WHERE id={id}", fetchone=True
+    )
 
     if not school_classes:
         return (
@@ -975,11 +995,24 @@ def student_classes(id):
         )
 
     # show students with  class defined as this one
-    students = sql_query(
-        f"SELECT id, first_name, last_name, chosen_activity FROM students WHERE class_id={school_class[0][0]}"
-    )
+    students = []
 
-    return render_template(template, school_class=school_class[0], students=students)
+    for student in dict_sql_query(
+        f"SELECT * FROM students WHERE class_id={school_class['id']}"
+    ):
+        students.append(
+            {
+                "student": student,
+                "activity_name": dict_sql_query(
+                    f"SELECT name FROM activities WHERE id={student['chosen_activity']}",
+                    fetchone=True,
+                )["name"]
+                if student["chosen_activity"]
+                else "Ej valt",
+            }
+        )
+
+    return render_template(template, school_class=school_class, students=students)
 
 
 # change password

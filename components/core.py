@@ -120,3 +120,15 @@ def get_client_ip():
         remote_ip = request.environ["HTTP_X_FORWARDED_FOR"]
 
     return remote_ip
+
+
+def dict_search(list_dictionary, key, value):
+    """
+    Searches for dicts in list of dictionaries where a specific key has a specific value
+
+    :param list list_dictionary: A list of dictionaries
+    :param str key: Key of dictionary we're looking for
+    :param str value: Value of the key we're looking for
+    """
+
+    return [element for element in list_dictionary if element[key] == value]

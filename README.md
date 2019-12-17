@@ -29,6 +29,7 @@ These environment variables need to be set (except the ones which have defaults)
 - `MYSQL_DATABASE` - default is `booking`
 - `GOOGLE_CLIENT_ID` - must be set manually, used for communicating with Google API.
 - `GSUITE_DOMAIN_NAME` - must be set manually, used for limiting logins to a specific G Suite organization
+- `MENTOR_GSUITE_DOMAIN_NAME` - must be set manually, used for limiting mentor logins to specific G Suite organization
 
 ### Instructions (running locally)
 

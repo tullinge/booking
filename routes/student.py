@@ -4,13 +4,8 @@
 # imports
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 
-# google API (and auth)
-from google.oauth2 import id_token
-from google.auth.transport import requests
-import requests as requests_module
-from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
-
 # components import
+from components.google import GSUITE_DOMAIN_NAME, google_login
 from components.core import (
     is_valid_input,
     basic_validation,
@@ -68,73 +63,14 @@ def students_callback():
             400,
         )
 
-    token = request.json["idtoken"]
+    # verify using separate module
+    google = google_login(request.json["idtoken"], GSUITE_DOMAIN_NAME)
 
-    try:
-        # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(
-            token, requests.Request(), GOOGLE_CLIENT_ID
-        )
+    if not google["status"]:
+        return google["resp"]
 
-        # Or, if multiple clients access the backend server:
-        # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-        # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-        #     raise ValueError('Could not verify audience.')
-
-        if idinfo["iss"] not in ["accounts.google.com", "https://accounts.google.com"]:
-            return (
-                jsonify({"status": False, "code": 400, "message": "Invalid issuer."}),
-                400,
-            )
-            # raise ValueError('Wrong issuer.')
-
-        # If auth request is from a G Suite domain:
-        if "hd" not in idinfo:
-            return (
-                jsonify(
-                    {
-                        "status": False,
-                        "code": 400,
-                        "message": "User is not using hosted email, please use your school address.",
-                    }
-                ),
-                400,
-            )
-
-        if idinfo["hd"] != GSUITE_DOMAIN_NAME:
-            return (
-                jsonify(
-                    {"status": False, "code": 400, "message": "Wrong hosted domain."}
-                ),
-                400,
-            )
-            # raise ValueError('Wrong hosted domain.')
-
-        # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo["sub"]
-    except ValueError:
-        # Invalid token
-        return jsonify({"status": False, "code": 400, "message": "Invalid token."}), 400
-
-    # user signed in
-    r = requests_module.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
-
-    if r.status_code is not requests_module.codes.ok:
-        return (
-            jsonify(
-                {"status": False, "code": 400, "message": "Could not verify token."}
-            ),
-            400,
-        )
-
-    data = r.json()
-
-    # verify
-    if data["aud"] != GOOGLE_CLIENT_ID:
-        return (
-            jsonify({"status": False, "code": 400, "message": "'aud' is invalid!."}),
-            400,
-        )
+    data = google["resp"]["data"]
+    idinfo = google["resp"]["idinfo"]
 
     existing_student = sql_query(
         f"SELECT * FROM students WHERE email='{data['email']}'"
@@ -161,7 +97,7 @@ def students_callback():
 @student_routes.route("/callback/error", methods=["POST"])
 def callback_error():
     return render_template(
-        "student/callback_error.html", message=request.form.get("message")
+        "callback_error.html", message=request.form.get("message"), redirect_basepath=""
     )
 
 

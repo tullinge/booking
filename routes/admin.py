@@ -3,22 +3,23 @@
 
 from flask import Blueprint, render_template, request, redirect, session
 
-from components.db import sql_query
+#components imports
 from components.core import (
     valid_input,
-    is_integer,
     valid_integer,
     hash_password,
     verify_password,
     calculate_available_spaces,
 )
-from components.limiter_obj import limiter
-from components.decorators import admin_required
-from components.codes import generate_code
 from components.admin import (
     get_activites_with_spaces,
     get_activity_questions_and_options,
 )
+from components.decorators import admin_required
+from components.limiter_obj import limiter
+from components.codes import generate_code
+from components.db import sql_query
+
 
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
@@ -235,7 +236,11 @@ def selected_activity(id):
 
     template = "admin/activity.html"
 
-    if not is_integer(id):
+    if not valid_integer(
+        id,
+        0,
+        False,
+    ):
         return (
             render_template(
                 "errors/custom.html",
@@ -329,7 +334,11 @@ def question_id(id):
 
     template = "admin/view_question.html"
 
-    if not is_integer(id):
+    if not valid_integer(
+        id,
+        0,
+        False,
+    ):
         return (
             render_template(
                 "errors/custom.html",
@@ -414,7 +423,11 @@ def activity_students(id):
     * (hopefully) printer friendly
     """
     template = "admin/activity_students.html"
-    if not is_integer(id):
+    if not valid_integer(
+        id,
+        0,
+        False,
+    ):
         return (
             render_template(
                 "errors/custom.html",
@@ -518,7 +531,11 @@ def admin_users():
                     ), 400,
                 )
 
-            if not is_integer(data["id"]):
+            if not valid_integer(
+                data["id"],
+                0,
+                False,
+            ):
                 return (
                     render_template(
                         template,
@@ -738,9 +755,11 @@ def school_classes():
                     ), 400,
                 )
 
-            if not is_integer(
-                data["id"]
-                ):
+            if not valid_integer(
+                data["id"],
+                0,
+                False,
+            ):
                 return (
                     render_template(
                         template,
@@ -786,7 +805,11 @@ def student_classes(id):
 
     template = "admin/class_students.html"
 
-    if not is_integer(id):
+    if not valid_integer(
+        id,
+        0,
+        False,
+    ):
         return (
             render_template(
                 "errors/custom.html",

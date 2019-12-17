@@ -8,7 +8,6 @@ from flask import Blueprint, render_template, redirect, request, session, jsonif
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import requests as requests_module
-from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
 
 # components import
 from components.core import (
@@ -18,8 +17,16 @@ from components.core import (
     is_integer,
     calculate_available_spaces,
 )
+from components.decorators import (
+    login_required,
+    user_setup_completed,
+    user_not_setup
+)
+from components.google import (
+    GOOGLE_CLIENT_ID,
+    GSUITE_DOMAIN_NAME
+)
 from components.limiter_obj import limiter
-from components.decorators import login_required, user_setup_completed, user_not_setup
 from components.db import sql_query
 from components.student import student_chosen_activity
 
@@ -65,8 +72,11 @@ def students_login():
 def students_callback():
     if not request.get_json("idtoken"):
         return (
-            jsonify({"status": False, "code": 400, "message": "missing form data"}),
-            400,
+            jsonify({
+                "status": False,
+                "code": 400,
+                "message": "missing form data"
+            }), 400,
         )
 
     token = request.json["idtoken"]
@@ -84,18 +94,22 @@ def students_callback():
 
         if idinfo["iss"] not in ["accounts.google.com", "https://accounts.google.com"]:
             return (
-                jsonify({"status": False, "code": 400, "message": "Invalid issuer."}),
-                400,
+                jsonify({
+                    "status": False,
+                    "code": 400,
+                    "message": "Invalid issuer."
+                }), 400,
             )
             # raise ValueError('Wrong issuer.')
 
         # If auth request is from a G Suite domain:
         if idinfo["hd"] != GSUITE_DOMAIN_NAME:
             return (
-                jsonify(
-                    {"status": False, "code": 400, "message": "Wrong hosted domain."}
-                ),
-                400,
+                jsonify({
+                    "status": False,
+                    "code": 400,
+                    "message": "Wrong hosted domain."
+                }), 400,
             )
             # raise ValueError('Wrong hosted domain.')
 
@@ -103,17 +117,22 @@ def students_callback():
         userid = idinfo["sub"]
     except ValueError:
         # Invalid token
-        return jsonify({"status": False, "code": 400, "message": "Invalid token."}), 400
+        return jsonify({
+            "status": False,
+            "code": 400,
+            "message": "Invalid token."
+        }), 400
 
     # user signed in
     r = requests_module.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
 
     if r.status_code is not requests_module.codes.ok:
         return (
-            jsonify(
-                {"status": False, "code": 400, "message": "Could not verify token."}
-            ),
-            400,
+            jsonify({
+                "status": False,
+                "code": 400,
+                "message": "Could not verify token."
+            }), 400,
         )
 
     data = r.json()
@@ -121,8 +140,11 @@ def students_callback():
     # verify
     if data["aud"] != GOOGLE_CLIENT_ID:
         return (
-            jsonify({"status": False, "code": 400, "message": "'aud' is invalid!."}),
-            400,
+            jsonify({
+                "status": False,
+                "code": 400,
+                "message": "'aud' is invalid!."
+            }), 400,
         )
 
     existing_student = sql_query(
@@ -143,7 +165,11 @@ def students_callback():
     session["logged_in"] = True
     session["id"] = existing_student[0][0]
 
-    return jsonify({"status": True, "code": 200, "message": "authenticated"}), 400
+    return jsonify({
+        "status": True,
+        "code": 200,
+        "message": "authenticated"
+    }), 400
 
 
 @student_routes.route("/callback/error", methods=["POST"])
@@ -321,13 +347,20 @@ def selected_activity(id):
                     ), 400,
                 )
 
-            if not is_valid_input(
+            if not valid_input(
                 k,
+                0,
+                False,
                 allow_newline=False,
                 allow_punctuation=False,
                 allow_space=False,
                 swedish=False,
-            ) or not is_valid_input(v, allow_newline=False):
+            ) or not valid_input(
+                v,
+                0,
+                False,
+                allow_newline=False
+            ):
                 return (
                     render_template(
                         template,

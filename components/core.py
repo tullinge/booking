@@ -27,20 +27,6 @@ def basic_validation(expected_values):
 
     return True
 
-
-def valid_integer(
-    variable, min_legnth, max_legnth
-):
-    if not min_legnth <= len(variable) <= max_legnth:
-        return False
-
-    try:
-        int(variable)
-    except Exception:
-        return False
-
-    return True
-
 #calculats avalebel spaces foo activitys
 def calculate_available_spaces(
     activity_id
@@ -107,8 +93,10 @@ def valid_input (
     """Returns boolean whether variable is valid input or not"""
     if not variable:
         return False
+    if max_legnth == False and not min_legnth <= len(variable):
+        return False
 
-    if not min_legnth <= len(variable) <= max_legnth:
+    elif not min_legnth <= len(variable) <= max_legnth:
         return False
 
     ILLEGAL_CHARACTERS = ["<", ">", ";"]
@@ -137,42 +125,25 @@ def valid_input (
 
     return True
 
-#old validation function
-#   validation for strings
-def is_valid_input(
-    variable, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
-):
-    """Returns boolean whether variable is valid input or not"""
-
-    ILLEGAL_CHARACTERS = ["<", ">", ";"]
-    ALLOWED_CHARACTERS = list(string.ascii_letters) + list(string.digits)
-
-    if allow_space:
-        ALLOWED_CHARACTERS.extend(list(string.whitespace))
-
-    if not allow_newline:
-        try:
-            ALLOWED_CHARACTERS.remove("\n")
-        except Exception:
-            pass
-
-    if allow_punctuation:
-        ALLOWED_CHARACTERS.extend(list(string.punctuation))
-
-    if swedish:
-        ALLOWED_CHARACTERS.extend(["å", "ä", "ö", "Å", "Ä", "Ö"])
-
-    if any(x in variable for x in ILLEGAL_CHARACTERS):
-        return False
-
-    if any(x not in ALLOWED_CHARACTERS for x in variable):
-        return False
-
-    return True
 #   validation for integers
 def is_integer(
     variable
 ):
+    try:
+        int(variable)
+    except Exception:
+        return False
+
+    return True
+
+    def valid_integer(
+    variable, min_legnth, max_legnth
+):  if max_legnth == False and not min_legnth <= len(variable):
+        return False
+    elif:
+        if not min_legnth <= len(variable) <= max_legnth:
+            return False
+
     try:
         int(variable)
     except Exception:

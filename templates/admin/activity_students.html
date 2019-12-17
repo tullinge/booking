@@ -22,7 +22,7 @@
                 {% for student in students %}
                 <tr>
                     <td>{{ student[0][2] }} {{ student[0][1] }}</td>
-                    <td>{{ student[0][3] }}</td>
+                    <td>{{ student[2] }}</td>
                     {% for answer in student[1] %}
                     <td>{{ answer }}</td>
                     {% endfor %}

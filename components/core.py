@@ -18,7 +18,7 @@ def basic_validation(expected_values):
     :param expected_values, list of values that should be defined
     """
 
-    if len(request.form) is not len(expected_values):
+    if len(request.form) != len(expected_values):
         return False
 
     for v in expected_values:

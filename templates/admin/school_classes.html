@@ -26,25 +26,41 @@
             </div>
             <button type="submit" class="btn btn-primary">Skapa</button>
         </form>
+
+        <div class="alert alert-warning no-print" role="alert">
+            <p>Genom att radera en klass avregistrerar du alla elever som redan har registrerat sig för den klassen!</p>
+        </div>
     
-        <ul class="list-group">
-            {% for class in school_classes %}
-            <li class="list-group-item">
-                <span>{{ class[1] }}</span>
-                <ul class="list-group list-group-horizontal">
-                    <form class="list-group-item" style="border: none" action="/admin/classes" method="POST">
-                        <input type="hidden" id="request_type" name="request_type" value="delete">
-                        <input type="hidden" id="id" name="id" value="{{ class[0] }}">
-                        <button type="submit" class="btn btn-primary">Radera</button>
-                    </form>
-                    <a class="list-group-item" style="border: none" href="/admin/classes/{{ class[0] }}/students">
-                        <button class="btn btn-primary">
-                            Visa elever som registrerat sig i denna klass
-                        </button>
-                    </a>
-                </ul>
-            </li>
-            {% endfor %}
-        </ul>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Klass</th>
+                <th scope="col">Kod</th>
+                <th scope="col">Åtgärd</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in school_classes %}
+                <tr>
+                    <th scope="row">{{ class[0] }}</th>
+                    <td>{{ class[1] }}</td>
+                    <td>{{ class[2] }}</td>
+                    <td>
+                        <form style="border: none; float: left;" action="/admin/classes" method="POST">
+                            <input type="hidden" id="request_type" name="request_type" value="delete">
+                            <input type="hidden" id="id" name="id" value="{{ class[0] }}">
+                            <button type="submit" class="btn btn-primary">Radera</button>
+                        </form>
+                        <a style="margin-left: 0.5em; border: none" href="/admin/classes/{{ class[0] }}/students">
+                            <button class="btn btn-primary">
+                                Visa elever som registrerat sig i denna klass
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

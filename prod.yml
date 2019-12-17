@@ -11,8 +11,13 @@ services:
       MYSQL_HOST: 'mysql'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
       REDIS_HOST: 'redis'
+      GOOGLE_CLIENT_ID: '${GOOGLE_CLIENT_ID}'
+      GSUITE_DOMAIN_NAME: '${GSUITE_DOMAIN_NAME}' 
     depends_on:
       - mysql
       - redis
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt

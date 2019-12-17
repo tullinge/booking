@@ -18,6 +18,9 @@ from components.limiter_obj import limiter
 from routes.admin import admin_routes
 from routes.student import student_routes
 
+# variables
+from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
+
 # redis
 import redis
 
@@ -33,13 +36,15 @@ limiter.init_app(app)
 # minify
 minify(app=app)
 
-# make version variable available across all templates
+# variables available across all templates
 @app.context_processor
 def inject_version():
     return dict(
         version=version,
         commit_hash=commit_hash[0:7],
         generation_time=strftime("%Y-%m-%d %H:%M:%S"),
+        GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID,
+        GSUITE_DOMAIN_NAME=GSUITE_DOMAIN_NAME,
     )
 
 

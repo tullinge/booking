@@ -14,6 +14,15 @@ def login_required(f):
         if not session.get("logged_in"):
             return redirect("/login")
 
+        # check if student exists
+        student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
+
+        if not student:
+            session.pop("id", None)
+            session.pop("logged_in", False)
+
+            return redirect("/login")
+
         return f(*args, **kwargs)
 
     return decorated_function

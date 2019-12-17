@@ -83,10 +83,10 @@ def create_tabels():
         """
         CREATE TABLE students (
             id INT NOT NULL AUTO_INCREMENT,
-            password VARCHAR(8) NOT NULL UNIQUE,
+            email VARCHAR(255) NOT NULL UNIQUE,
             last_name VARCHAR(50) DEFAULT NULL,
             first_name VARCHAR(50) DEFAULT NULL,
-            class VARCHAR(10) DEFAULT NULL,
+            class_id INT DEFAULT NULL,
             chosen_activity INT DEFAULT NULL,
             PRIMARY KEY (id)
         );
@@ -99,6 +99,7 @@ def create_tabels():
         CREATE TABLE school_classes (
             id INT NOT NULL AUTO_INCREMENT,
             class_name VARCHAR(10) NOT NULL UNIQUE,
+            password VARCHAR(8) NOT NULL UNIQUE,
             PRIMARY KEY (id)
         );
     """

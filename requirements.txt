@@ -5,3 +5,6 @@ cryptography==2.8
 redis==3.3.11
 Flask-Minify==0.15
 Flask-Limiter==1.1.0
+google-api-python-client
+google-auth
+requests

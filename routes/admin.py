@@ -665,6 +665,20 @@ def school_classes():
                     400,
                 )
 
+            class_check = sql_query(
+                f"""SELECT * FROM `school_classes` WHEAR `class_name` = BINARY '{data["class_name"]}' """
+            )
+
+            if class_check:
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="klass finns redan.",
+                    ),
+                    400,
+                )
+
             if not is_valid_input(
                 data["class_name"],
                 allow_space=False,

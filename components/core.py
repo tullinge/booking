@@ -28,7 +28,9 @@ def basic_validation(expected_values):
     return True
 
 
-def valid_integer(variable, min_legnth, max_legnth):
+def valid_integer(
+    variable, min_legnth, max_legnth
+):
     if not min_legnth <= len(variable) <= max_legnth:
         return False
 
@@ -39,8 +41,10 @@ def valid_integer(variable, min_legnth, max_legnth):
 
     return True
 
-
-def calculate_available_spaces(activity_id):
+#calculats avalebel spaces foo activitys
+def calculate_available_spaces(
+    activity_id
+):
     """Returns integer of available spaces using specified activity_id"""
 
     activity = sql_query(f"SELECT * FROM activities WHERE id={activity_id}")[0]
@@ -48,10 +52,10 @@ def calculate_available_spaces(activity_id):
 
     return activity[2] - len(students)
 
-
-def hash_password(password):
-    # Hash a password for storing
-
+#Hash a password for storing
+def hash_password(
+    password
+):
     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode("ascii")
     pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
 
@@ -59,8 +63,10 @@ def hash_password(password):
 
     return (salt + pwdhash).decode("ascii")
 
-
-def verify_password(stored_password, provided_password):
+#verifys a hashed password
+def verify_password(
+    stored_password, provided_password
+):
     # Verify a stored password against one provided by user
 
     salt = stored_password[:64]
@@ -74,8 +80,10 @@ def verify_password(stored_password, provided_password):
 
     return pwdhash == stored_password
 
-
-def random_string(length=10):
+#gives out a random string of ccaracters
+def random_string(
+    length=10
+):
     """Generate a random string of fixed length"""
 
     return "".join(
@@ -91,6 +99,7 @@ def get_client_ip():
 
     return remote_ip
 
+#full validations of strings
 def valid_input (
     variable, min_legnth, max_legnth, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
 ):
@@ -128,6 +137,8 @@ def valid_input (
 
     return True
 
+#old validation function
+#   validation for strings
 def is_valid_input(
     variable, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
 ):
@@ -158,8 +169,10 @@ def is_valid_input(
         return False
 
     return True
-
-def is_integer(variable):
+#   validation for integers
+def is_integer(
+    variable
+):
     try:
         int(variable)
     except Exception:

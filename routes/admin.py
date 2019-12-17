@@ -46,9 +46,22 @@ def login():
 
         # perform validation, login etc...
         if not valid_input(
-            username, 4, 255, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False,
+            username,
+            4,
+            255,
+            allow_space=False,
+            allow_punctuation=False,
+            swedish=False,
+            allow_newline=False,
         ) or not valid_input(
-            password, 8, 255, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False):
+            password,
+            8,
+            255,
+            allow_space=False,
+            allow_punctuation=False,
+            swedish=False,
+            allow_newline=False
+        ):
             return (
                 render_template(
                     template,
@@ -72,7 +85,7 @@ def login():
                 render_template(
                     template,
                     fail="Fel användarnamn eller lösenord."
-                ),  401,
+                ), 401,
             )
 
         session["admin_logged_in"] = True
@@ -490,8 +503,8 @@ def admin_users():
                 render_template(
                     template,
                     admins=admins,
-                    fail="Ogiltig begäran."),
-                400,
+                    fail="Ogiltig begäran."
+                ), 400,
             )
 
         # delete
@@ -501,8 +514,8 @@ def admin_users():
                     render_template(
                         template,
                         admins=admins,
-                        fail="Saknar data."),
-                    400,
+                        fail="Saknar data."
+                    ), 400,
                 )
 
             if not is_integer(data["id"]):
@@ -522,8 +535,7 @@ def admin_users():
                         template,
                         admins=admins,
                         fail="Kan inte radera den egna användaren.",
-                    ),
-                    400,
+                    ), 400,
                 )
 
             # delete user
@@ -533,7 +545,9 @@ def admin_users():
             admins = sql_query(query)
 
             return render_template(
-                template, admins=admins, success="Användare raderad."
+                template,
+                admins=admins,
+                success="Användare raderad."
             )
 
         if data["request_type"] == "add":
@@ -775,7 +789,9 @@ def student_classes(id):
     if not is_integer(id):
         return (
             render_template(
-                "errors/custom.html", title="400", message="Id must be integer"
+                "errors/custom.html",
+                title="400",
+                message="Id must be integer"
             ), 400,
         )
 
@@ -784,7 +800,9 @@ def student_classes(id):
     if not school_classes:
         return (
             render_template(
-                "errors/custom.html", title="400", message="Class does not exist."
+                "errors/custom.html",
+                title="400",
+                message="Class does not exist."
             ), 400,
         )
 

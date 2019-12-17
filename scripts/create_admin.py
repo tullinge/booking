@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
 from components.db import sql_query
-from components.core import hash_password, is_valid_input
+from components.core import hash_password, valid_input
 
 data = {}
 
@@ -21,12 +21,14 @@ for k, v in data.items():
         raise Exception(f"{k} too long or too short (4-255)")
 
     if k == "name":
-        if not is_valid_input(v, allow_newline=False, allow_punctuation=False):
+        if not valid_input(v, 4, 255, allow_newline=False, allow_punctuation=False):
             raise Exception("name contains illegal characters")
 
     if k == "username":
-        if not is_valid_input(
+        if not valid_input(
             v,
+            4,
+            255,
             allow_space=False,
             swedish=False,
             allow_punctuation=False,

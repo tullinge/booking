@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %} - Konfigurera användare{% endblock %}
+{% block custom_head %}{% include "student/google.html" %}{% endblock %}
 {% block body %}
     <div class="content">
         <h1>Konfigurera användare</h1>
@@ -28,7 +29,7 @@
             <button type="submit" class="btn btn-primary">Uppdatera profil</button>
         </form>
 
-        <a href="/logout">
+        <a href="/logout" onclick="signOut();">
             <button class="btn btn-primary">Logga ut</button>
         </a>
     </div>

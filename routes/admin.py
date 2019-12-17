@@ -427,8 +427,10 @@ def activity_students(id):
 
     # get students that have booked this activity and their answers
     query = sql_query(
-        f"SELECT id, last_name, first_name, class FROM students WHERE chosen_activity={id}"
+        f"SELECT id, last_name, first_name, class_id FROM students WHERE chosen_activity={id}"
     )
+
+    school_classes = sql_query("SELECT * FROM school_classes")
 
     students = []
     for student in query:
@@ -446,7 +448,7 @@ def activity_students(id):
             else:
                 answers.append(answer[1])
 
-        students.append((student, answers))
+        students.append((student, answers, school_classes[student[3] - 1][1]))
 
     questions = sql_query(f"SELECT question FROM questions WHERE activity_id={id}")
 

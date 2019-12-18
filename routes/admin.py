@@ -5,11 +5,11 @@ from flask import Blueprint, render_template, request, redirect, session
 
 from components.db import sql_query, dict_sql_query
 from components.core import (
-    is_valid_input,
+    valid_string,
     hash_password,
     verify_password,
     calculate_available_spaces,
-    is_integer,
+    valid_integer,
     basic_validation,
     dict_search,
 )
@@ -63,7 +63,7 @@ def login():
                 400,
             )
 
-        if not is_valid_input(
+        if not valid_string(
             username,
             allow_punctuation=False,
             allow_space=False,
@@ -170,7 +170,7 @@ def activities():
                 )
 
             # validate
-            if not is_integer(data["spaces"]):
+            if not valid_integer(data["spaces"]):
                 return (
                     render_template(
                         template,
@@ -180,9 +180,9 @@ def activities():
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_string(
                 data["name"], allow_newline=False
-            ) or not is_valid_input(data["info"]):
+            ) or not valid_string(data["info"]):
                 return (
                     render_template(
                         template,
@@ -219,7 +219,7 @@ def activities():
                     400,
                 )
 
-            if not is_integer(data["id"]):
+            if not valid_integer(data["id"]):
                 return (
                     render_template(
                         template, activities=activities, fail="Id has to be integer."
@@ -269,7 +269,7 @@ def selected_activity(id):
 
     template = "admin/activity.html"
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="ID is not integer."
@@ -364,7 +364,7 @@ def selected_activity(id):
                     400,
                 )
 
-            if not is_integer(data["id"]):
+            if not valid_integer(data["id"]):
                 return (
                     render_template(
                         activity=activity[0],
@@ -419,7 +419,7 @@ def edit_activity(id):
 
     template = "admin/activity_edit.html"
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="Id must be integer."
@@ -447,7 +447,7 @@ def edit_activity(id):
                 400,
             )
 
-        if not is_integer(request.form["spaces"]):
+        if not valid_integer(request.form["spaces"]):
             return (
                 render_template(
                     template,
@@ -457,9 +457,9 @@ def edit_activity(id):
                 400,
             )
 
-        if not is_valid_input(
+        if not valid_string(
             request.form["name"], allow_newline=False
-        ) or not is_valid_input(request.form["info"]):
+        ) or not valid_string(request.form["info"]):
             return (
                 render_template(
                     template,
@@ -496,7 +496,7 @@ def question_id(id):
 
     template = "admin/view_question.html"
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="Id must be integer."
@@ -541,7 +541,7 @@ def question_id(id):
                 400,
             )
 
-        if not is_valid_input(data["text"], allow_newline=False):
+        if not valid_string(data["text"], allow_newline=False):
             return (
                 render_template(
                     template,
@@ -580,7 +580,7 @@ def activity_students(id):
     * (hopefully) printer friendly
     """
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="Id must be integer."
@@ -674,7 +674,7 @@ def admin_users():
                     400,
                 )
 
-            if not is_integer(data["id"]):
+            if not valid_integer(data["id"]):
                 return (
                     render_template(
                         template, admins=admins, fail="Id måste vara heltal."
@@ -715,7 +715,7 @@ def admin_users():
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_string(
                 data["name"], allow_newline=False, allow_punctuation=False
             ):
                 return (
@@ -725,7 +725,7 @@ def admin_users():
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_string(
                 data["username"],
                 allow_space=False,
                 allow_newline=False,
@@ -881,7 +881,7 @@ def school_classes():
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_string(
                 data["class_name"],
                 allow_space=False,
                 allow_newline=False,
@@ -934,7 +934,7 @@ def school_classes():
                     400,
                 )
 
-            if not is_integer(data["id"]):
+            if not valid_integer(data["id"]):
                 return (
                     render_template(
                         template,
@@ -981,7 +981,7 @@ def student_classes(id):
 
     template = "admin/class_students.html"
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="Id must be integer"
@@ -1035,7 +1035,7 @@ def admin_mentors(id):
 
     template = "admin/class_mentors.html"
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="Id must be integer"
@@ -1133,7 +1133,7 @@ def admin_mentors(id):
                     400,
                 )
 
-            if not is_integer(request.form["id"]):
+            if not valid_integer(request.form["id"]):
                 return (
                     render_template(
                         template,

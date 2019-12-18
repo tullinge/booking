@@ -7,9 +7,9 @@ from flask import Blueprint, render_template, redirect, request, session, jsonif
 # components import
 from components.google import GSUITE_DOMAIN_NAME, google_login
 from components.core import (
-    is_valid_input,
+    valid_string,
     basic_validation,
-    is_integer,
+    valid_integer,
     calculate_available_spaces,
 )
 from components.limiter_obj import limiter
@@ -151,7 +151,7 @@ def setup():
             return render_template(template, fail="Fel längd på kod."), 40
 
         # make sure to validate input variables against string authentication
-        if not is_valid_input(
+        if not valid_string(
             join_code, allow_newline=False, allow_punctuation=False, allow_space=False,
         ):
             return (
@@ -192,7 +192,7 @@ def selected_activity(id):
     * book student to activity, if available spaces are still left (POST)
     """
 
-    if not is_integer(id):
+    if not valid_integer(id):
         return (
             render_template(
                 "errors/custom.html", title="400", message="ID is not integer."
@@ -238,7 +238,7 @@ def selected_activity(id):
 
     if request.method == "POST":
         for k, v in request.form.items():
-            if not is_integer(k):
+            if not valid_integer(k):
                 return (
                     render_template(
                         "student/activity.html",
@@ -270,13 +270,13 @@ def selected_activity(id):
                     400,
                 )
 
-            if not is_valid_input(
+            if not valid_string(
                 k,
                 allow_newline=False,
                 allow_punctuation=False,
                 allow_space=False,
                 swedish=False,
-            ) or not is_valid_input(v, allow_newline=False):
+            ) or not valid_string(v, allow_newline=False):
                 return (
                     render_template(
                         "student/activity.html",

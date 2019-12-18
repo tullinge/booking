@@ -3,18 +3,21 @@
 
 from flask import session
 
-from components.db import sql_query
+from components.db import dict_sql_query
 
 
 def student_chosen_activity():
-    """Returns boolean based on if student has booked or not and activity object if booked"""
+    """Returns name of chosen activity, if student has chosen"""
 
-    student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")
+    student = dict_sql_query(
+        f"SELECT * FROM students WHERE id={session.get('id')}", fetchone=True
+    )
 
-    activity = None
-    status = False
-    if student[0][5]:
-        activity = sql_query(f"SELECT name FROM activities WHERE id={student[0][5]}")
-        status = True
-
-    return status, activity
+    return (
+        dict_sql_query(
+            f"SELECT name FROM activities WHERE id={student['chosen_activity']}",
+            fetchone=True,
+        )["name"]
+        if student["chosen_activity"]
+        else None
+    )

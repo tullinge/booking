@@ -2,7 +2,7 @@
 {% block title %}{% endblock %}
 {% block body %}
     <div class="content">
-        <h1>Tullinge Booking - {{ activity[1] }}</h1>
+        <h1>Tullinge Booking - {{ activity["name"] }}</h1>
         <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
     
         <a href="/">
@@ -22,30 +22,30 @@
         {% endif %}
     
         <div>
-            <p>{{ activity[3] }}</p>
+            <p>{{ activity["info"] }}</p>
     
-            <p>Totalt antal platser: {{ activity[2] }}</p>
+            <p>Totalt antal platser: {{ activity["spaces"] }}</p>
             <p>Lediga platser: {{ available_spaces }}</p>
         </div>
     
         {% if questions %}<h2>Frågor för denna aktivitet</h2>{% endif %}
     
         <div>
-            <form action="/activity/{{ activity[0] }}", method="post">
+            <form action="/activity/{{ activity['id'] }}", method="post">
                 {% for question in questions %}
-                {% if question[0][3] %}
+                {% if question["info"]["written_answer"] %}
                     <!-- written question -->
                     <div class="form-group">
-                        <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                        <input required name="{{ question[0][0] }}" type="text" class="form-control" id="{{ question[0][0] }}" />
+                        <label for="{{ question['info']['id'] }}">{{ question['info']['question'] }}</label>
+                        <input required name="{{ question['info']['id'] }}" type="text" class="form-control" id="{{ question['info']['id'] }}" />
                     </div>
                 {% else %}
                     <!-- question with options -->
                     <div class="form-group">
-                        <label for="{{ question[0][0] }}">{{ question[0][2] }}</label>
-                        <select required class="form-control" id="{{ question[0][0] }}" name="{{ question[0][0] }}">
-                            {% for option in question[1] %}
-                            <option value="{{ option[0] }}">{{ option[2] }}</option>
+                        <label for="{{ question['info']['id'] }}">{{ question['info']['question'] }}</label>
+                        <select required class="form-control" id="{{ question['info']['id'] }}" name="{{ question['info']['id'] }}">
+                            {% for option in question['options'] %}
+                            <option value="{{ option['id'] }}">{{ option['text'] }}</option>
                             {% endfor %}
                         </select>
                     </div>

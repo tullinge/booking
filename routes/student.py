@@ -14,7 +14,7 @@ from components.core import (
 )
 from components.limiter_obj import limiter
 from components.decorators import login_required, user_setup_completed, user_not_setup
-from components.db import sql_query
+from components.db import sql_query, dict_sql_query
 from components.student import student_chosen_activity
 
 # blueprint init
@@ -33,18 +33,22 @@ def index():
     """
 
     chosen_activity = student_chosen_activity()
-    query = sql_query("SELECT * FROM activities")
 
     activities = []
-    for activity in query:
-        activities.append((activity, calculate_available_spaces(activity[0])))
+    for activity in dict_sql_query("SELECT * FROM activities"):
+        activities.append(
+            {
+                "activity": activity,
+                "available_spaces": calculate_available_spaces(activity["id"]),
+            }
+        )
 
     return render_template(
         "student/index.html",
         fullname=session.get("fullname"),
         school_class=session.get("school_class"),
         activities=activities,
-        chosen_activity=chosen_activity[1],
+        chosen_activity=chosen_activity,
     )
 
 
@@ -113,6 +117,7 @@ def logout():
 
     session.pop("logged_in", False)
     session.pop("id", None)
+    session.pop("school_class", None)
 
     return redirect("/login")
 
@@ -155,8 +160,8 @@ def setup():
             )
 
         # verify code
-        school_class = sql_query(
-            f"SELECT * FROM school_classes WHERE password='{join_code}'"
+        school_class = dict_sql_query(
+            f"SELECT * FROM school_classes WHERE password='{join_code}'", fetchone=True
         )
 
         if not school_class:
@@ -164,11 +169,11 @@ def setup():
 
         # passed validation, update user variables
         sql_query(
-            f"UPDATE students SET class_id={school_class[0][0]}  WHERE id={session['id']}"
+            f"UPDATE students SET class_id={school_class['id']}  WHERE id={session['id']}"
         )
 
         # if above fails, would raise exception
-        session["school_class"] = school_class[0][1]
+        session["school_class"] = school_class["class_name"]
 
         # redirect to index
         return redirect("/")
@@ -195,7 +200,7 @@ def selected_activity(id):
             400,
         )
 
-    activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
+    activity = dict_sql_query(f"SELECT * FROM activities WHERE id={id}", fetchone=True)
 
     if not activity:
         return (
@@ -206,22 +211,25 @@ def selected_activity(id):
         )
 
     # check if activity has questions
-    query = sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
+    query = dict_sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
     questions = []
 
     if query:
         # loops query to add each options for questions into list
         for question in query:
-            options = sql_query(
-                f"SELECT * FROM options WHERE question_id={question[0]}"
+            questions.append(
+                {
+                    "info": question,
+                    "options": dict_sql_query(
+                        f"SELECT * FROM options WHERE question_id={question['id']}"
+                    ),
+                }
             )
-
-            questions.append([question, options])
 
     if request.method == "GET":
         return render_template(
             "student/activity.html",
-            activity=activity[0],
+            activity=activity,
             fullname=session.get("fullname"),
             school_class=session.get("school_class"),
             questions=questions,
@@ -234,7 +242,7 @@ def selected_activity(id):
                 return (
                     render_template(
                         "student/activity.html",
-                        activity=activity[0],
+                        activity=activity,
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
@@ -248,7 +256,7 @@ def selected_activity(id):
                 return (
                     render_template(
                         "student/activity.html",
-                        activity=activity[0],
+                        activity=activity,
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
@@ -268,7 +276,7 @@ def selected_activity(id):
                 return (
                     render_template(
                         "student/activity.html",
-                        activity=activity[0],
+                        activity=activity,
                         fullname=session.get("fullname"),
                         school_class=session.get("school_class"),
                         questions=questions,
@@ -283,7 +291,7 @@ def selected_activity(id):
             return (
                 render_template(
                     "student/activity.html",
-                    activity=activity[0],
+                    activity=activity,
                     fullname=session.get("fullname"),
                     school_class=session.get("school_class"),
                     questions=questions,
@@ -344,11 +352,20 @@ def confirmation():
     * confirm the students new booking (GET)
     """
 
-    activity = student_chosen_activity()
+    chosen_activity = student_chosen_activity()
 
-    return render_template(
-        "student/confirmation.html",
-        fullname=session.get("fullname"),
-        school_class=session.get("school_class"),
-        activity=activity[1],
+    return (
+        render_template(
+            "student/confirmation.html",
+            fullname=session.get("fullname"),
+            school_class=session.get("school_class"),
+            chosen_activity=chosen_activity,
+        )
+        if chosen_activity
+        else render_template(
+            "errors/custom.html",
+            title="400",
+            message="Student has not chosen an activity.",
+        ),
+        400,
     )

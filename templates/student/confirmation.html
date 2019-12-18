@@ -4,7 +4,10 @@
     <div class="content">
         <h1>Tullinge Booking - Bokning bekräftad</h1>
         <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
-        <p>Din bokning för aktivitet {{ activity[0][0] }} är bekräftad.</p>
+
+        <div class="alert alert-success" role="alert">
+            Din bokning för aktivitet {{ chosen_activity }} är bekräftad.
+        </div>
     
         <a href="/">
             <button class="btn btn-primary">Tillbaka till startsidan</button>

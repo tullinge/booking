@@ -7,7 +7,7 @@
         <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
     
         {% if chosen_activity %}
-        <p>Din bokning för aktivitet {{ chosen_activity[0][0] }} är bekräftad.</p>
+        <p>Din bokning för aktivitet {{ chosen_activity }} är bekräftad.</p>
         {% endif %}
     
         <a href="/logout" onclick="signOut();">
@@ -19,13 +19,13 @@
 
     <div class="list-group">
         {% for activity in activities %}
-        <a href="/activity/{{ activity[0][0] }}" class="list-group-item list-group-item-action flex-column align-items-start">
+        <a href="/activity/{{ activity['activity']['id'] }}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ activity[0][1] }}</h5>
-            <small>{{ activity[1] }} lediga platser</small>
+            <h5 class="mb-1">{{ activity['activity']['name'] }}</h5>
+            <small>{{ activity['available_spaces'] }} lediga platser</small>
             </div>
-            <p class="mb-1">{{ activity[0][3] }}</p>
-            <small>Totalt antal platser: {{ activity[0][2] }}</small>
+            <p class="mb-1">{{ activity['activity']['info'] }}</p>
+            <small>Totalt antal platser: {{ activity['activity']['spaces'] }}</small>
         </a>
         {% endfor %}
     </div>

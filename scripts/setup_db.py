@@ -105,6 +105,18 @@ def create_tabels():
     """
     )
 
+    # mentors
+    sql_query(
+        """
+        CREATE TABLE mentors (
+            id INT NOT NULL AUTO_INCREMENT,
+            email VARCHAR(255) NOT NULL,
+            class_id INT DEFAULT NULL,
+            PRIMARY KEY(id)
+        )
+    """
+    )
+
 
 if __name__ == "__main__":
     create_tabels()

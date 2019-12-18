@@ -50,11 +50,16 @@
                         <form style="border: none; float: left;" action="/admin/classes" method="POST">
                             <input type="hidden" id="request_type" name="request_type" value="delete">
                             <input type="hidden" id="id" name="id" value="{{ class['id'] }}">
-                            <button type="submit" class="btn btn-primary">Radera</button>
+                            <button type="submit" class="btn btn-danger">Radera</button>
                         </form>
                         <a style="margin-left: 0.5em; border: none" href="/admin/classes/{{ class['id'] }}/students">
                             <button class="btn btn-primary">
                                 Visa elever som registrerat sig i denna klass
+                            </button>
+                        </a>
+                        <a style="margin-left: 0.5em; border: none" href="/admin/classes/{{ class['id'] }}/mentors">
+                            <button class="btn btn-info">
+                                Hantera mentorer med åtkomst till denna klass
                             </button>
                         </a>
                     </td>

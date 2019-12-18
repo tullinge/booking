@@ -47,6 +47,25 @@ def admin_required(f):
     return decorated_function
 
 
+def mentor_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # check if user is logged in
+        if not session.get("mentor_logged_in"):
+            return redirect("/mentor/login")
+
+        # check if user exists aswell
+        if not sql_query(f"SELECT id FROM mentors WHERE id={session.get('mentor_id')}"):
+            session.pop("mentor_logged_in", False)
+            session.pop("mentor_id", None)
+
+            return redirect("/mentor/login")
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 def user_setup_completed(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

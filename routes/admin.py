@@ -946,6 +946,9 @@ def school_classes():
             # update students
             sql_query(f"UPDATE students SET class_id=NULL WHERE class_id={data['id']}")
 
+            # delete mentors
+            sql_query(f"DELETE FROM mentors WHERE class_id={data['id']}")
+
             # re-fetch
             school_classes = dict_sql_query("SELECT * FROM school_classes")
 
@@ -986,7 +989,7 @@ def student_classes(id):
         f"SELECT * FROM school_classes WHERE id={id}", fetchone=True
     )
 
-    if not school_classes:
+    if not school_class:
         return (
             render_template(
                 "errors/custom.html", title="400", message="Class does not exist."
@@ -1013,6 +1016,152 @@ def student_classes(id):
         )
 
     return render_template(template, school_class=school_class, students=students)
+
+
+# admin mentor management
+@admin_routes.route("/classes/<id>/mentors", methods=["POST", "GET"])
+@admin_required
+def admin_mentors(id):
+    """
+    Show mentors registrered to class
+
+    * display list of all mentors (GET)
+    * add/delete mentors (POST)
+    """
+
+    template = "admin/class_mentors.html"
+
+    if not is_integer(id):
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Id must be integer"
+            ),
+            400,
+        )
+
+    school_class = dict_sql_query(
+        f"SELECT * FROM school_classes WHERE id={id}", fetchone=True
+    )
+
+    if not school_class:
+        return (
+            render_template(
+                "errors/custom.html", title="400", message="Class does not exist."
+            ),
+            400,
+        )
+
+    mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+
+    if request.method == "GET":
+        return render_template(template, school_class=school_class, mentors=mentors)
+
+    if request.method == "POST":
+        if not request.form.get("request_type"):
+            return (
+                render_template(
+                    template,
+                    school_class=school_class,
+                    mentors=mentors,
+                    fail="Ogiltig begäran.",
+                ),
+                400,
+            )
+
+        if request.form["request_type"] == "add":
+            if not basic_validation(["request_type", "email"]):
+                return (
+                    render_template(
+                        template,
+                        school_class=school_class,
+                        mentors=mentors,
+                        fail="Saknar data.",
+                    ),
+                    400,
+                )
+
+            if len(request.form["email"]) < 5 or len(request.form["email"]) > 255:
+                return (
+                    render_template(
+                        template,
+                        school_class=school_class,
+                        mentors=mentors,
+                        fail="För lång/för kort mailadress (5-255).",
+                    ),
+                    400,
+                )
+
+            if not "@" in request.form["email"] or not "." in request.form["email"]:
+                return (
+                    render_template(
+                        template,
+                        school_class=school_class,
+                        mentors=mentors,
+                        fail="Ser inte ut som en giltig mailadress.",
+                    ),
+                    400,
+                )
+
+            # create
+            sql_query(
+                f"INSERT INTO mentors (email, class_id) VALUES ('{request.form['email'].lower()}', {school_class['id']})"
+            )
+
+            # re-fetch
+            mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+
+            return render_template(
+                template,
+                school_class=school_class,
+                mentors=mentors,
+                success="Lagt till mentor.",
+            )
+
+        if request.form["request_type"] == "delete":
+            if not basic_validation(["request_type", "id"]):
+                return (
+                    render_template(
+                        template,
+                        school_class=school_class,
+                        mentors=mentors,
+                        fail="Saknar data.",
+                    ),
+                    400,
+                )
+
+            if not is_integer(request.form["id"]):
+                return (
+                    render_template(
+                        template,
+                        school_class=school_class,
+                        mentors=mentors,
+                        fail="Id måste vara ett heltal.",
+                    ),
+                    400,
+                )
+
+            # delete
+            sql_query(f"DELETE FROM mentors WHERE id={request.form['id']}")
+
+            # re-fetch
+            mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+
+            return render_template(
+                template,
+                school_class=school_class,
+                mentors=mentors,
+                success="Mentor borttagen.",
+            )
+
+        return (
+            render_template(
+                template,
+                school_class=school_class,
+                mentors=mentors,
+                fail="Ogiltig begäran.",
+            ),
+            400,
+        )
 
 
 # change password

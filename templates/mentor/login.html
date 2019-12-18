@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} - Logga in{% endblock %}
+{% block title %} - Logga in som mentor{% endblock %}
 {% block custom_head %}
 {% include "google.html" %}
 <style>
@@ -17,7 +17,7 @@
 {% endblock %}
 {% block body %}
     <div class="content login-content">
-        <h1 class="align-center">Tullinge Booking</h1>
+        <h1 class="align-center">Tullinge Booking - Mentorsida</h1>
 
         {% if fail %}
         <div class="alert alert-danger" role="alert">
@@ -39,7 +39,7 @@
         function onSignIn(googleUser) {
             var id_token = googleUser.getAuthResponse().id_token;
 
-            fetch('/callback', {
+            fetch('/mentor/callback', {
                 method: 'POST',
                 body: JSON.stringify({
                     idtoken: id_token
@@ -49,12 +49,12 @@
                 if (response.status == 200 || response.status == 400) {
                     return response.json();
                 } else {
-                    error(response.status + " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!")
-                }
+                    error(response.status + " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!");
+                };
             })
             .then(function(json) {
                 if (json.status) {
-                    window.location.replace("setup");
+                    window.location.replace("/mentor");
                 } else {
                     error(json.message);
                 }
@@ -68,9 +68,8 @@
         }
         </script>
 
-        <form id="errorRedirect" style="display: none;" method="POST" action="/callback/error">
+        <form id="errorRedirect" style="display: none;" method="POST" action="/mentor/callback/error">
             <input id="message" type="hidden" name="message" value="" />
         </form>
     </div>
 {% endblock %}
-

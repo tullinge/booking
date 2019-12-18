@@ -740,13 +740,7 @@ def admin_users():
                 )
 
             if not valid_string(
-                data["password"],
-                min_length=8,
-                max_length=100,
-                allow_space=False,
-                allow_newline=False,
-                swedish=False,
-                allow_punctuation=False,
+                data["password"], min_length=8, max_length=100, allow_space=False,
             ):
                 return render_template(
                     template,
@@ -888,7 +882,6 @@ def school_classes():
                 allow_space=False,
                 allow_newline=False,
                 allow_punctuation=False,
-                swedish=False,
             ):
                 return (
                     render_template(

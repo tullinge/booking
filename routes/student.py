@@ -11,10 +11,9 @@ import requests as requests_module
 
 # components import
 from components.core import (
-    is_valid_input,
     valid_input,
+    valid_integer,
     basic_validation,
-    is_integer,
     calculate_available_spaces,
 )
 from components.decorators import (
@@ -276,7 +275,11 @@ def selected_activity(id):
     * book student to activity, if available spaces are still left (POST)
     """
     template = "student/activity.html"
-    if not is_integer(id):
+    if not valid_integer(
+        id,
+        0,
+        False
+    ):
         return (
             render_template(
                 "errors/custom.html",
@@ -334,7 +337,11 @@ def selected_activity(id):
                     ), 400,
                 )
 
-            if not is_integer(k):
+            if not valid_integer(
+                k,
+                0,
+                False
+            ):
                 return (
                     render_template(
                         template,

@@ -87,16 +87,16 @@ def get_client_ip():
 
 #full validations of strings
 def valid_input (
-    variable, min_legnth, max_legnth, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
+    variable, min_length, max_length, allow_space=True, allow_punctuation=True, swedish=True, allow_newline=True
 ):
 
     """Returns boolean whether variable is valid input or not"""
     if not variable:
         return False
-    if max_legnth == False and not min_legnth <= len(variable):
+    if max_length == False and not min_length <= len(variable):
         return False
 
-    elif not min_legnth <= len(variable) <= max_legnth:
+    elif not min_length <= len(variable) <= max_length:
         return False
 
     ILLEGAL_CHARACTERS = ["<", ">", ";"]
@@ -136,12 +136,13 @@ def is_integer(
 
     return True
 
-    def valid_integer(
-    variable, min_legnth, max_legnth
-):  if max_legnth == False and not min_legnth <= len(variable):
+def valid_integer(
+    variable, min_length, max_length
+):  
+    if max_length == False and not min_length <= len(variable):
         return False
-    elif:
-        if not min_legnth <= len(variable) <= max_legnth:
+    else:
+        if not min_length <= len(variable) <= max_length:
             return False
 
     try:

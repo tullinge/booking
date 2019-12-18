@@ -9,10 +9,18 @@ sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
 from components.db import sql_query
 
+
+def insert(query, name=None):
+    try:
+        sql_query(query)
+    except Exception:
+        print(f"unable to create {name}, already exists?")
+
+
 # create tables
 def create_tabels():
     # activities
-    sql_query(
+    insert(
         """
         CREATE TABLE activities (
             id INT NOT NULL AUTO_INCREMENT,
@@ -21,24 +29,27 @@ def create_tabels():
             info VARCHAR(511) DEFAULT NULL,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="activities",
     )
 
     # questions
-    sql_query(
+    insert(
         """
         CREATE TABLE questions (
             id INT NOT NULL AUTO_INCREMENT,
             activity_id INT NOT NULL,
             question VARCHAR(255) NOT NULL,
             written_answer BOOLEAN DEFAULT FALSE,
+            obligatory BOOLEAN DEFAULT TRUE,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="questions",
     )
 
     # options on questions
-    sql_query(
+    insert(
         """
         CREATE TABLE options (
             id INT NOT NULL AUTO_INCREMENT,
@@ -46,11 +57,12 @@ def create_tabels():
             text VARCHAR(255) NOT NULL,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="options",
     )
 
     # answers from students
-    sql_query(
+    insert(
         """
         CREATE TABLE answers (
             id INT NOT NULL AUTO_INCREMENT,
@@ -60,12 +72,13 @@ def create_tabels():
             written_answer VARCHAR(255) DEFAULT NULL,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="answers",
     )
 
     # admins
     # password should always be stored in hashed format
-    sql_query(
+    insert(
         """
         CREATE TABLE admins (
             id INT NOT NULL AUTO_INCREMENT,
@@ -74,12 +87,13 @@ def create_tabels():
             password VARCHAR(255) DEFAULT NULL,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="admins",
     )
 
     # students
     # password is stored in plain text
-    sql_query(
+    insert(
         """
         CREATE TABLE students (
             id INT NOT NULL AUTO_INCREMENT,
@@ -90,11 +104,12 @@ def create_tabels():
             chosen_activity INT DEFAULT NULL,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="students",
     )
 
     # school_classes
-    sql_query(
+    insert(
         """
         CREATE TABLE school_classes (
             id INT NOT NULL AUTO_INCREMENT,
@@ -102,11 +117,12 @@ def create_tabels():
             password VARCHAR(8) NOT NULL UNIQUE,
             PRIMARY KEY (id)
         );
-    """
+    """,
+        name="school_classes",
     )
 
     # mentors
-    sql_query(
+    insert(
         """
         CREATE TABLE mentors (
             id INT NOT NULL AUTO_INCREMENT,
@@ -114,7 +130,8 @@ def create_tabels():
             class_id INT DEFAULT NULL,
             PRIMARY KEY(id)
         )
-    """
+    """,
+        name="mentors",
     )
 
 

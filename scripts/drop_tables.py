@@ -9,11 +9,20 @@ sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
 from components.db import sql_query
 
+
+def drop(query, name=None):
+    try:
+        sql_query(query)
+    except Exception:
+        print(f"table {name} doesn't exist")
+
+
 if __name__ == "__main__":
-    sql_query("DROP TABLE activities")
-    sql_query("DROP TABLE questions")
-    sql_query("DROP TABLE options")
-    sql_query("DROP TABLE answers")
-    sql_query("DROP TABLE admins")
-    sql_query("DROP TABLE students")
-    sql_query("DROP TABLE school_classes")
+    drop("DROP TABLE activities", name="activities")
+    drop("DROP TABLE questions", name="questions")
+    drop("DROP TABLE options", name="options")
+    drop("DROP TABLE answers", name="answers")
+    drop("DROP TABLE admins", name="admins")
+    drop("DROP TABLE students", name="students")
+    drop("DROP TABLE school_classes", name="school_classes")
+    drop("DROP TABLE mentors", name="mentors")

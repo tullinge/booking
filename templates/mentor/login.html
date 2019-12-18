@@ -46,19 +46,25 @@
                 })
             })
             .then(function(response) {
-                return response.json();
+                if (response.status == 200 || response.status == 400) {
+                    return response.json();
+                } else {
+                    error(response.status + " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!");
+                };
             })
             .then(function(json) {
-                console.log(json);
-
                 if (json.status) {
                     window.location.replace("/mentor");
                 } else {
-                    signOut();
-                    document.getElementById("message").value = json.message;
-                    document.forms.errorRedirect.submit();
+                    error(json.message);
                 }
             });
+        }
+
+        function error(message) {
+            signOut();
+            document.getElementById("message").value = message;
+            document.forms.errorRedirect.submit();
         }
         </script>
 

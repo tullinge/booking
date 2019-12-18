@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %} - Elever i klass {{ school_class[1] }}{% endblock %}
+{% block title %} - Elever i klass {{ school_class["class_name"] }}{% endblock %}
 {% block body %}
 {% include "admin/navbar.html" %}
     <div class="content">
-        <h1>Elever registrerade på klass {{ school_class[1] }}</h1>
+        <h1>Elever registrerade på klass {{ school_class["class_name"] }}</h1>
 
         <button onclick="window.print();" class="btn btn-primary no-print">
             Skriv ut

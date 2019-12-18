@@ -35,7 +35,7 @@ def google_login(token, hd_name):
             }
 
         # if auth request is from a G Suite domain:
-        if "hd" not in idinfo:
+        if hd_name and "hd" not in idinfo:
             return {
                 "status": False,
                 "resp": (
@@ -50,7 +50,7 @@ def google_login(token, hd_name):
                 ),
             }
 
-        if idinfo["hd"] != hd_name:
+        if hd_name and idinfo["hd"] != hd_name:
             return {
                 "status": False,
                 "resp": (

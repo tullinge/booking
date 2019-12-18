@@ -3,7 +3,7 @@
 
 from flask import Blueprint, render_template, request, redirect, session
 
-#components imports
+# components imports
 from components.core import (
     valid_input,
     valid_integer,
@@ -24,7 +24,7 @@ from components.db import sql_query
 # blueprint init
 admin_routes = Blueprint("admin_routes", __name__, template_folder="../templates")
 
-BASEPATH = "/admin" 
+BASEPATH = "/admin"
 
 # admin login
 @admin_routes.route("/login", methods=["GET", "POST"])
@@ -38,9 +38,7 @@ def login():
     """
     template = "admin/login.html"
     if request.method == "GET":
-        return render_template(
-            template
-            )
+        return render_template(template)
     elif request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -61,32 +59,26 @@ def login():
             allow_space=False,
             allow_punctuation=False,
             swedish=False,
-            allow_newline=False
+            allow_newline=False,
         ):
             return (
-                render_template(
-                    template,
-                    fail="Otilåten input."
-                ), 400,
+                render_template(template, fail="Otilåten input."),
+                400,
             )
 
         admin = sql_query(f"SELECT * FROM admins WHERE username='{username}'")
 
         if not admin:
             return (
-                render_template(
-                    template,
-                    fail="Fel användarnamn eller lösenord."
-                ), 401,
+                render_template(template, fail="Fel användarnamn eller lösenord."),
+                401,
             )
 
         # verify password
         if not verify_password(admin[0][3], password):
             return (
-                render_template(
-                    template,
-                    fail="Fel användarnamn eller lösenord."
-                ), 401,
+                render_template(template, fail="Fel användarnamn eller lösenord."),
+                401,
             )
 
         session["admin_logged_in"] = True
@@ -147,10 +139,7 @@ def activities():
     activities = get_activites_with_spaces()
 
     if request.method == "GET":
-        return render_template(
-            template,
-            activities=activities
-        )
+        return render_template(template, activities=activities)
 
     if request.method == "POST":
         data = request.form
@@ -158,52 +147,32 @@ def activities():
         if not data:
             return (
                 render_template(
-                    template,
-                    activities=activities,
-                    fail="Ingen data skickades."
-                ), 400,
+                    template, activities=activities, fail="Ingen data skickades."
+                ),
+                400,
             )
 
         # validate
-        if not valid_integer(
-            data["spaces"],
-            1,
-            3,
-        ):
+        if not valid_integer(data["spaces"], 1, 3,):
             return (
                 render_template(
-                    template,
-                    activities=activities,
-                    fail="Otilåtet platser.",
-                ), 400,
+                    template, activities=activities, fail="Otilåtet platser.",
+                ),
+                400,
             )
 
-        if not valid_input(
-            data["name"],
-            4,
-            255,
-            allow_newline=False,
-        ):
+        if not valid_input(data["name"], 4, 255, allow_newline=False,):
             return (
-                render_template(
-                    template,
-                    activities=activities,
-                    fail="Otilåtet namn."
-                ), 400,
+                render_template(template, activities=activities, fail="Otilåtet namn."),
+                400,
             )
 
-        if not valid_input(
-            data["info"],
-            4,
-            255,
-            allow_newline=False,
-        ):
+        if not valid_input(data["info"], 4, 255, allow_newline=False,):
             return (
                 render_template(
-                    template,
-                    activities=activities,
-                    fail="Otilåten information."
-                ), 400,
+                    template, activities=activities, fail="Otilåten information."
+                ),
+                400,
             )
 
         # create
@@ -236,17 +205,12 @@ def selected_activity(id):
 
     template = "admin/activity.html"
 
-    if not valid_integer(
-        id,
-        0,
-        False,
-    ):
+    if not valid_integer(id, 0, False,):
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="ID is not integer."
-            ), 400,
+                "errors/custom.html", title="400", message="ID is not integer."
+            ),
+            400,
         )
 
     activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
@@ -254,10 +218,9 @@ def selected_activity(id):
     if not activity:
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Activity dose not exist."
-            ), 400,
+                "errors/custom.html", title="400", message="Activity dose not exist."
+            ),
+            400,
         )
 
     # get questions
@@ -283,7 +246,8 @@ def selected_activity(id):
                     questions=questions,
                     available_spaces=calculate_available_spaces(id),
                     fail="Ingen data skickades/saknar data.",
-                ), 400,
+                ),
+                400,
             )
 
         # is written answer
@@ -334,17 +298,12 @@ def question_id(id):
 
     template = "admin/view_question.html"
 
-    if not valid_integer(
-        id,
-        0,
-        False,
-    ):
+    if not valid_integer(id, 0, False,):
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Id must be integer."
-            ), 400,
+                "errors/custom.html", title="400", message="Id must be integer."
+            ),
+            400,
         )
 
     question = sql_query(f"SELECT * FROM questions WHERE id={id}")
@@ -352,10 +311,9 @@ def question_id(id):
     if not question:
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Question does not exist."
-            ), 400,
+                "errors/custom.html", title="400", message="Question does not exist."
+            ),
+            400,
         )
 
     if question[0][3]:
@@ -364,35 +322,28 @@ def question_id(id):
                 "errors/custom.html",
                 title="400",
                 message="Question is not correct type.",
-            ), 400,
+            ),
+            400,
         )
 
     # get options
     options = sql_query(f"SELECT * FROM options WHERE question_id={question[0][0]}")
 
     if request.method == "GET":
-        return render_template(
-        template,
-        question=question[0],
-        options=options
-    )
+        return render_template(template, question=question[0], options=options)
 
     if request.method == "POST":
         data = request.form
 
-        if not valid_input(
-            data["text"],
-            0,
-            511,
-            allow_newline=False
-            ):
+        if not valid_input(data["text"], 0, 511, allow_newline=False):
             return (
                 render_template(
                     template,
                     question=question[0],
                     options=options,
                     fail="Otilåten input.",
-                ), 400,
+                ),
+                400,
             )
 
         # add option
@@ -423,17 +374,12 @@ def activity_students(id):
     * (hopefully) printer friendly
     """
     template = "admin/activity_students.html"
-    if not valid_integer(
-        id,
-        0,
-        False,
-    ):
+    if not valid_integer(id, 0, False,):
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Id must be integer."
-            ), 400,
+                "errors/custom.html", title="400", message="Id must be integer."
+            ),
+            400,
         )
 
     activity = sql_query(f"SELECT * FROM activities WHERE id={id}")
@@ -441,10 +387,9 @@ def activity_students(id):
     if not activity:
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Activity dose not exist."
-            ), 400,
+                "errors/custom.html", title="400", message="Activity dose not exist."
+            ),
+            400,
         )
 
     # get students that have booked this activity and their answers
@@ -480,10 +425,7 @@ def activity_students(id):
     questions = sql_query(f"SELECT question FROM questions WHERE activity_id={id}")
 
     return render_template(
-        template,
-        students=students,
-        activity=activity[0],
-        questions=questions,
+        template, students=students, activity=activity[0], questions=questions,
     )
 
 
@@ -504,43 +446,29 @@ def admin_users():
     admins = sql_query(query)
 
     if request.method == "GET":
-        return render_template(
-            template,
-            admins=admins)
+        return render_template(template, admins=admins)
 
     if request.method == "POST":
         data = request.form
 
         if not data:
             return (
-                render_template(
-                    template,
-                    admins=admins,
-                    fail="Ogiltig begäran."
-                ), 400,
+                render_template(template, admins=admins, fail="Ogiltig begäran."),
+                400,
             )
 
         # delete
         if data["request_type"] == "delete":
             if len(data) != 2 or not data["id"]:
                 return (
-                    render_template(
-                        template,
-                        admins=admins,
-                        fail="Saknar data."
-                    ), 400,
+                    render_template(template, admins=admins, fail="Saknar data."),
+                    400,
                 )
 
-            if not valid_integer(
-                data["id"],
-                0,
-                False,
-            ):
+            if not valid_integer(data["id"], 0, False,):
                 return (
                     render_template(
-                        template,
-                        admins=admins,
-                        fail="Id måste vara heltal."
+                        template, admins=admins, fail="Id måste vara heltal."
                     ),
                     400,
                 )
@@ -552,7 +480,8 @@ def admin_users():
                         template,
                         admins=admins,
                         fail="Kan inte radera den egna användaren.",
-                    ), 400,
+                    ),
+                    400,
                 )
 
             # delete user
@@ -562,24 +491,17 @@ def admin_users():
             admins = sql_query(query)
 
             return render_template(
-                template,
-                admins=admins,
-                success="Användare raderad."
+                template, admins=admins, success="Användare raderad."
             )
 
         if data["request_type"] == "add":
-            
+
             if not valid_input(
-                data["name"],
-                4,
-                255,
-                allow_newline=False,
-                allow_punctuation=False
+                data["name"], 4, 255, allow_newline=False, allow_punctuation=False
             ):
                 return (
-                    render_template(
-                        template, admins=admins, fail="Ogiltigt namn."
-                    ), 400,
+                    render_template(template, admins=admins, fail="Ogiltigt namn."),
+                    400,
                 )
 
             if not valid_input(
@@ -594,7 +516,8 @@ def admin_users():
                 return (
                     render_template(
                         template, admins=admins, fail="Ogiltigt användarnamn."
-                    ), 400,
+                    ),
+                    400,
                 )
 
             # check for length
@@ -618,7 +541,8 @@ def admin_users():
                                 template,
                                 admins=admins,
                                 fail="Lösenordet måste vara minst 8 karaktärer långt.",
-                            ), 400,
+                            ),
+                            400,
                         )
 
             # create new user
@@ -633,11 +557,7 @@ def admin_users():
                 template, admins=admins, success="Nytt konto skapats."
             )
 
-        return render_template(
-            template,
-            admins=admins,
-            fail="Felaktig begäran."
-        ), 400
+        return render_template(template, admins=admins, fail="Felaktig begäran."), 400
 
 
 # student codes
@@ -655,10 +575,7 @@ def students():
         students = sql_query("SELECT * FROM students")
 
     if request.method == "GET":
-        return render_template(
-            template,
-            students=students
-        )
+        return render_template(template, students=students)
 
 
 # school classes management
@@ -677,10 +594,7 @@ def school_classes():
     school_classes = sql_query("SELECT * FROM school_classes")
 
     if request.method == "GET":
-        return render_template(
-            template,
-            school_classes=school_classes
-        )
+        return render_template(template, school_classes=school_classes)
 
     if request.method == "POST":
         data = request.form
@@ -688,10 +602,9 @@ def school_classes():
         if not data or len(data) != 2:
             return (
                 render_template(
-                    template,
-                    school_classes=school_classes,
-                    fail="Ingen data angiven."
-                ), 400,
+                    template, school_classes=school_classes, fail="Ingen data angiven."
+                ),
+                400,
             )
 
         # if adding
@@ -702,7 +615,8 @@ def school_classes():
                         template,
                         school_classes=school_classes,
                         fail="Saknar variabler.",
-                    ), 400,
+                    ),
+                    400,
                 )
 
             class_check = sql_query(
@@ -715,17 +629,23 @@ def school_classes():
                         template,
                         school_classes=school_classes,
                         fail="klass finns redan.",
-                    ), 400,
+                    ),
+                    400,
                 )
             if not valid_input(
-                data["class_name"], 3, 10, allow_space=False, allow_punctuation=False, swedish=False, allow_newline=False,
+                data["class_name"],
+                3,
+                10,
+                allow_space=False,
+                allow_punctuation=False,
+                swedish=False,
+                allow_newline=False,
             ):
                 return (
                     render_template(
-                        template,
-                        school_classes=school_classes,
-                        fail="Otilåten input."
-                    ), 400,
+                        template, school_classes=school_classes, fail="Otilåten input."
+                    ),
+                    400,
                 )
 
             # create
@@ -738,10 +658,9 @@ def school_classes():
 
             return (
                 render_template(
-                    template,
-                    school_classes=school_classes,
-                    success="Ny klass skapad."
-                ), 201,
+                    template, school_classes=school_classes, success="Ny klass skapad."
+                ),
+                201,
             )
 
         # if deleting
@@ -752,20 +671,18 @@ def school_classes():
                         template,
                         school_classes=school_classes,
                         fail="Saknar variabler.",
-                    ), 400,
+                    ),
+                    400,
                 )
 
-            if not valid_integer(
-                data["id"],
-                0,
-                False,
-            ):
+            if not valid_integer(data["id"], 0, False,):
                 return (
                     render_template(
                         template,
                         school_classes=school_classes,
                         fail="Id måste vara heltal.",
-                    ), 400,
+                    ),
+                    400,
                 )
 
             # delete
@@ -778,18 +695,15 @@ def school_classes():
             school_classes = sql_query("SELECT * FROM school_classes")
 
             return render_template(
-                template,
-                school_classes=school_classes,
-                success="Klass raderad."
+                template, school_classes=school_classes, success="Klass raderad."
             )
 
         # if invalid request_type
         return (
             render_template(
-                template,
-                school_classes=school_classes,
-                fail="Ogiltig förfrågan."
-            ), 400,
+                template, school_classes=school_classes, fail="Ogiltig förfrågan."
+            ),
+            400,
         )
 
 
@@ -805,17 +719,12 @@ def student_classes(id):
 
     template = "admin/class_students.html"
 
-    if not valid_integer(
-        id,
-        0,
-        False,
-    ):
+    if not valid_integer(id, 0, False,):
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Id must be integer"
-            ), 400,
+                "errors/custom.html", title="400", message="Id must be integer"
+            ),
+            400,
         )
 
     school_class = sql_query(f"SELECT * FROM school_classes WHERE id={id}")
@@ -823,10 +732,9 @@ def student_classes(id):
     if not school_classes:
         return (
             render_template(
-                "errors/custom.html",
-                title="400",
-                message="Class does not exist."
-            ), 400,
+                "errors/custom.html", title="400", message="Class does not exist."
+            ),
+            400,
         )
 
     # show students with  class defined as this one
@@ -834,11 +742,7 @@ def student_classes(id):
         f"SELECT id, first_name, last_name, chosen_activity FROM students WHERE class_id={school_class[0][0]}"
     )
 
-    return render_template(
-        template,
-        school_class=school_class[0],
-        students=students
-    )
+    return render_template(template, school_class=school_class[0], students=students)
 
 
 # change password
@@ -855,9 +759,7 @@ def change_password():
 
     # view page
     if request.method == "GET":
-        return render_template(
-            template
-        )
+        return render_template(template)
 
     # change
     if request.method == "POST":
@@ -868,10 +770,7 @@ def change_password():
         )
 
         if not admin:
-            return render_template(
-                template,
-                fail="Admin does not exist."
-                ), 400
+            return render_template(template, fail="Admin does not exist."), 400
 
         if (
             len(data) != 3
@@ -879,25 +778,20 @@ def change_password():
             or not data["new_password"]
             or not data["new_password_verify"]
         ):
-            return render_template(
-                template,
-                fail="Felaktig begäran."
-            ), 400
+            return render_template(template, fail="Felaktig begäran."), 400
 
         if not verify_password(admin[0][0], data["current_password"]):
             return (
-                render_template(
-                    template,
-                    fail="Felaktigt angivet nuvarande lösenord."
-                ), 400,
+                render_template(template, fail="Felaktigt angivet nuvarande lösenord."),
+                400,
             )
 
         if data["new_password"] != data["new_password_verify"]:
             return (
                 render_template(
-                    template,
-                    fail="Nya lösenordet måste vara likadant i båda fälten."
-                ), 400,
+                    template, fail="Nya lösenordet måste vara likadant i båda fälten."
+                ),
+                400,
             )
 
         if len(data["new_password"]) < 8:
@@ -905,7 +799,8 @@ def change_password():
                 render_template(
                     template,
                     fail="Lösenord för kort, måste vara längre än 8 karaktärer.",
-                ), 400,
+                ),
+                400,
             )
 
         # update user
@@ -914,7 +809,4 @@ def change_password():
         )
 
         # change password
-        return render_template(
-            template,
-            success="Lösenord bytt."
-        )
+        return render_template(template, success="Lösenord bytt.")

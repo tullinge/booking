@@ -3,7 +3,7 @@
 
 from flask import Blueprint, render_template, jsonify, request, session, redirect
 
-from components.db import sql_query, dict_sql_query
+from components.db import dict_sql_query
 from components.google import google_login
 from components.decorators import activity_leader_login_required
 

@@ -37,7 +37,8 @@
                     <!-- written question -->
                     <div class="form-group">
                         <label for="{{ question['info']['id'] }}">{{ question['info']['question'] }}</label>
-                        <input required name="{{ question['info']['id'] }}" type="text" class="form-control" id="{{ question['info']['id'] }}" />
+                        <input {% if question["info"]["obligatory"] %}required{% endif %} name="{{ question['info']['id'] }}" type="text" class="form-control" id="{{ question['info']['id'] }}" />
+                        <small>{% if question["info"]["obligatory"] %}Obligatorisk{% else %}Frivillig{% endif %}</small>
                     </div>
                 {% else %}
                     <!-- question with options -->
@@ -48,6 +49,7 @@
                             <option value="{{ option['id'] }}">{{ option['text'] }}</option>
                             {% endfor %}
                         </select>
+                        <small>{% if question["info"]["obligatory"] %}Obligatorisk{% else %}Frivillig{% endif %}</small>
                     </div>
                 {% endif %}
                 {% endfor %}

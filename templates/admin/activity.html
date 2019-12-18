@@ -43,6 +43,10 @@
                 <input name="written_answer" type="checkbox" class="form-check-input" id="written_answer">
                 <label class="form-check-label" for="written_answer">Fritextsfråga (annars alternativsfråga)</label>
             </div>
+            <div class="form-check">
+                <input name="voluntary" type="checkbox" class="form-check-input" id="voluntary">
+                <label class="form-check-label" for="voluntary">Frivillig? (<b>endast för fritextsfrågor</b>, elevsvar på frågan kommer inte att krävas)</label>
+            </div>
             <button type="submit" class="btn btn-primary">Skapa</button>
         </form>
     
@@ -53,18 +57,20 @@
                     <th scope="col">#</th>
                     <th scope="col">Fråga</th>
                     <th scope="col">Typ av fråga</th>
+                    <th scope="col">Obligatorisk?</th>
                     <th scope="col">Åtgärd</th>
                 </tr>
             </thead>
             <tbody>
                 {% for question in questions %}
                 <tr>
-                    <th scope="row">{{ question[0][0] }}</th>
-                    <td>{{ question[0][1] }}</td>
-                    <td>{% if question[0][2] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
+                    <th scope="row">{{ question["question"]["id"] }}</th>
+                    <td>{{ question["question"]["question"] }}</td>
+                    <td>{% if question["question"]["written_answer"] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
+                    <td>{% if question["question"]["obligatory"] %}Obligatorisk{% else %}Frivillig{% endif %}</td>
                     <td>
-                        {% if not question[0][2] %}
-                        <a style="float: left; margin-right: 0.3em;" href="/admin/question/{{ question[0][0] }}">
+                        {% if not question["question"]["written_answer"] %}
+                        <a style="float: left; margin-right: 0.3em;" href="/admin/question/{{ question['question']['id'] }}">
                             <button class="btn btn-primary">
                                 Lägg till svarsalternativ
                             </button>
@@ -72,17 +78,18 @@
                         {% endif %}
                         <form method="POST" action="/admin/activity/{{ activity[0] }}">
                             <input type="hidden" name="request_type" value="delete" />
-                            <input type="hidden" name="id" value="{{ question[0][0] }}" />
+                            <input type="hidden" name="id" value="{{ question['question']['id'] }}" />
                             <button type="submit" class="btn btn-primary">
                                 Radera
                             </button>
                         </form>
                     </td>
                 </tr>
-                {% if not question[0][2] %}
+                {% if not question["question"]["written_answer"] %}
                 <tr>
                     <td></td>
-                    <td><i>{% for option in question[1] %} {{ option[2] }}{% endfor %}</i></td>
+                    <td><i>{% for option in question["options"] %} {{ option["text"] }}{% endfor %}</i></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>

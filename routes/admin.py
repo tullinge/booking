@@ -316,8 +316,12 @@ def selected_activity(id):
 
             # is written answer
             if request.form.get("written_answer"):
+                obligatory = True
+                if request.form.get("voluntary"):
+                    obligatory = False
+
                 sql_query(
-                    f"INSERT INTO questions (activity_id, question, written_answer) VALUES ({id}, '{data['question']}', 1)"
+                    f"INSERT INTO questions (activity_id, question, written_answer, obligatory) VALUES ({id}, '{data['question']}', 1, {obligatory})"
                 )
 
                 # re-fetch

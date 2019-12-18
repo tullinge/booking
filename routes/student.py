@@ -238,20 +238,6 @@ def selected_activity(id):
 
     if request.method == "POST":
         for k, v in request.form.items():
-            if not v:
-                return (
-                    render_template(
-                        "student/activity.html",
-                        activity=activity,
-                        fullname=session.get("fullname"),
-                        school_class=session.get("school_class"),
-                        questions=questions,
-                        available_spaces=calculate_available_spaces(id),
-                        fail="Saknar data.",
-                    ),
-                    400,
-                )
-
             if not is_integer(k):
                 return (
                     render_template(
@@ -262,6 +248,24 @@ def selected_activity(id):
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
                         fail="Felaktigt skickad data.",
+                    ),
+                    400,
+                )
+
+            question = dict_sql_query(
+                f"SELECT * FROM questions WHERE id={id}", fetchone=True
+            )
+
+            if not v and not question["obligatory"]:
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity,
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Saknar data.",
                     ),
                     400,
                 )
@@ -285,6 +289,22 @@ def selected_activity(id):
                     ),
                     400,
                 )
+
+        if len(request.form) < len(
+            dict_sql_query(f"SELECT * FROM questions WHERE activity_id={id}")
+        ):
+            return (
+                render_template(
+                    "student/activity.html",
+                    activity=activity,
+                    fullname=session.get("fullname"),
+                    school_class=session.get("school_class"),
+                    questions=questions,
+                    available_spaces=calculate_available_spaces(id),
+                    fail="Saknar svar på frågor.",
+                ),
+                400,
+            )
 
         # check if it still has available_spaces
         if calculate_available_spaces(id) < 1:

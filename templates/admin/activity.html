@@ -29,6 +29,12 @@
                 Visa elever som bokat denna aktivitet
             </button>
         </a>
+
+        <a style="margin-left: 0.5em; border: none" href="/admin/activity/{{ activity[0] }}/leaders">
+            <button class="btn btn-info">
+                Hantera aktivitetsledare med åtkomst till denna aktivitet
+            </button>
+        </a>
         
         <h2>Skapa ny fråga</h2>
         <form action="/admin/activity/{{ activity[0] }}" method="POST">
@@ -79,7 +85,7 @@
                         <form method="POST" action="/admin/activity/{{ activity[0] }}">
                             <input type="hidden" name="request_type" value="delete" />
                             <input type="hidden" name="id" value="{{ question['question']['id'] }}" />
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-danger">
                                 Radera
                             </button>
                         </form>

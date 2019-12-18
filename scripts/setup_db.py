@@ -121,13 +121,13 @@ def create_tabels():
         name="school_classes",
     )
 
-    # mentors
+    # leaders
     insert(
         """
-        CREATE TABLE mentors (
+        CREATE TABLE leaders (
             id INT NOT NULL AUTO_INCREMENT,
             email VARCHAR(255) NOT NULL,
-            class_id INT DEFAULT NULL,
+            activity_id INT DEFAULT NULL,
             PRIMARY KEY(id)
         )
     """,

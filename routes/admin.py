@@ -221,6 +221,9 @@ def activities():
                 f"UPDATE students SET chosen_activity=NULL WHERE chosen_activity={data['id']}"
             )
 
+            # delete activity leaders
+            sql_query(f"DELETE FROM leaders WHERE activity_id={data['id']}")
+
             # re-fetch
             activities = get_activites_with_spaces()
 
@@ -935,9 +938,6 @@ def school_classes():
             # update students
             sql_query(f"UPDATE students SET class_id=NULL WHERE class_id={data['id']}")
 
-            # delete mentors
-            sql_query(f"DELETE FROM mentors WHERE class_id={data['id']}")
-
             # re-fetch
             school_classes = dict_sql_query("SELECT * FROM school_classes")
 
@@ -1007,18 +1007,18 @@ def student_classes(id):
     return render_template(template, school_class=school_class, students=students)
 
 
-# admin mentor management
-@admin_routes.route("/classes/<id>/mentors", methods=["POST", "GET"])
+# admin leaders management
+@admin_routes.route("/activity/<id>/leaders", methods=["POST", "GET"])
 @admin_required
-def admin_mentors(id):
+def admin_leaders(id):
     """
-    Show mentors registrered to class
+    Show leaders registrered to activity
 
-    * display list of all mentors (GET)
-    * add/delete mentors (POST)
+    * display list of all activity leader (GET)
+    * add/delete activity leader (POST)
     """
 
-    template = "admin/class_mentors.html"
+    template = "admin/activity_leaders.html"
 
     if not valid_integer(id):
         return (
@@ -1028,30 +1028,28 @@ def admin_mentors(id):
             400,
         )
 
-    school_class = dict_sql_query(
-        f"SELECT * FROM school_classes WHERE id={id}", fetchone=True
-    )
+    activity = dict_sql_query(f"SELECT * FROM activities WHERE id={id}", fetchone=True)
 
-    if not school_class:
+    if not activity:
         return (
             render_template(
-                "errors/custom.html", title="400", message="Class does not exist."
+                "errors/custom.html", title="400", message="Activity does not exist."
             ),
             400,
         )
 
-    mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+    leaders = dict_sql_query(f"SELECT * FROM leaders WHERE activity_id={id}")
 
     if request.method == "GET":
-        return render_template(template, school_class=school_class, mentors=mentors)
+        return render_template(template, activity=activity, leaders=leaders)
 
     if request.method == "POST":
         if not request.form.get("request_type"):
             return (
                 render_template(
                     template,
-                    school_class=school_class,
-                    mentors=mentors,
+                    activity=activity,
+                    leaders=leaders,
                     fail="Ogiltig begäran.",
                 ),
                 400,
@@ -1062,8 +1060,8 @@ def admin_mentors(id):
                 return (
                     render_template(
                         template,
-                        school_class=school_class,
-                        mentors=mentors,
+                        activity=activity,
+                        leaders=leaders,
                         fail="Saknar data.",
                     ),
                     400,
@@ -1073,8 +1071,8 @@ def admin_mentors(id):
                 return (
                     render_template(
                         template,
-                        school_class=school_class,
-                        mentors=mentors,
+                        activity=activity,
+                        leaders=leaders,
                         fail="För lång/för kort mailadress (5-255).",
                     ),
                     400,
@@ -1084,8 +1082,8 @@ def admin_mentors(id):
                 return (
                     render_template(
                         template,
-                        school_class=school_class,
-                        mentors=mentors,
+                        activity=activity,
+                        leaders=leaders,
                         fail="Ser inte ut som en giltig mailadress.",
                     ),
                     400,
@@ -1093,17 +1091,17 @@ def admin_mentors(id):
 
             # create
             sql_query(
-                f"INSERT INTO mentors (email, class_id) VALUES ('{request.form['email'].lower()}', {school_class['id']})"
+                f"INSERT INTO leaders (email, activity_id) VALUES ('{request.form['email'].lower()}', {activity['id']})"
             )
 
             # re-fetch
-            mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+            leaders = dict_sql_query(f"SELECT * FROM leaders WHERE activity_id={id}")
 
             return render_template(
                 template,
-                school_class=school_class,
-                mentors=mentors,
-                success="Lagt till mentor.",
+                activity=activity,
+                leaders=leaders,
+                success="Lagt till aktivitetsledare.",
             )
 
         if request.form["request_type"] == "delete":
@@ -1111,8 +1109,8 @@ def admin_mentors(id):
                 return (
                     render_template(
                         template,
-                        school_class=school_class,
-                        mentors=mentors,
+                        activity=activity,
+                        leaders=leaders,
                         fail="Saknar data.",
                     ),
                     400,
@@ -1122,32 +1120,29 @@ def admin_mentors(id):
                 return (
                     render_template(
                         template,
-                        school_class=school_class,
-                        mentors=mentors,
+                        activity=activity,
+                        leaders=leaders,
                         fail="Id måste vara ett heltal.",
                     ),
                     400,
                 )
 
             # delete
-            sql_query(f"DELETE FROM mentors WHERE id={request.form['id']}")
+            sql_query(f"DELETE FROM leaders WHERE id={request.form['id']}")
 
             # re-fetch
-            mentors = dict_sql_query(f"SELECT * FROM mentors WHERE class_id={id}")
+            leaders = dict_sql_query(f"SELECT * FROM leaders WHERE activity_id={id}")
 
             return render_template(
                 template,
-                school_class=school_class,
-                mentors=mentors,
-                success="Mentor borttagen.",
+                activity=activity,
+                leaders=leaders,
+                success="Aktivitetsledare borttagen.",
             )
 
         return (
             render_template(
-                template,
-                school_class=school_class,
-                mentors=mentors,
-                fail="Ogiltig begäran.",
+                template, activity=activity, leaders=leaders, fail="Ogiltig begäran.",
             ),
             400,
         )

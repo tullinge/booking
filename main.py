@@ -17,7 +17,7 @@ from components.limiter_obj import limiter
 # import blueprints
 from routes.admin import admin_routes
 from routes.student import student_routes
-from routes.mentor import mentor_routes
+from routes.activity_leader import activity_leader_routes
 
 # variables
 from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
@@ -88,7 +88,7 @@ Session(app)
 # register blueprints
 app.register_blueprint(admin_routes, url_prefix="/admin")
 app.register_blueprint(student_routes, url_prefix="/")
-app.register_blueprint(mentor_routes, url_prefix="/mentor")
+app.register_blueprint(activity_leader_routes, url_prefix="/leader")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

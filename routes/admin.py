@@ -868,7 +868,7 @@ def school_classes():
                 )
 
             class_check = sql_query(
-                f"""SELECT * FROM school_classes WHERE class_name = BINARY '{data["class_name"].upper()}'"""
+                f"""SELECT * FROM school_classes WHERE class_name = BINARY '{data['class_name'].upper()}'"""
             )
 
             if class_check:

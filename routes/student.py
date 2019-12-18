@@ -332,11 +332,7 @@ def selected_activity(id):
             if question[3]:
                 # written answers
                 sql_query(
-                    f"""
-                        INSERT INTO answers (student_id, question_id, written_answer)
-                            VALUES ({session.get('id')}, {question_id}, '{str(answer)}')
-                        ;
-                    """
+                    f"""INSERT INTO answers (student_id, question_id, written_answer) VALUES ({session.get('id')}, {question_id}, '{str(answer)}');"""
                 )
             else:
                 # option

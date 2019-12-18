@@ -272,11 +272,15 @@ def selected_activity(id):
 
             if not valid_string(
                 k,
+                max_length=50,
+                ignore_undefined=True,
                 allow_newline=False,
                 allow_punctuation=False,
                 allow_space=False,
                 swedish=False,
-            ) or not valid_string(v, allow_newline=False):
+            ) or not valid_string(
+                v, max_length=50, ignore_undefined=True, allow_newline=False
+            ):
                 return (
                     render_template(
                         "student/activity.html",
@@ -285,7 +289,7 @@ def selected_activity(id):
                         school_class=session.get("school_class"),
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
-                        fail="Innehåller ogiltiga tecken.",
+                        fail="Innehåller ogiltiga tecken/för långa svar.",
                     ),
                     400,
                 )

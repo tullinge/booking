@@ -37,65 +37,53 @@ def login():
     * parse and validate data, login if correct password (POST)
     """
 
+    template = "admin/login.html"
+
     if request.method == "GET":
-        return render_template("admin/login.html")
+        return render_template(template)
     elif request.method == "POST":
         username = request.form["username"].lower()
         password = request.form["password"]
 
-        # perform validation, login etc...
-        if not username or not password:
-            return render_template("admin/login.html", fail="Saknar variabler."), 400
-
-        if len(username) >= 255 or len(password) >= 255:
+        if not valid_string(password, min_length=8, max_length=100):
             return (
-                render_template(
-                    "admin/login.html", fail="För långt användarnamn/lösenord."
-                ),
-                400,
-            )
-
-        if len(password) < 8 or len(username) < 4:
-            return (
-                render_template(
-                    "admin/login.html", fail="För kort användarnamn/lösenord."
-                ),
+                render_template(template, fail="Lösenord för långt/kort (8-100)."),
                 400,
             )
 
         if not valid_string(
             username,
+            min_length=4,
+            max_length=255,
             allow_punctuation=False,
             allow_space=False,
             swedish=False,
             allow_newline=False,
         ):
             return (
-                render_template("admin/login.html", fail="Icke tillåtna kaktärer."),
+                render_template(template, fail="Felaktig begäran."),
                 400,
             )
 
-        admin = sql_query(f"SELECT * FROM admins WHERE username='{username}'")
+        admin = dict_sql_query(
+            f"SELECT * FROM admins WHERE username='{username}'", fetchone=True
+        )
 
         if not admin:
             return (
-                render_template(
-                    "admin/login.html", fail="Fel användarnamn eller lösenord."
-                ),
+                render_template(template, fail="Fel användarnamn eller lösenord."),
                 401,
             )
 
         # verify password
-        if not verify_password(admin[0][3], password):
+        if not verify_password(admin["password"], password):
             return (
-                render_template(
-                    "admin/login.html", fail="Fel användarnamn eller lösenord."
-                ),
+                render_template(template, fail="Fel användarnamn eller lösenord."),
                 401,
             )
 
         session["admin_logged_in"] = True
-        session["admin_id"] = admin[0][0]
+        session["admin_id"] = admin["id"]
 
         # if validation has come this far, user should be authenticated
         return redirect(f"{BASEPATH}/")
@@ -121,19 +109,17 @@ def index():
     """
     Admin index
     """
+    template = "admin/index.html"
 
     amount_activities = len(sql_query("SELECT * FROM activities"))
-    amount_codes = len(sql_query("SELECT * FROM students"))
-    amount_students_setup = sql_query(
-        "SELECT COUNT(chosen_activity) FROM students WHERE chosen_activity <> NULL;"
+    amount_students_chosen_activity = len(
+        sql_query("SELECT * FROM students WHERE chosen_activity IS NOT NULL")
     )
-    amount_students_setup = amount_students_setup[0][0]
 
     return render_template(
-        "admin/index.html",
+        template,
         amount_activities=amount_activities,
-        amount_codes=amount_codes,
-        amount_students_setup=amount_students_setup,
+        amount_students_chosen_activity=amount_students_chosen_activity,
     )
 
 
@@ -181,8 +167,8 @@ def activities():
                 )
 
             if not valid_string(
-                data["name"], allow_newline=False
-            ) or not valid_string(data["info"]):
+                data["name"], max_length=50, allow_newline=False
+            ) or not valid_string(data["info"], max_length=511,):
                 return (
                     render_template(
                         template,
@@ -310,6 +296,19 @@ def selected_activity(id):
                         questions=questions,
                         available_spaces=calculate_available_spaces(id),
                         fail="Ingen data skickades/saknar data.",
+                    ),
+                    400,
+                )
+
+            # check
+            if not valid_string(data["question"], max_length=255, allow_newline=False):
+                return (
+                    render_template(
+                        template,
+                        activity=activity[0],
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Ogiltiga tecken eller fel längd på fråga (1-255).",
                     ),
                     400,
                 )
@@ -458,8 +457,8 @@ def edit_activity(id):
             )
 
         if not valid_string(
-            request.form["name"], allow_newline=False
-        ) or not valid_string(request.form["info"]):
+            request.form["name"], max_length=50, allow_newline=False,
+        ) or not valid_string(request.form["info"], max_length=511,):
             return (
                 render_template(
                     template,
@@ -533,7 +532,7 @@ def question_id(id):
     if request.method == "POST":
         data = request.form
 
-        if not request.form["text"]:
+        if not request.form.get("text"):
             return (
                 render_template(
                     template, question=question[0], options=options, fail="Saknar data."
@@ -541,7 +540,7 @@ def question_id(id):
                 400,
             )
 
-        if not valid_string(data["text"], allow_newline=False):
+        if not valid_string(data["text"], max_length=255, allow_newline=False,):
             return (
                 render_template(
                     template,
@@ -704,19 +703,18 @@ def admin_users():
             )
 
         if data["request_type"] == "add":
-            if (
-                len(data) != 4
-                or not data["name"]
-                or not data["username"]
-                or not data["password"]
-            ):
+            if len(data) != 4:
                 return (
                     render_template(template, admins=admins, fail="Saknar data."),
                     400,
                 )
 
             if not valid_string(
-                data["name"], allow_newline=False, allow_punctuation=False
+                data["name"],
+                min_length=4,
+                max_length=255,
+                allow_newline=False,
+                allow_punctuation=False,
             ):
                 return (
                     render_template(
@@ -727,6 +725,8 @@ def admin_users():
 
             if not valid_string(
                 data["username"],
+                min_length=4,
+                max_length=255,
                 allow_space=False,
                 allow_newline=False,
                 swedish=False,
@@ -739,30 +739,20 @@ def admin_users():
                     400,
                 )
 
-            # check for length
-            for k, v in data.items():
-                if (
-                    len(v) >= 255 or len(v) < 4 and k != "request_type"
-                ):  # request_type is ignored from this validation
-                    return (
-                        render_template(
-                            template,
-                            admins=admins,
-                            fail=f"{k} för kort eller för långt (4-255).",
-                        ),
-                        400,
-                    )
-
-                if k == "password":
-                    if len(v) < 8:
-                        return (
-                            render_template(
-                                template,
-                                admins=admins,
-                                fail="Lösenordet måste vara minst 8 karaktärer långt.",
-                            ),
-                            400,
-                        )
+            if not valid_string(
+                data["password"],
+                min_length=8,
+                max_length=100,
+                allow_space=False,
+                allow_newline=False,
+                swedish=False,
+                allow_punctuation=False,
+            ):
+                return render_template(
+                    template,
+                    admins=admins,
+                    fail="Lösenordet måste vara mellan 8 och 100 karaktärer långt.",
+                )
 
             if sql_query(
                 f"SELECT id FROM admins WHERE username='{data['username'].lower()}'"
@@ -881,8 +871,20 @@ def school_classes():
                     400,
                 )
 
+            if not valid_string(data["class_name"], min_length=3, max_length=10,):
+                return (
+                    render_template(
+                        template,
+                        school_classes=school_classes,
+                        fail="För kort/långt klassnamn.",
+                    ),
+                    400,
+                )
+
             if not valid_string(
                 data["class_name"],
+                min_length=3,
+                max_length=10,
                 allow_space=False,
                 allow_newline=False,
                 allow_punctuation=False,
@@ -893,16 +895,6 @@ def school_classes():
                         template,
                         school_classes=school_classes,
                         fail="Innehåller ogiltiga tecken.",
-                    ),
-                    400,
-                )
-
-            if len(data["class_name"]) < 3 or len(data["class_name"]) > 10:
-                return (
-                    render_template(
-                        template,
-                        school_classes=school_classes,
-                        fail="För kort/långt klassnamn.",
                     ),
                     400,
                 )
@@ -1217,11 +1209,10 @@ def change_password():
                 400,
             )
 
-        if len(data["new_password"]) < 8:
+        if valid_string(data["new_password"], min_length=8, max_length=100):
             return (
                 render_template(
-                    template,
-                    fail="Lösenord för kort, måste vara längre än 8 karaktärer.",
+                    template, fail="Lösenordet för kort eller för långt (8-100).",
                 ),
                 400,
             )

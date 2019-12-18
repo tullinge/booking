@@ -135,7 +135,9 @@ def dict_search(list_dictionary, key, value):
 
 
 # general purpose input validation
-def valid_string(variable, min_length=None, max_length=None, *args, **kwargs):
+def valid_string(
+    variable, min_length=None, max_length=None, ignore_undefined=False, *args, **kwargs
+):
     """
     Returns boolean whether variable is valid input or not
     
@@ -143,7 +145,7 @@ def valid_string(variable, min_length=None, max_length=None, *args, **kwargs):
     """
 
     # check if variable is defined
-    if not variable:
+    if not variable and not ignore_undefined:
         return False
 
     # if max_length is specified, checks if string is longer than max_length

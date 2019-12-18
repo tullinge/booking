@@ -1,10 +1,11 @@
 # Booking
 
+![tullinge/booking](docs/booking_screenshot.png)
+
 [![Build Status](https://travis-ci.com/tullinge/booking.svg?branch=master)](https://travis-ci.com/tullinge/booking)
 [![Dependencies](https://img.shields.io/librariesio/github/tullinge/booking)](https://libraries.io/github/tullinge/booking)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/context:python)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/tullinge/booking.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tullinge/booking/alerts/)
-[![Total lines](https://tokei.rs/b1/github/tullinge/booking)](https://github.com/tullinge/booking)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A booking system for the yearly event **Allaktivitetsdag** at Tullinge gymnasium.

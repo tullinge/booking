@@ -1,9 +1,11 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
 from functools import wraps
 from flask import session, redirect
 
+# components import
 from components.db import sql_query
 
 

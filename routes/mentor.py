@@ -1,11 +1,14 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
 from flask import Blueprint, render_template, jsonify, request, session, redirect
 
+# components import
+from components.decorators import mentor_login_required
 from components.db import sql_query, dict_sql_query
 from components.google import google_login
-from components.decorators import mentor_login_required
+
 
 # blueprint init
 mentor_routes = Blueprint("mentor_routes", __name__, template_folder="../templates")

@@ -1,6 +1,8 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
+# components import
 from components.core import random_string
 from components.db import sql_query
 

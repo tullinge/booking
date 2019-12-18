@@ -1,6 +1,8 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
+# components import
 from components.db import sql_query, dict_sql_query
 from components.core import calculate_available_spaces
 

@@ -5,17 +5,14 @@
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 
 # components import
-from components.google import GSUITE_DOMAIN_NAME, google_login
-from components.core import (
-    valid_string,
-    basic_validation,
-    valid_integer,
-    calculate_available_spaces,
-)
-from components.limiter_obj import limiter
 from components.decorators import login_required, user_setup_completed, user_not_setup
-from components.db import sql_query, dict_sql_query
+from components.core import basic_validation, calculate_available_spaces
+from components.google import GSUITE_DOMAIN_NAME, google_login
+from components.validation import valid_integer, valid_string
 from components.student import student_chosen_activity
+from components.db import sql_query, dict_sql_query
+from components.limiter_obj import limiter
+
 
 # blueprint init
 student_routes = Blueprint("student_routes", __name__, template_folder="../templates")

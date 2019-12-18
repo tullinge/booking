@@ -44,23 +44,39 @@ These environment variables need to be set (except the ones which have defaults)
 3. `docker exec booking_app_1 python scripts/setup_db.py`
 4. `docker exec -it booking_app_1 python scripts/create_admin.py`
 
+## Key Features
+
+- **Student interface** (`/`)
+  - Authentication using Google
+  - Booking activities that has multiple questions, both written answers and options are supported (and support for optional and obligatory questions).
+  - Re-booking to another activity at a later point.
+- **Admin interface** (`/admin`)
+  - Multiple admin users
+  - Creating, deleting and updating activities and classes on the fly.
+  - Creating and deleting questions.
+  - Viewing class lists per class or per activity (with student answers for activities).
+  - Granting privilegies to activity leaders, accounts with restricted access (only access to specific activities and their class lists).
+- **Activity leader interface** (`/leader`)
+  - Viewing class lists for activities.
+  - The same user can be marked as activity leader for multiple activities.
+
 ## Navigating the interface
 
 Once you got the webserver running and an initial admin account created, you can log in to the admin interface by visiting `/admin`.
 
-Once logged in, go ahead and click `Aktiviteter` in order to create new activities.  From each activity, you can create questions that the students have to answer when choosing the activity.
+Once logged in, go ahead and click `Aktiviteter` to create a new activity. From each activity, you can create questions that the students have to answer when choosing the activity.
 
-Then you can move on to the `Klasser` page, where you can create school classes that will be shown to the students when they initially set up their accounts.
+You can also add email addresses to activity leaders who should have access class lists for a specific activity. Leaders can access the interface by visiting `/leader` and signing in with their Google accounts (as specified when the admin grants privileges).
 
-Finally, you can then move on to the `Elever` page in order to create new codes. Newly generated codes are anonymous, so they can be given out to any school class. When a student logs in using a code for the first time, they will be able to enter their first- and surname along with choosing their class.
+Then you can move on to the `Klasser` page, where you can create school classes that will be shown to the students when they initially set up their accounts. A join code will also be generated which is used by the students when initially signing up (when the student enters the code they will be registered to that class).
 
-When the student has the account setup, they can browse available activities, book activities, and re-book to other activities if they change their mind.
+Students sign in using Google, which makes authentication a lot smoother. The system fetches the first name and surname of the user using information from Google. The student just has to type in the 8 digit code to be registered to the class. From the interface, the student can browser activities, book activities and re-book activities.
 
 ## User stories
 
-- As a **student** I want to be able to **login with my code**
+- As a **student** I want to be able to **login**
 - As a **logged in student** I want to be able to **browse activities**
-- As a **logged in student** I want to be able to **register with my firstname, lastname, activity and class**
+- As a **logged in student** I want to be able to **register to a class using a join code**
 - As a **registered student** I want to be able to **see a confirmation of my choices**
 
 ---
@@ -70,7 +86,6 @@ When the student has the account setup, they can browse available activities, bo
 ---
 
 - As a **admin** I want to be able to **login with my username and password**
-- As a **logged in admin** I want to be able to **get a list of codes** so that I can **hand them out to class mentors**
 - As a **logged in admin** I want to be able to **get a list of registered users per activity** so that I can **inform activity leaders**
 - As a **logged in admin** I want to be able to **get a list of registered users per class** so that I can **inform class mentors**
 - As a **logged in admin** I want to be able to **regster new admins**

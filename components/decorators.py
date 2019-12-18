@@ -6,7 +6,7 @@ from functools import wraps
 from flask import session, redirect
 
 # components import
-from components.db import sql_query
+from components.db import sql_query, dict_sql_query
 
 
 def login_required(f):
@@ -72,13 +72,13 @@ def user_setup_completed(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # decorator should be after @login_required, therefore assume user auth
-        student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")[
-            0
-        ]  # 0 is the first element of list
+        student = dict_sql_query(
+            f"SELECT * FROM students WHERE id={session.get('id')}", fetchone=True
+        )
 
         if student:
-            if (
-                not student[2] or not student[3] or not student[4]
+            if not (
+                student["class_id"]
             ):  # checks if user-configurable variables are defined
                 # redirect to initial setup page
                 return redirect("/setup")
@@ -95,12 +95,12 @@ def user_not_setup(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # decorator should be after @login_required, therefore assume user auth
-        student = sql_query(f"SELECT * FROM students WHERE id={session.get('id')}")[
-            0
-        ]  # 0 is the first element of list
+        student = dict_sql_query(
+            f"SELECT * FROM students WHERE id={session.get('id')}", fetchone=True
+        )
 
         if student:
-            if student[2] and student[3] and student[4]:
+            if student["class_id"]:
                 # user has already configured
                 return redirect("/")
         else:

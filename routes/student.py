@@ -73,8 +73,8 @@ def students_callback():
     data = google["resp"]["data"]
     idinfo = google["resp"]["idinfo"]
 
-    existing_student = sql_query(
-        f"SELECT * FROM students WHERE email='{data['email']}'"
+    existing_student = dict_sql_query(
+        f"SELECT * FROM students WHERE email='{data['email']}'", fetchone=True
     )
 
     # check if email exists in students
@@ -83,14 +83,22 @@ def students_callback():
         sql_query(
             f"INSERT INTO students (email, last_name, first_name) VALUES ('{data['email']}', '{data['family_name']}', '{data['given_name']}')"
         )
-        existing_student = sql_query(
-            f"SELECT * FROM students WHERE email='{data['email']}'"
+        existing_student = dict_sql_query(
+            f"SELECT * FROM students WHERE email='{data['email']}'", fetchone=True
         )
+
+    school_class = None
+    if existing_student["class_id"]:
+        school_class = dict_sql_query(
+            f"SELECT class_name FROM school_classes WHERE id={existing_student['class_id']}",
+            fetchone=True,
+        )["class_name"]
 
     session["fullname"] = f"{data['given_name']} {data['family_name']}"
     session["logged_in"] = True
     session["picture_url"] = idinfo["picture"]
-    session["id"] = existing_student[0][0]
+    session["id"] = existing_student["id"]
+    session["school_class"] = school_class
 
     return jsonify({"status": True, "code": 200, "message": "authenticated"}), 400
 
@@ -169,7 +177,7 @@ def setup():
             f"UPDATE students SET class_id={school_class['id']}  WHERE id={session['id']}"
         )
 
-        # if above fails, would raise exception
+        # set school_class
         session["school_class"] = school_class["class_name"]
 
         # redirect to index

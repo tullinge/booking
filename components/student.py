@@ -1,8 +1,10 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
 from flask import session
 
+# components import
 from components.db import dict_sql_query
 
 

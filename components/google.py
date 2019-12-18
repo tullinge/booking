@@ -1,6 +1,7 @@
 # tullinge/booking
 # https://github.com/tullinge/booking
 
+# imports
 from flask import jsonify
 
 from google.oauth2 import id_token

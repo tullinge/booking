@@ -38,7 +38,7 @@ jobs:
     - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
-    - echo "$PUB_HOST_KEY" >> $HOME/.ssh/known_hosts
+    - echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvApK1JTXZtSRlu6JDEfVJayAN7EQCa0d3RLKht3zQTlGXgv5oPyuvquHBX3lANMnVSPbOBcUcpDR3ofAigS73zBn6WB6F4KKDCxt+7mrPDTNhkIfBAYeNFMBA73yJfh1w5WLxQptbey1KzoS3se6PFkBXdkQZ/6CMuyhgikTWVC4O5j8VUtxrIXKwvDDzLUsZJo6GvRoiR+6Va1byyo/FIfUbHM1MsifkkAeTTYmy9/HA9DWmyh8bGogKfSghjijFvjz9UDQM+rdBe1NV40pkii0IK26R8PunqHpQ3IUxpJGRbK5nXkuscEm5DEBa1GJyjWA4LQ+5rU0d3m8yDcXutxIQOedUQ4XMKOzNfcHZuui6nbms0Qbu9e0T6ah1F/mswJ88ifwrWr5KGbwNP0NbTDakQ2TvVPQEbkmAWuv3Nuj9j9BD0fp0CQoc3cKOUr+XeyvKdlbHlup3fak44TNHMNNdLcrdGsbn73q3STkICOo9RqWuxSj53m9JbW8HFGU881XXGfcU5c52Ep423G/KBwWtwxcHx/5tFxaMytgmgmIQk3nUIIkB/K1sKrD08SKXooj/V3xwJouWgz3BFsMohH4LISA2NqKuiVaLkJiRJzo/cihLejUlE2hlKObU0Ehy9QYU+Z4xwCoqpX4G/gXx/sM8THrluLgAOVdm1zbXTw== build@travis-ci.com" >> $HOME/.ssh/known_hosts
     before_deploy:
     - openssl aes-256-cbc -K $encrypted_f534eed1d5e3_key -iv $encrypted_f534eed1d5e3_iv -in deploy_rsa.enc -out deploy_rsa -d
     - eval "$(ssh-agent -s)"

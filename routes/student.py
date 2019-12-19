@@ -267,10 +267,24 @@ def selected_activity(id):
                 )
 
             question = dict_sql_query(
-                f"SELECT * FROM questions WHERE id={id}", fetchone=True
+                f"SELECT * FROM questions WHERE id={k}", fetchone=True
             )
 
-            if not v and not question["obligatory"]:
+            if not question:
+                return (
+                    render_template(
+                        "student/activity.html",
+                        activity=activity,
+                        fullname=session.get("fullname"),
+                        school_class=session.get("school_class"),
+                        questions=questions,
+                        available_spaces=calculate_available_spaces(id),
+                        fail="Fråga existerar inte.",
+                    ),
+                    400,
+                )
+
+            if not v and bool(question["obligatory"]):
                 return (
                     render_template(
                         "student/activity.html",

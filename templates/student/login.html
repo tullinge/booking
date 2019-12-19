@@ -67,10 +67,14 @@
             });
         }
 
-        function error(message) {
-            signOut();
+        function error(message, doSignOut = true) {
+            if (doSignOut) {signOut();};
             document.getElementById("message").value = message;
             document.forms.errorRedirect.submit();
+        }
+
+        window.onerror = function () {
+            error("Ett fel uppstod vid inloggningen. Med största sannolikhet blockerar din webbläsare cookies från tredjepart. I Chrome kan detta ändras under 'Cookies and site data', på chrome://settings/content/cookies. Kontakta ansvarig om problemet kvarstår.", doSignOut = false);
         }
         </script>
 

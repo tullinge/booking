@@ -19,6 +19,9 @@ from routes.admin import admin_routes
 from routes.student import student_routes
 from routes.activity_leader import activity_leader_routes
 
+# components
+from components.db import dict_sql_query
+
 # variables
 from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
 
@@ -39,13 +42,17 @@ minify(app=app)
 
 # variables available across all templates
 @app.context_processor
-def inject_version():
+def inject_global_variables():
     return dict(
         version=version,
         commit_hash=commit_hash[0:7],
         generation_time=strftime("%Y-%m-%d %H:%M:%S"),
         GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID,
         GSUITE_DOMAIN_NAME=GSUITE_DOMAIN_NAME,
+        BOOKING_LOCKED=dict_sql_query(
+            "SELECT value FROM settings WHERE identifier='booking_locked'",
+            fetchone=True,
+        )["value"],
     )
 
 

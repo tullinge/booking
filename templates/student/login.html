@@ -33,7 +33,13 @@
     
         <p class="align-center">Du loggar in med ditt skolkonto.</p>
 
+        {% if BOOKING_LOCKED is eq("1") %}
+        <div class="alert alert-warning" role="alert">
+            Inloggningar och bokningar har blockerats av administratören för detta system.
+        </div>
+        {% else %}
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        {% endif %}
 
         <script>
         function onSignIn(googleUser) {

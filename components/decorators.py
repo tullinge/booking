@@ -110,3 +110,24 @@ def user_not_setup(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+def booking_blocked(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # check setting
+        if (
+            dict_sql_query(
+                "SELECT value FROM settings WHERE identifier='booking_locked'",
+                fetchone=True,
+            )["value"]
+            == "1"
+        ):
+            session.pop("id", None)
+            session.pop("logged_in", False)
+
+            return redirect("/login")
+
+        return f(*args, **kwargs)
+
+    return decorated_function

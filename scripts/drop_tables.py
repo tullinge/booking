@@ -25,4 +25,5 @@ if __name__ == "__main__":
     drop("DROP TABLE admins", name="admins")
     drop("DROP TABLE students", name="students")
     drop("DROP TABLE school_classes", name="school_classes")
-    drop("DROP TABLE mentors", name="mentors")
+    drop("DROP TABLE leaders", name="leaders")
+    drop("DROP TABLE settings", name="settings")

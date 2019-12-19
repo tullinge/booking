@@ -104,7 +104,7 @@ def logout():
 
 
 # index
-@admin_routes.route("/")
+@admin_routes.route("/", methods=["POST", "GET"])
 @admin_required
 def index():
     """
@@ -117,11 +117,50 @@ def index():
         sql_query("SELECT * FROM students WHERE chosen_activity IS NOT NULL")
     )
 
-    return render_template(
-        template,
-        amount_activities=amount_activities,
-        amount_students_chosen_activity=amount_students_chosen_activity,
-    )
+    if request.method == "GET":
+        return render_template(
+            template,
+            amount_activities=amount_activities,
+            amount_students_chosen_activity=amount_students_chosen_activity,
+        )
+
+    if request.method == "POST":
+        if not request.form.get("booking_locked"):
+            return (
+                render_template(
+                    template,
+                    amount_activities=amount_activities,
+                    amount_students_chosen_activity=amount_students_chosen_activity,
+                    fail="Ogiltig data.",
+                ),
+                400,
+            )
+
+        if (
+            request.form["booking_locked"] != "0"
+            and request.form["booking_locked"] != "1"
+        ):
+            return (
+                render_template(
+                    template,
+                    amount_activities=amount_activities,
+                    amount_students_chosen_activity=amount_students_chosen_activity,
+                    fail="Felaktig data på variabel.",
+                ),
+                400,
+            )
+
+        # set
+        sql_query(
+            f"UPDATE settings SET value='{request.form['booking_locked']}' WHERE identifier='booking_locked'"
+        )
+
+        return render_template(
+            template,
+            amount_activities=amount_activities,
+            amount_students_chosen_activity=amount_students_chosen_activity,
+            success="Uppdaterat status.",
+        )
 
 
 # activities

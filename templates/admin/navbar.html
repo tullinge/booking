@@ -25,6 +25,14 @@
 
         <div class="navbar-collapse collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
+                {% if BOOKING_LOCKED is eq("1") %}
+                <li class="nav-item">
+                    <div class="alert alert-warning" role="alert">
+                        Bokningar är just nu blockerade.
+                    </div>
+                </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/changepassword">
                         <button type="button" class="btn btn-primary">Byt lösenord</button>

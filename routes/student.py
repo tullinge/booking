@@ -5,7 +5,12 @@
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 
 # components import
-from components.decorators import login_required, user_setup_completed, user_not_setup
+from components.decorators import (
+    login_required,
+    user_setup_completed,
+    user_not_setup,
+    booking_blocked,
+)
 from components.core import basic_validation, calculate_available_spaces
 from components.google import GSUITE_DOMAIN_NAME, google_login
 from components.validation import valid_integer, valid_string
@@ -19,6 +24,7 @@ student_routes = Blueprint("student_routes", __name__, template_folder="../templ
 
 # index
 @student_routes.route("/")
+@booking_blocked
 @login_required
 @user_setup_completed
 def index():
@@ -57,6 +63,7 @@ def students_login():
 
 
 @student_routes.route("/callback", methods=["POST"])
+@booking_blocked
 def students_callback():
     if not request.get_json("idtoken"):
         return (
@@ -130,6 +137,7 @@ def logout():
 # setup
 @student_routes.route("/setup", methods=["POST", "GET"])
 @limiter.limit("500 per hour")
+@booking_blocked
 @login_required
 @user_not_setup
 def setup():
@@ -187,6 +195,7 @@ def setup():
 # selected activity
 @student_routes.route("/activity/<id>", methods=["POST", "GET"])
 @limiter.limit("500 per hour")
+@booking_blocked
 @login_required
 @user_setup_completed
 def selected_activity(id):
@@ -368,6 +377,7 @@ def selected_activity(id):
 # confirmation
 @student_routes.route("/confirmation")
 @limiter.limit("500 per hour")
+@booking_blocked
 @login_required
 @user_setup_completed
 def confirmation():

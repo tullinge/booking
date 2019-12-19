@@ -131,8 +131,29 @@ def create_tabels():
             PRIMARY KEY(id)
         )
     """,
-        name="mentors",
+        name="leaders",
     )
+
+    # settings
+    insert(
+        """
+        CREATE TABLE settings (
+            id INT NOT NULL AUTO_INCREMENT,
+            identifier VARCHAR(255) NOT NULL UNIQUE,
+            value VARCHAR(255) DEFAULT NULL,
+            PRIMARY KEY(id)
+        )
+    """,
+        name="settings",
+    )
+
+    # insert default setting
+    try:
+        sql_query(
+            "INSERT INTO settings (identifier, value) VALUES ('booking_locked', '0')"
+        )
+    except Exception as e:
+        print(f"unable to insert default 'booking_locked' setting, error {str(e)}")
 
 
 if __name__ == "__main__":

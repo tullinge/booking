@@ -5,30 +5,13 @@
 import string
 
 
-# general purpose input validation
-def valid_string(
+def character_validation(
     variable,
-    min_length=None,
-    max_length=None,
-    ignore_undefined=False,
     allow_space=True,
     allow_punctuation=True,
     swedish=True,
     allow_newline=True,
 ):
-    """Returns boolean whether variable is valid input or not"""
-
-    # check if variable is defined
-    if not variable and not ignore_undefined:
-        return False
-
-    # if max_length is specified, checks if string is longer than max_length
-    if max_length and len(variable) > max_length:
-        return False
-
-    # if min_length is specified, checks if string is shorter than min_length
-    if min_length and len(variable) < min_length:
-        return False
 
     # perform characters validation against is_valid_input function
     ILLEGAL_CHARACTERS = ["<", ">", ";"]
@@ -55,17 +38,50 @@ def valid_string(
     if any(x not in ALLOWED_CHARACTERS for x in variable):
         return False
 
+    return True
+
+
+# general purpose input validation
+def valid_string(
+    variable, min_length=None, max_length=None, ignore_undefined=False, *args, **kwargs,
+):
+    """Returns boolean whether variable is valid input or not"""
+
+    # check if variable is defined
+    if not variable and not ignore_undefined:
+        return False
+
+    # if max_length is specified, checks if string is longer than max_length
+    if max_length and len(variable) > max_length:
+        return False
+
+    # if min_length is specified, checks if string is shorter than min_length
+    if min_length and len(variable) < min_length:
+        return False
+
+    # character validation
+    if not character_validation(variable, *args, **kwargs):
+        return False
+
     # if all checks are successful, return True
+    return True
+
+
+def is_integer(variable):
+    # checks if integer is actually valid
+    try:
+        int(variable)
+    except Exception:
+        return False
+
     return True
 
 
 def valid_integer(variable, min_length=None, max_length=None):
     """Returns boolean whether variable is valid input or not"""
 
-    # checks if integer is actually valid
-    try:
-        int(variable)
-    except Exception:
+    # check if integer against is_integer function
+    if not is_integer(variable):
         return False
 
     # if max_length is specified, checks if integer is longer than max_length

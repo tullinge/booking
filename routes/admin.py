@@ -1237,7 +1237,7 @@ def change_password():
                 400,
             )
 
-        if valid_string(data["new_password"], min_length=8, max_length=100):
+        if not valid_string(data["new_password"], min_length=8, max_length=100):
             return (
                 render_template(
                     template, fail="Lösenordet för kort eller för långt (8-100).",

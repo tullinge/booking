@@ -86,6 +86,7 @@ def error_500(e):
 SESSION_TYPE = "redis"
 SESSION_REDIS = redis.Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)
 
+SESSION_COOKIE_SECURE = True
 SESSION_PERMANENT = True
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 

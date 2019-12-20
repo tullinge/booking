@@ -369,11 +369,7 @@ def selected_activity(id):
             else:
                 # option
                 sql_query(
-                    f"""
-                        INSERT INTO answers (student_id, question_id, option_id)
-                            VALUES ({session.get('id')}, {question_id}, {answer})
-                        ;
-                    """
+                    f"INSERT INTO answers (student_id, question_id, option_id) VALUES ({session.get('id')}, {question_id}, {answer});"
                 )
 
         # set chosen_activity
@@ -402,6 +398,23 @@ def confirmation():
     """
 
     chosen_activity = student_chosen_activity()
+    answers = dict_sql_query(
+        f"SELECT * FROM answers WHERE student_id={session.get('id')}"
+    )
+
+    if chosen_activity:
+        questions = []
+        for q in dict_sql_query(
+            f"SELECT * FROM questions WHERE activity_id={chosen_activity['id']}"
+        ):
+            questions.append(
+                {
+                    "object": q,
+                    "options": dict_sql_query(
+                        f"SELECT * FROM options WHERE question_id={q['id']}"
+                    ),
+                }
+            )
 
     return (
         render_template(
@@ -409,6 +422,8 @@ def confirmation():
             fullname=session.get("fullname"),
             school_class=session.get("school_class"),
             chosen_activity=chosen_activity,
+            answers=answers,
+            questions=questions,
         )
         if chosen_activity
         else render_template(

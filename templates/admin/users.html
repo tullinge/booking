@@ -24,17 +24,17 @@
 
             <div class="form-group">
               <label for="name">Namn</label>
-              <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="För- och efternamn">
+              <input required name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="För- och efternamn">
               <small id="nameHelp" class="form-text text-muted">Namnet syns endast på adminsidan för att enklare hålla reda på vem som är vem.</small>
             </div>
             <div class="form-group">
                 <label for="name">Användarnamn</label>
-                <input name="username" type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Användarnamn">
+                <input required name="username" type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Användarnamn">
                 <small id="usernameHelp" class="form-text text-muted">Detta är användarnamnet som används vid inloggning. Mellanslag inte tillåtet.</small>
               </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input name="password" type="password" class="form-control" id="password" placeholder="Lösenord">
+              <input required name="password" type="password" class="form-control" id="password" placeholder="Lösenord">
             </div>
             <button type="submit" class="btn btn-primary">Skapa ny användare</button>
         </form>

@@ -30,14 +30,14 @@ def login_required(f):
     return decorated_function
 
 
-def admin_required(f):
+def admin_required(f):  # lgtm [py/similar-function]
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # check if user is logged in
+        # check if admin is logged in
         if not session.get("admin_logged_in"):
             return redirect("/admin/login")
 
-        # check if user exists aswell
+        # check if admin exists aswell
         if not sql_query(f"SELECT id FROM admins WHERE id={session.get('admin_id')}"):
             session.pop("admin_logged_in", False)
             session.pop("admin_id", None)
@@ -49,14 +49,14 @@ def admin_required(f):
     return decorated_function
 
 
-def activity_leader_login_required(f):
+def activity_leader_login_required(f):  # lgtm [py/similar-function]
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # check if user is logged in
+        # check if leader is logged in
         if not session.get("leader_logged_in"):
             return redirect("/leader/login")
 
-        # check if user exists aswell
+        # check if leader exists aswell
         if not sql_query(f"SELECT id FROM leaders WHERE id={session.get('leader_id')}"):
             session.pop("leader_logged_in", False)
             session.pop("leader_id", None)

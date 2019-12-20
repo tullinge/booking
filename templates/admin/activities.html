@@ -27,19 +27,19 @@
 
             <div class="form-group">
                 <label for="name">Namn</label>
-                <input name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Ange aktivitetens namn.">
+                <input required name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Ange aktivitetens namn.">
                 <small id="nameHelp" class="form-text text-muted">Namnet som syns i bokningssystemet.</small>
             </div>
     
             <div class="form-group">
                 <label for="spaces">Antal platser</label>
-                <input name="spaces" type="text" class="form-control" id="spaces" aria-describedby="spacesHelp" placeholder="Ange antalet platser för denna aktivitet.">
+                <input required name="spaces" type="text" class="form-control" id="spaces" aria-describedby="spacesHelp" placeholder="Ange antalet platser för denna aktivitet.">
                 <small id="spacesHelp" class="form-text text-muted">Ange antalet platser, heltal.</small>
             </div>
     
             <div class="form-group">
                 <label for="info">Beskrivning/ytterligare information</label>
-                <textarea name="info" aria-describedby="infoHelp" class="form-control" id="info" rows="3"></textarea>
+                <textarea required name="info" aria-describedby="infoHelp" class="form-control" id="info" rows="3"></textarea>
                 <small id="infoHelp" class="form-text text-muted">En kortare beskrivning om aktiviteten som syns för elever.</small>
             </div>
     

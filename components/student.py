@@ -9,7 +9,7 @@ from components.db import dict_sql_query
 
 
 def student_chosen_activity():
-    """Returns name of chosen activity, if student has chosen"""
+    """Returns dict of chosen activity, if student has chosen"""
 
     student = dict_sql_query(
         f"SELECT * FROM students WHERE id={session.get('id')}", fetchone=True
@@ -17,9 +17,9 @@ def student_chosen_activity():
 
     return (
         dict_sql_query(
-            f"SELECT name FROM activities WHERE id={student['chosen_activity']}",
+            f"SELECT * FROM activities WHERE id={student['chosen_activity']}",
             fetchone=True,
-        )["name"]
+        )
         if student["chosen_activity"]
         else None
     )

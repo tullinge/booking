@@ -6,7 +6,28 @@
         <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
 
         <div class="alert alert-success" role="alert">
-            Din bokning för aktivitet {{ chosen_activity }} är bekräftad.
+            Din bokning för aktivitet {{ chosen_activity["name"] }} är bekräftad.
+
+            <br />
+
+            {% for answer in answers %}
+
+                {% for question in questions %}
+                    {% if question["object"]["id"] is eq(answer["question_id"]) %}
+                        {% if answer["option_id"] %}
+                            {% for option in question["options"] %}
+                                {% if option["id"] is eq(answer["option_id"]) %}
+                                    <br />{{ question["object"]["question"] }}: {{ option["text"] }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif%}
+
+                        {% if answer["written_answer"] %}
+                            <br />{{ question["object"]["question"] }}: {{ answer["written_answer"] }}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
         </div>
     
         <a href="/">

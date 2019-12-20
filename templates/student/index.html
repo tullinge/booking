@@ -7,7 +7,7 @@
         <p>Inloggad som {{ fullname }}, klass {{ school_class }}.</p>
     
         {% if chosen_activity %}
-        <p>Din bokning för aktivitet {{ chosen_activity }} är bekräftad.</p>
+        <p>Din bokning för aktivitet {{ chosen_activity['name'] }} är bekräftad.</p>
         {% endif %}
     
         <a href="/logout" onclick="signOut();">

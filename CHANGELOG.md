@@ -2,6 +2,12 @@
 
 This project uses the [semantic versioning convention](https://semver.org/). Make sure to include all changes in releases within this file (and references to pull requests/issues where applicable).
 
+## next-release
+
+### Enhancments
+
+* Rewrite `Set-Cookie` HTTP header within nginx using `map`, adds the `SameSite=Strict` flag to the default Flask header.
+
 ## v0.1.1 (released 2019-12-20)
 
 ### Features

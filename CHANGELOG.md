@@ -2,11 +2,15 @@
 
 This project uses the [semantic versioning convention](https://semver.org/). Make sure to include all changes in releases within this file (and references to pull requests/issues where applicable).
 
-## next-release
+## v0.1.2 (released 2020-01-08)
 
-### Enhancments
+### Enhancements
 
-* Rewrite `Set-Cookie` HTTP header within nginx using `map`, adds the `SameSite=Strict` flag to the default Flask header.
+* Rewrite `Set-Cookie` HTTP header within nginx using `map`, adds the `SameSite=Strict` flag to the default Flask header [#63](https://github.com/tullinge/booking/pull/63).
+
+### Bugs
+
+* Replaced faulty `proxy_hide_header` with `uwsgi_hide_header` [#66](https://github.com/tullinge/booking/issues/66).
 
 ## v0.1.1 (released 2019-12-20)
 
@@ -18,7 +22,7 @@ This project uses the [semantic versioning convention](https://semver.org/). Mak
 
 * Fix [#60](https://github.com/tullinge/booking/issues/60) - Correctly perform string validation on new passwords (admin password change).
 
-### Enhancments
+### Enhancements
 
 * Solve [LGTM.com](https://lgtm.com/projects/g/tullinge/booking/alerts/?mode=list) alerts.
 * Add `required` to all HTML forms where input is required (better user experience).

@@ -1,36 +1,45 @@
-{% extends "base.html" %}
-{% block title %} - Konfigurera användare{% endblock %}
-{% block custom_head %}{% include "google.html" %}{% endblock %}
-{% block body %}
-    <div class="content">
-        <h1>Konfigurera användare</h1>
-        <p>På denna sida anger klasskoden du fått. Koden är unik för varje klass. Genom att ange koden kommer du automatiskt att registreras i den kopplade klassen.</p>
+{% extends "base.html" %} {% block title %} - Konfigurera användare{% endblock
+%} {% block custom_head %}{% include "google.html" %}{% endblock %} {% block
+body %}
+<div class="content">
+  <h1>Konfigurera användare</h1>
+  <p>
+    På denna sida anger klasskoden du fått. Koden är unik för varje klass. Genom
+    att ange koden kommer du automatiskt att registreras i den kopplade klassen.
+  </p>
 
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
 
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
-
-        <form action="/setup", method="post">
-            <div class="form-group">
-                    <label for="join_code">Klasskod</label>
-                    <input name="join_code" type="text" class="form-control" id="join_code" aria-describedby="join_code_help" placeholder="Kod" >
-                    <small id="join_code_help" class="form-text text-muted">Ange koden du fått från din lärare. Koden är unik för varje klass.</small>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Uppdatera profil</button>
-        </form>
-
-        <a href="/logout" onclick="signOut();">
-            <button class="btn btn-primary">Logga ut</button>
-        </a>
+  <form action="/setup" , method="post">
+    <div class="form-group">
+      <label for="join_code">Klasskod</label>
+      <input
+        name="join_code"
+        type="text"
+        class="form-control"
+        id="join_code"
+        aria-describedby="join_code_help"
+        placeholder="Kod"
+      />
+      <small id="join_code_help" class="form-text text-muted"
+        >Ange koden du fått från din lärare. Koden är unik för varje
+        klass.</small
+      >
     </div>
+
+    <button type="submit" class="btn btn-primary">Uppdatera profil</button>
+  </form>
+
+  <a href="/logout" onclick="signOut();">
+    <button class="btn btn-primary">Logga ut</button>
+  </a>
+</div>
 {% endblock %}

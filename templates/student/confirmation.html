@@ -11,7 +11,6 @@
             <br />
 
             {% for answer in answers %}
-
                 {% for question in questions %}
                     {% if question["object"]["id"] is eq(answer["question_id"]) %}
                         {% if answer["option_id"] %}

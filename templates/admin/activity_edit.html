@@ -1,53 +1,81 @@
-{% extends "base.html" %}
-{% block title %} - Redigera aktivitet #{{ activity[0] }}{% endblock %}
-{% block body %}
-{% include "admin/navbar.html" %}
-    <div class="content">
-        <h1>Redigera aktivitet - {{ activity[1] }}</h1>
+{% extends "base.html" %} {% block title %} - Redigera aktivitet #{{ activity[0]
+}}{% endblock %} {% block body %} {% include "admin/navbar.html" %}
+<div class="content">
+  <h1>Redigera aktivitet - {{ activity[1] }}</h1>
 
-        <a href="/admin/activities">
-            <button class="btn btn-primary">
-                Tillbaka till aktiviteter
-            </button>
-        </a>
+  <a href="/admin/activities">
+    <button class="btn btn-primary">
+      Tillbaka till aktiviteter
+    </button>
+  </a>
 
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
 
-        <div class="alert alert-warning" role="alert">
-            <p>Systemet tillåter dig att sätta det totala antalet platser till ett tal som är lägre än antalet elever som redan hunnit boka aktivteten.</p>
-        </div>
-    
-        <form action="/admin/activity/{{ activity[0] }}/edit" method="POST">
-            <div class="form-group">
-                <label for="name">Namn</label>
-                <input value="{{ activity[1] }}" name="name" type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Ange aktivitetens namn.">
-                <small id="nameHelp" class="form-text text-muted">Namnet som syns i bokningssystemet.</small>
-            </div>
-    
-            <div class="form-group">
-                <label for="spaces">Antal platser</label>
-                <input value="{{ activity[2] }}"  name="spaces" type="text" class="form-control" id="spaces" aria-describedby="spacesHelp" placeholder="Ange antalet platser för denna aktivitet.">
-                <small id="spacesHelp" class="form-text text-muted">Ange antalet platser, heltal.</small>
-            </div>
-    
-            <div class="form-group">
-                <label for="info">Beskrivning/ytterligare information</label>
-                <textarea name="info" aria-describedby="infoHelp" class="form-control" id="info" rows="3">{{ activity[3] }}</textarea>
-                <small id="infoHelp" class="form-text text-muted">En kortare beskrivning om aktiviteten som syns för elever.</small>
-            </div>
-    
-            <button type="submit" class="btn btn-primary">Redigera</button>
-        </form>
+  <div class="alert alert-warning" role="alert">
+    <p>
+      Systemet tillåter dig att sätta det totala antalet platser till ett tal
+      som är lägre än antalet elever som redan hunnit boka aktivteten.
+    </p>
+  </div>
 
+  <form action="/admin/activity/{{ activity[0] }}/edit" method="POST">
+    <div class="form-group">
+      <label for="name">Namn</label>
+      <input
+        value="{{ activity[1] }}"
+        name="name"
+        type="text"
+        class="form-control"
+        id="name"
+        aria-describedby="nameHelp"
+        placeholder="Ange aktivitetens namn."
+      />
+      <small id="nameHelp" class="form-text text-muted"
+        >Namnet som syns i bokningssystemet.</small
+      >
     </div>
+
+    <div class="form-group">
+      <label for="spaces">Antal platser</label>
+      <input
+        value="{{ activity[2] }}"
+        name="spaces"
+        type="text"
+        class="form-control"
+        id="spaces"
+        aria-describedby="spacesHelp"
+        placeholder="Ange antalet platser för denna aktivitet."
+      />
+      <small id="spacesHelp" class="form-text text-muted"
+        >Ange antalet platser, heltal.</small
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="info">Beskrivning/ytterligare information</label>
+      <textarea
+        name="info"
+        aria-describedby="infoHelp"
+        class="form-control"
+        id="info"
+        rows="3"
+      >
+{{ activity[3] }}</textarea
+      >
+      <small id="infoHelp" class="form-text text-muted"
+        >En kortare beskrivning om aktiviteten som syns för elever.</small
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Redigera</button>
+  </form>
+</div>
 {% endblock %}

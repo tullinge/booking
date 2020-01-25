@@ -1,86 +1,94 @@
-{% extends "base.html" %}
-{% block title %} - Logga in{% endblock %}
-{% block custom_head %}
-{% include "google.html" %}
+{% extends "base.html" %} {% block title %} - Logga in{% endblock %} {% block
+custom_head %} {% include "google.html" %}
 <style>
-.footer div {
+  .footer div {
     text-align: center;
-}
-.g-signin2{
-  width: 100%;
-}
+  }
+  .g-signin2 {
+    width: 100%;
+  }
 
-.g-signin2 > div{
-  margin: 0 auto;
-}
+  .g-signin2 > div {
+    margin: 0 auto;
+  }
 </style>
+{% endblock %} {% block body %}
+<div class="content login-content">
+  <h1 class="align-center">Tullinge Booking</h1>
+
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
+
+  <p class="align-center">Du loggar in med ditt skolkonto.</p>
+
+  {% if BOOKING_LOCKED is eq("1") %}
+  <div class="alert alert-warning" role="alert">
+    Inloggningar och bokningar har blockerats av administratören för detta
+    system.
+  </div>
+  {% else %}
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  {% endif %}
+
+  <script>
+    function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+
+      fetch("/callback", {
+        method: "POST",
+        body: JSON.stringify({
+          idtoken: id_token
+        })
+      })
+        .then(function(response) {
+          if (response.status == 200 || response.status == 400) {
+            return response.json();
+          } else {
+            error(
+              response.status +
+                " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!"
+            );
+          }
+        })
+        .then(function(json) {
+          if (json.status) {
+            window.location.replace("setup");
+          } else {
+            error(json.message);
+          }
+        });
+    }
+
+    function error(message, doSignOut = true) {
+      if (doSignOut) {
+        signOut();
+      }
+      document.getElementById("message").value = message;
+      document.forms.errorRedirect.submit();
+    }
+
+    window.onerror = function() {
+      error(
+        "Ett fel uppstod vid inloggningen. Med största sannolikhet blockerar din webbläsare cookies från tredjepart. I Chrome kan detta ändras under 'Cookies and site data', på chrome://settings/content/cookies. Kontakta ansvarig om problemet kvarstår.",
+        (doSignOut = false)
+      );
+    };
+  </script>
+
+  <form
+    id="errorRedirect"
+    style="display: none;"
+    method="POST"
+    action="/callback/error"
+  >
+    <input id="message" type="hidden" name="message" value="" />
+  </form>
+</div>
 {% endblock %}
-{% block body %}
-    <div class="content login-content">
-        <h1 class="align-center">Tullinge Booking</h1>
-
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
-    
-        <p class="align-center">Du loggar in med ditt skolkonto.</p>
-
-        {% if BOOKING_LOCKED is eq("1") %}
-        <div class="alert alert-warning" role="alert">
-            Inloggningar och bokningar har blockerats av administratören för detta system.
-        </div>
-        {% else %}
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        {% endif %}
-
-        <script>
-        function onSignIn(googleUser) {
-            var id_token = googleUser.getAuthResponse().id_token;
-
-            fetch('/callback', {
-                method: 'POST',
-                body: JSON.stringify({
-                    idtoken: id_token
-                })
-            })
-            .then(function(response) {
-                if (response.status == 200 || response.status == 400) {
-                    return response.json();
-                } else {
-                    error(response.status + " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!")
-                }
-            })
-            .then(function(json) {
-                if (json.status) {
-                    window.location.replace("setup");
-                } else {
-                    error(json.message);
-                }
-            });
-        }
-
-        function error(message, doSignOut = true) {
-            if (doSignOut) {signOut();};
-            document.getElementById("message").value = message;
-            document.forms.errorRedirect.submit();
-        }
-
-        window.onerror = function () {
-            error("Ett fel uppstod vid inloggningen. Med största sannolikhet blockerar din webbläsare cookies från tredjepart. I Chrome kan detta ändras under 'Cookies and site data', på chrome://settings/content/cookies. Kontakta ansvarig om problemet kvarstår.", doSignOut = false);
-        }
-        </script>
-
-        <form id="errorRedirect" style="display: none;" method="POST" action="/callback/error">
-            <input id="message" type="hidden" name="message" value="" />
-        </form>
-    </div>
-{% endblock %}
-

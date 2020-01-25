@@ -1,29 +1,26 @@
-{% extends "base.html" %}
-{% block title %} - Fel vid inloggning{% endblock %}
+{% extends "base.html" %} {% block title %} - Fel vid inloggning{% endblock %}
 {% block custom_head %}
 <style>
-.footer div {
+  .footer div {
     text-align: center;
-}
+  }
 </style>
-{% endblock %}
-{% block body %}
-    <div class="content login-content">
-        <h1 class="align-center">Tullinge Booking</h1>
+{% endblock %} {% block body %}
+<div class="content login-content">
+  <h1 class="align-center">Tullinge Booking</h1>
 
-        <p>Ett fel uppstod vid inloggningen.</p>
+  <p>Ett fel uppstod vid inloggningen.</p>
 
-        {% if message %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ message }}</p>
-        </div>
-        {% endif %}
-    
-        <a href="{{ redirect_basepath }}/login">
-            <button class="btn btn-primary">
-                Försök igen
-            </button>
-        </a>
-    
-    </div>
+  {% if message %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ message }}</p>
+  </div>
+  {% endif %}
+
+  <a href="{{ redirect_basepath }}/login">
+    <button class="btn btn-primary">
+      Försök igen
+    </button>
+  </a>
+</div>
 {% endblock %}

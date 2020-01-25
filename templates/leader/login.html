@@ -1,75 +1,78 @@
-{% extends "base.html" %}
-{% block title %} - Logga in som aktivitetsledare{% endblock %}
-{% block custom_head %}
-{% include "google.html" %}
+{% extends "base.html" %} {% block title %} - Logga in som aktivitetsledare{%
+endblock %} {% block custom_head %} {% include "google.html" %}
 <style>
-.footer div {
+  .footer div {
     text-align: center;
-}
-.g-signin2{
-  width: 100%;
-}
+  }
+  .g-signin2 {
+    width: 100%;
+  }
 
-.g-signin2 > div{
-  margin: 0 auto;
-}
+  .g-signin2 > div {
+    margin: 0 auto;
+  }
 </style>
-{% endblock %}
-{% block body %}
-    <div class="content login-content">
-        <h1 class="align-center">Tullinge Booking - Aktivitetsledare</h1>
+{% endblock %} {% block body %}
+<div class="content login-content">
+  <h1 class="align-center">Tullinge Booking - Aktivitetsledare</h1>
 
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
-    
-        <p class="align-center">Du loggar in med ditt skolkonto.</p>
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
 
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <p class="align-center">Du loggar in med ditt skolkonto.</p>
 
-        <script>
-        function onSignIn(googleUser) {
-            var id_token = googleUser.getAuthResponse().id_token;
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-            fetch('/leader/callback', {
-                method: 'POST',
-                body: JSON.stringify({
-                    idtoken: id_token
-                })
-            })
-            .then(function(response) {
-                if (response.status == 200 || response.status == 400) {
-                    return response.json();
-                } else {
-                    error(response.status + " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!");
-                };
-            })
-            .then(function(json) {
-                if (json.status) {
-                    window.location.replace("/leader");
-                } else {
-                    error(json.message);
-                }
-            });
-        }
+  <script>
+    function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
 
-        function error(message) {
-            signOut();
-            document.getElementById("message").value = message;
-            document.forms.errorRedirect.submit();
-        }
-        </script>
+      fetch("/leader/callback", {
+        method: "POST",
+        body: JSON.stringify({
+          idtoken: id_token
+        })
+      })
+        .then(function(response) {
+          if (response.status == 200 || response.status == 400) {
+            return response.json();
+          } else {
+            error(
+              response.status +
+                " - ett serverfel uppstod vid inloggning. Vänligen försök igen senare!"
+            );
+          }
+        })
+        .then(function(json) {
+          if (json.status) {
+            window.location.replace("/leader");
+          } else {
+            error(json.message);
+          }
+        });
+    }
 
-        <form id="errorRedirect" style="display: none;" method="POST" action="/leader/callback/error">
-            <input id="message" type="hidden" name="message" value="" />
-        </form>
-    </div>
+    function error(message) {
+      signOut();
+      document.getElementById("message").value = message;
+      document.forms.errorRedirect.submit();
+    }
+  </script>
+
+  <form
+    id="errorRedirect"
+    style="display: none;"
+    method="POST"
+    action="/leader/callback/error"
+  >
+    <input id="message" type="hidden" name="message" value="" />
+  </form>
+</div>
 {% endblock %}

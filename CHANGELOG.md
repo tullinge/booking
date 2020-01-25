@@ -2,6 +2,12 @@
 
 This project uses the [semantic versioning convention](https://semver.org/). Make sure to include all changes in releases within this file (and references to pull requests/issues where applicable).
 
+## next-release
+
+### Enhancements
+
+* Refactor: reformat HTML-templates using code formatter [prettier](https://prettier.io/).
+
 ## v0.1.2 (released 2020-01-08)
 
 ### Enhancements

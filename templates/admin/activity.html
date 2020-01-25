@@ -1,107 +1,148 @@
-{% extends "base.html" %}
-{% block title %} - Aktivitet #{{ activity[0] }}{% endblock %}
-{% block body %}
-{% include "admin/navbar.html" %}
-    <div class="content">
-        <h1>Aktivitet - {{ activity[1] }}, ID #{{ activity[0] }}</h1>
+{% extends "base.html" %} {% block title %} - Aktivitet #{{ activity[0] }}{%
+endblock %} {% block body %} {% include "admin/navbar.html" %}
+<div class="content">
+  <h1>Aktivitet - {{ activity[1] }}, ID #{{ activity[0] }}</h1>
 
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
 
-        <div class="alert alert-warning" role="alert">
-            <p>Om du raderar en fråga kommer <b>alla svar på denna fråga att raderas, utan förvarning till elever</b>.</p>
-        </div>
+  <div class="alert alert-warning" role="alert">
+    <p>
+      Om du raderar en fråga kommer
+      <b>alla svar på denna fråga att raderas, utan förvarning till elever</b>.
+    </p>
+  </div>
 
-        <p>Totalt antal platser: {{ activity[2] }}</p>
-        <p>Lediga platser: {{ available_spaces }}</p>
-    
-        <a href="/admin/activity/{{ activity[0] }}/students">
-            <button class="btn btn-primary">
-                Visa elever som bokat denna aktivitet
-            </button>
-        </a>
+  <p>Totalt antal platser: {{ activity[2] }}</p>
+  <p>Lediga platser: {{ available_spaces }}</p>
 
-        <a style="margin-left: 0.5em; border: none" href="/admin/activity/{{ activity[0] }}/leaders">
-            <button class="btn btn-info">
-                Hantera aktivitetsledare med åtkomst till denna aktivitet
-            </button>
-        </a>
-        
-        <h2>Skapa ny fråga</h2>
-        <form action="/admin/activity/{{ activity[0] }}" method="POST">
-            <input type="hidden" name="request_type" value="add" />
+  <a href="/admin/activity/{{ activity[0] }}/students">
+    <button class="btn btn-primary">
+      Visa elever som bokat denna aktivitet
+    </button>
+  </a>
 
-            <div class="form-group">
-                <label for="question">Fråga</label>
-                <input required name="question" type="text" class="form-control" id="question" placeholder="Fråga">
-            </div>
-    
-            <div class="form-check">
-                <input name="written_answer" type="checkbox" class="form-check-input" id="written_answer">
-                <label class="form-check-label" for="written_answer">Fritextsfråga (annars alternativsfråga)</label>
-            </div>
-            <div class="form-check">
-                <input name="voluntary" type="checkbox" class="form-check-input" id="voluntary">
-                <label class="form-check-label" for="voluntary">Frivillig? (<b>endast för fritextsfrågor</b>, elevsvar på frågan kommer inte att krävas)</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Skapa</button>
-        </form>
-    
-        <h2>Frågor för denna aktivitet</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Fråga</th>
-                    <th scope="col">Typ av fråga</th>
-                    <th scope="col">Obligatorisk?</th>
-                    <th scope="col">Åtgärd</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question in questions %}
-                <tr>
-                    <th scope="row">{{ question["question"]["id"] }}</th>
-                    <td>{{ question["question"]["question"] }}</td>
-                    <td>{% if question["question"]["written_answer"] %}Textfråga{% else %}Alternativsfråga{% endif %}</td>
-                    <td>{% if question["question"]["obligatory"] %}Obligatorisk{% else %}Frivillig{% endif %}</td>
-                    <td>
-                        {% if not question["question"]["written_answer"] %}
-                        <a style="float: left; margin-right: 0.3em;" href="/admin/question/{{ question['question']['id'] }}">
-                            <button class="btn btn-primary">
-                                Lägg till svarsalternativ
-                            </button>
-                        </a>
-                        {% endif %}
-                        <form method="POST" action="/admin/activity/{{ activity[0] }}">
-                            <input type="hidden" name="request_type" value="delete" />
-                            <input type="hidden" name="id" value="{{ question['question']['id'] }}" />
-                            <button type="submit" class="btn btn-danger">
-                                Radera
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% if not question["question"]["written_answer"] %}
-                <tr>
-                    <td></td>
-                    <td><i>{% for option in question["options"] %} {{ option["text"] }}{% endfor %}</i></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+  <a
+    style="margin-left: 0.5em; border: none"
+    href="/admin/activity/{{ activity[0] }}/leaders"
+  >
+    <button class="btn btn-info">
+      Hantera aktivitetsledare med åtkomst till denna aktivitet
+    </button>
+  </a>
+
+  <h2>Skapa ny fråga</h2>
+  <form action="/admin/activity/{{ activity[0] }}" method="POST">
+    <input type="hidden" name="request_type" value="add" />
+
+    <div class="form-group">
+      <label for="question">Fråga</label>
+      <input
+        required
+        name="question"
+        type="text"
+        class="form-control"
+        id="question"
+        placeholder="Fråga"
+      />
     </div>
+
+    <div class="form-check">
+      <input
+        name="written_answer"
+        type="checkbox"
+        class="form-check-input"
+        id="written_answer"
+      />
+      <label class="form-check-label" for="written_answer"
+        >Fritextsfråga (annars alternativsfråga)</label
+      >
+    </div>
+    <div class="form-check">
+      <input
+        name="voluntary"
+        type="checkbox"
+        class="form-check-input"
+        id="voluntary"
+      />
+      <label class="form-check-label" for="voluntary"
+        >Frivillig? (<b>endast för fritextsfrågor</b>, elevsvar på frågan kommer
+        inte att krävas)</label
+      >
+    </div>
+    <button type="submit" class="btn btn-primary">Skapa</button>
+  </form>
+
+  <h2>Frågor för denna aktivitet</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Fråga</th>
+        <th scope="col">Typ av fråga</th>
+        <th scope="col">Obligatorisk?</th>
+        <th scope="col">Åtgärd</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in questions %}
+      <tr>
+        <th scope="row">{{ question["question"]["id"] }}</th>
+        <td>{{ question["question"]["question"] }}</td>
+        <td>
+          {% if question["question"]["written_answer"] %}Textfråga{% else
+          %}Alternativsfråga{% endif %}
+        </td>
+        <td>
+          {% if question["question"]["obligatory"] %}Obligatorisk{% else
+          %}Frivillig{% endif %}
+        </td>
+        <td>
+          {% if not question["question"]["written_answer"] %}
+          <a
+            style="float: left; margin-right: 0.3em;"
+            href="/admin/question/{{ question['question']['id'] }}"
+          >
+            <button class="btn btn-primary">
+              Lägg till svarsalternativ
+            </button>
+          </a>
+          {% endif %}
+          <form method="POST" action="/admin/activity/{{ activity[0] }}">
+            <input type="hidden" name="request_type" value="delete" />
+            <input
+              type="hidden"
+              name="id"
+              value="{{ question['question']['id'] }}"
+            />
+            <button type="submit" class="btn btn-danger">
+              Radera
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% if not question["question"]["written_answer"] %}
+      <tr>
+        <td></td>
+        <td>
+          <i
+            >{% for option in question["options"] %} {{ option["text"] }}{%
+            endfor %}</i
+          >
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endif %} {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

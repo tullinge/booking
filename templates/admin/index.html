@@ -1,40 +1,38 @@
-{% extends "base.html" %}
-{% block title %} - Adminsida{% endblock %}
-{% block body %}
-{% include "admin/navbar.html" %}
-    <div class="content">
-        <h1>Adminsida</h1>
+{% extends "base.html" %} {% block title %} - Adminsida{% endblock %} {% block
+body %} {% include "admin/navbar.html" %}
+<div class="content">
+  <h1>Adminsida</h1>
 
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
 
-        <div class="alert alert-info" role="alert">
-            <b>
-                <p>Statistik</p>
-            </b>
-            <p>Antal aktiviteter: {{ amount_activities }}
-            <br />Antalet elever som valt aktivitet: {{ amount_students_chosen_activity }}</p>
-        </div>
+  <div class="alert alert-info" role="alert">
+    <b>
+      <p>Statistik</p>
+    </b>
+    <p>
+      Antal aktiviteter: {{ amount_activities }} <br />Antalet elever som valt
+      aktivitet: {{ amount_students_chosen_activity }}
+    </p>
+  </div>
 
-        <form action="/admin" method="POST">
-            <div class="form-group">
-              <label for="booking_locked">Lås systemet för elever</label>
-              <select name="booking_locked" class="form-control" id="booking_locked">
-                <option value="1" {% if BOOKING_LOCKED is eq('1') %} selected {% endif%}>Blockera bokningar för elever</option>
-                <option value="0" {% if BOOKING_LOCKED is eq('0') %} selected {% endif%}>Avblockera bokningar för elever</option>
-              </select>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Skicka</button>
-          </form>
+  <form action="/admin" method="POST">
+    <div class="form-group">
+      <label for="booking_locked">Lås systemet för elever</label>
+      <select name="booking_locked" class="form-control" id="booking_locked">
+        <option value="1" {% if BOOKING_LOCKED is eq('1') %} selected {% endif%}>Blockera bokningar för elever</option>
+        <option value="0" {% if BOOKING_LOCKED is eq('0') %} selected {% endif%}>Avblockera bokningar för elever</option>
+      </select>
     </div>
+
+    <button type="submit" class="btn btn-primary">Skicka</button>
+  </form>
+</div>
 {% endblock %}

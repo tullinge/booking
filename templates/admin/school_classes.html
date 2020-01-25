@@ -1,66 +1,88 @@
-{% extends "base.html" %}
-{% block title %} - Klasser{% endblock %}
-{% block body %}
-{% include "admin/navbar.html" %}
-    <div class="content">
-        {% if fail %}
-        <div class="alert alert-danger" role="alert">
-            <p>{{ fail }}</p>
-        </div>
-        {% endif %}
-    
-        {% if success %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ success }}</p>
-        </div>
-        {% endif %}
-        <h1>Klasser</h1>
-    
-        <h2>Skapa ny klass</h2>
-        <form action="/admin/classes" method="POST">
-            <div class="form-group">
-                <input type="hidden" id="request_type" name="request_type" value="add">
-                <label for="class_name">Klassnamn</label>
-                <input required name="class_name" type="text" class="form-control" id="class_name" aria-describedby="class_name_help" placeholder="Ange klass">
-                <small id="class_name_help" class="form-text text-muted">Kommer dyka upp i listan bland valbara klasser för elever vid första inloggning.</small>
-            </div>
-            <button type="submit" class="btn btn-primary">Skapa</button>
-        </form>
+{% extends "base.html" %} {% block title %} - Klasser{% endblock %} {% block
+body %} {% include "admin/navbar.html" %}
+<div class="content">
+  {% if fail %}
+  <div class="alert alert-danger" role="alert">
+    <p>{{ fail }}</p>
+  </div>
+  {% endif %} {% if success %}
+  <div class="alert alert-success" role="alert">
+    <p>{{ success }}</p>
+  </div>
+  {% endif %}
+  <h1>Klasser</h1>
 
-        <div class="alert alert-warning no-print" role="alert">
-            <p>Genom att radera en klass avregistrerar du alla elever som redan har registrerat sig för den klassen!</p>
-        </div>
-    
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">Klass</th>
-                <th scope="col">Kod</th>
-                <th scope="col">Åtgärd</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for class in school_classes %}
-                <tr>
-                    <th scope="row">{{ class["id"] }}</th>
-                    <td>{{ class["class_name"] }}</td>
-                    <td>{{ class["password"] }}</td>
-                    <td>
-                        <form style="border: none; float: left;" action="/admin/classes" method="POST">
-                            <input type="hidden" id="request_type" name="request_type" value="delete">
-                            <input type="hidden" id="id" name="id" value="{{ class['id'] }}">
-                            <button type="submit" class="btn btn-danger">Radera</button>
-                        </form>
-                        <a style="margin-left: 0.5em; border: none" href="/admin/classes/{{ class['id'] }}/students">
-                            <button class="btn btn-primary">
-                                Visa elever som registrerat sig i denna klass
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  <h2>Skapa ny klass</h2>
+  <form action="/admin/classes" method="POST">
+    <div class="form-group">
+      <input type="hidden" id="request_type" name="request_type" value="add" />
+      <label for="class_name">Klassnamn</label>
+      <input
+        required
+        name="class_name"
+        type="text"
+        class="form-control"
+        id="class_name"
+        aria-describedby="class_name_help"
+        placeholder="Ange klass"
+      />
+      <small id="class_name_help" class="form-text text-muted"
+        >Kommer dyka upp i listan bland valbara klasser för elever vid första
+        inloggning.</small
+      >
     </div>
+    <button type="submit" class="btn btn-primary">Skapa</button>
+  </form>
+
+  <div class="alert alert-warning no-print" role="alert">
+    <p>
+      Genom att radera en klass avregistrerar du alla elever som redan har
+      registrerat sig för den klassen!
+    </p>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Klass</th>
+        <th scope="col">Kod</th>
+        <th scope="col">Åtgärd</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for class in school_classes %}
+      <tr>
+        <th scope="row">{{ class["id"] }}</th>
+        <td>{{ class["class_name"] }}</td>
+        <td>{{ class["password"] }}</td>
+        <td>
+          <form
+            style="border: none; float: left;"
+            action="/admin/classes"
+            method="POST"
+          >
+            <input
+              type="hidden"
+              id="request_type"
+              name="request_type"
+              value="delete"
+            />
+            <input type="hidden" id="id" name="id" value="{{ class['id'] }}" />
+            <button type="submit" class="btn btn-danger">Radera</button>
+          </form>
+          <a
+            style="margin-left: 0.5em; border: none"
+            href="/admin/classes/{{ class['id'] }}/students"
+          >
+            <button class="btn btn-primary">
+              Visa elever som registrerat sig i denna klass
+            </button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

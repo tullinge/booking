@@ -43,7 +43,12 @@ def character_validation(
 
 # general purpose input validation
 def valid_string(
-    variable, min_length=None, max_length=None, ignore_undefined=False, *args, **kwargs,
+    variable,
+    min_length=None,
+    max_length=None,
+    ignore_undefined=False,
+    *args,
+    **kwargs,
 ):
     """Returns boolean whether variable is valid input or not"""
 

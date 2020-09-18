@@ -165,10 +165,16 @@ def setup():
 
         # make sure to validate input variables against string authentication
         if not valid_string(
-            join_code, allow_newline=False, allow_punctuation=False, allow_space=False,
+            join_code,
+            allow_newline=False,
+            allow_punctuation=False,
+            allow_space=False,
         ):
             return (
-                render_template(template, fail="Icke tillåtna karaktärer.",),
+                render_template(
+                    template,
+                    fail="Icke tillåtna karaktärer.",
+                ),
                 400,
             )
 
@@ -178,7 +184,13 @@ def setup():
         )
 
         if not school_class:
-            return render_template(template, fail="Felaktig kod.",), 400
+            return (
+                render_template(
+                    template,
+                    fail="Felaktig kod.",
+                ),
+                400,
+            )
 
         # passed validation, update user variables
         sql_query(

@@ -71,7 +71,13 @@ def google_login(token, hd_name):
         return {
             "status": False,
             "resp": (
-                jsonify({"status": False, "code": 400, "message": "Invalid token.",}),
+                jsonify(
+                    {
+                        "status": False,
+                        "code": 400,
+                        "message": "Invalid token.",
+                    }
+                ),
                 400,
             ),
         }
@@ -102,11 +108,21 @@ def google_login(token, hd_name):
             "status": False,
             "resp": (
                 jsonify(
-                    {"status": False, "code": 400, "message": "'aud' is invalid!",}
+                    {
+                        "status": False,
+                        "code": 400,
+                        "message": "'aud' is invalid!",
+                    }
                 ),
                 400,
             ),
         }
 
     # if all good
-    return {"status": True, "resp": {"data": data, "idinfo": idinfo,}}
+    return {
+        "status": True,
+        "resp": {
+            "data": data,
+            "idinfo": idinfo,
+        },
+    }

@@ -40,7 +40,7 @@ def sql_query(query):
 def dict_sql_query(query, fetchone=False):
     """
     Performs specified SQL query in database, return data as dict
-    
+
     Try to use this one as much as possible when querying for data.
     """
 

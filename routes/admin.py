@@ -207,7 +207,10 @@ def activities():
 
             if not valid_string(
                 data["name"], max_length=50, allow_newline=False
-            ) or not valid_string(data["info"], max_length=511,):
+            ) or not valid_string(
+                data["info"],
+                max_length=511,
+            ):
                 return (
                     render_template(
                         template,
@@ -499,8 +502,13 @@ def edit_activity(id):
             )
 
         if not valid_string(
-            request.form["name"], max_length=50, allow_newline=False,
-        ) or not valid_string(request.form["info"], max_length=511,):
+            request.form["name"],
+            max_length=50,
+            allow_newline=False,
+        ) or not valid_string(
+            request.form["info"],
+            max_length=511,
+        ):
             return (
                 render_template(
                     template,
@@ -582,7 +590,11 @@ def question_id(id):
                 400,
             )
 
-        if not valid_string(data["text"], max_length=255, allow_newline=False,):
+        if not valid_string(
+            data["text"],
+            max_length=255,
+            allow_newline=False,
+        ):
             return (
                 render_template(
                     template,
@@ -782,7 +794,10 @@ def admin_users():
                 )
 
             if not valid_string(
-                data["password"], min_length=8, max_length=100, allow_space=False,
+                data["password"],
+                min_length=8,
+                max_length=100,
+                allow_space=False,
             ):
                 return render_template(
                     template,
@@ -907,7 +922,11 @@ def school_classes():
                     400,
                 )
 
-            if not valid_string(data["class_name"], min_length=3, max_length=10,):
+            if not valid_string(
+                data["class_name"],
+                min_length=3,
+                max_length=10,
+            ):
                 return (
                     render_template(
                         template,
@@ -1181,7 +1200,10 @@ def admin_leaders(id):
 
         return (
             render_template(
-                template, activity=activity, leaders=leaders, fail="Ogiltig begäran.",
+                template,
+                activity=activity,
+                leaders=leaders,
+                fail="Ogiltig begäran.",
             ),
             400,
         )
@@ -1239,7 +1261,8 @@ def change_password():
         if not valid_string(data["new_password"], min_length=8, max_length=100):
             return (
                 render_template(
-                    template, fail="Lösenordet för kort eller för långt (8-100).",
+                    template,
+                    fail="Lösenordet för kort eller för långt (8-100).",
                 ),
                 400,
             )

@@ -17,6 +17,7 @@ Flask = "*"
 PyMySQL = "*"
 Flask-Minify = "*"
 Flask-Limiter = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"

@@ -14,10 +14,9 @@ services:
       GOOGLE_CLIENT_ID: '${GOOGLE_CLIENT_ID}'
       GSUITE_DOMAIN_NAME: '${GSUITE_DOMAIN_NAME}' 
       PORT: '${PORT}'
+      SECRET_KEY: 'random'
     depends_on:
       - mysql
       - redis
     ports:
-      - ${PORT}:${PORT}
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
+      - $PORT:$PORT

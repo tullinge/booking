@@ -8,9 +8,6 @@ from datetime import timedelta
 from time import strftime
 from version import version, commit_hash
 
-# import session
-from flask_session.__init__ import Session
-
 # import limiter
 from components.limiter_obj import limiter
 
@@ -27,6 +24,11 @@ from components.google import GOOGLE_CLIENT_ID, GSUITE_DOMAIN_NAME
 
 # redis
 import redis
+
+DEVELOPMENT = True if environ.get("DEVELOPMENT", None) else False
+
+if DEVELOPMENT:
+    print("Development mode enabled, lazy security settings!")
 
 # flask application
 app = Flask(__name__)
@@ -86,12 +88,15 @@ def error_500(e):
 SESSION_TYPE = "redis"
 SESSION_REDIS = redis.Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False if DEVELOPMENT else True
+SESSION_COOKIE_SAMESITE = None if DEVELOPMENT else "Strict"
+
 SESSION_PERMANENT = True
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 
+SECRET_KEY = environ.get("SECRET_KEY")
+
 app.config.from_object(__name__)
-Session(app)
 
 # register blueprints
 app.register_blueprint(admin_routes, url_prefix="/admin")

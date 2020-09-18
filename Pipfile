@@ -15,7 +15,6 @@ google-auth = "*"
 requests = "*"
 Flask = "*"
 PyMySQL = "*"
-Flask-Session = "*"
 Flask-Minify = "*"
 Flask-Limiter = "*"
 

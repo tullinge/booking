@@ -31,13 +31,16 @@ These environment variables need to be set (except the ones which have defaults)
 - `MYSQL_DATABASE` - default is `booking`
 - `GOOGLE_CLIENT_ID` - must be set manually, used for communicating with Google API.
 - `GSUITE_DOMAIN_NAME` - must be set manually, used for limiting logins to a specific G Suite organization
+- `SECRET_KEY` - Secret key Flask uses. Set to `random` for randomly generated.
+- `PORT` - Port to listen to.
+- `DEVELOPMENT` - Define the variable when working locally. If it is not defined, the system will enforce stronger security settings (e.g. cookie requires HTTPs).
 
 ### Instructions (running locally)
 
 1. `docker-compose up -d`
 2. `python scripts/setup_db.py`
 3. `python scripts/create_admin.py`
-4. `python main.py`
+4. `python app.py`
 
 ### Instructions (deployment)
 

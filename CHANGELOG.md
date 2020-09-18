@@ -2,6 +2,10 @@
 
 This project uses the [semantic versioning convention](https://semver.org/). Make sure to include all changes in releases within this file (and references to pull requests/issues where applicable).
 
+## next-release
+
+* Replace `requirements.txt` with [Pipenv](https://github.com/pypa/pipenv)
+
 ## v0.1.3 (released on 2020-01-26)
 
 ### Enhancements

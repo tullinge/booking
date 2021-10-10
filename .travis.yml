@@ -1,6 +1,6 @@
 sudo: required
 language: python
-python: 3.8
+python: 3.9
 services:
 - docker
 
@@ -15,16 +15,3 @@ jobs:
     - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - black --check .
-
-  - stage: build docker image
-    script:
-    - sed -i "s/development/$TRAVIS_COMMIT/g" version.py
-    - docker build -t tullingegymnasium/booking_app:latest .
-    deploy:
-      skip_cleanup: true
-      provider: script
-      script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && docker push tullingegymnasium/booking_app:latest
-      on:
-        branch: master
-    after_deploy:
-    - rm -rf /home/travis/.docker/config.json

@@ -6,7 +6,7 @@ services:
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
       MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
   app:
-    image: tullingegymnasium/booking_app
+    image: "ghcr.io/tullingedk/booking:latest"
     environment:
       MYSQL_HOST: 'mysql'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'

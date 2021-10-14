@@ -1,8 +1,13 @@
 version: '3.7'
 
 services:
+  redis:
+    image: redis
   mysql:
+    image: mysql
     environment:
+      MYSQL_DATABASE: 'booking'
+      MYSQL_USER: 'admin'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
       MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
   app:

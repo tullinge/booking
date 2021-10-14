@@ -43,7 +43,7 @@ These environment variables need to be set (except the ones which have defaults)
 ### Instructions (deployment)
 
 1. Set `DOCKER_HOST` and `MYSQL_PASSWORD`
-2. `docker-compose -f docker-compose.yml -f prod.yml up -d`
+2. `docker-compose -f prod.yml up -d`
 3. `docker exec booking_app_1 python scripts/setup_db.py`
 4. `docker exec -it booking_app_1 python scripts/create_admin.py`
 

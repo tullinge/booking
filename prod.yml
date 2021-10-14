@@ -10,6 +10,8 @@ services:
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
       MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
+    volumes:
+      - mysql:/var/lib/mysql
   app:
     image: "ghcr.io/tullinge/booking:latest"
     environment:
